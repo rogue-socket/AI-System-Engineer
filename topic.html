@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic Detail — AI Agent Systems</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="topic-page">
+
+<div class="s">
+  <a class="back-link" id="back-link" href="index.html">Back to syllabus</a>
+
+  <div class="hero" id="hero">
+    <div class="crumbs" id="breadcrumbs"></div>
+    <div class="hero-k">Topic Detail</div>
+    <h1 class="hero-title" id="hero-title"></h1>
+    <p class="hero-summary" id="hero-summary"></p>
+    <div id="topic-status-picker"></div>
+    <div class="hero-grid" id="hero-grid"></div>
+  </div>
+
+  <div class="s-meta" id="meta-bar">
+    <span id="meta-layers"></span><span class="dot"></span>
+    <span id="meta-sections"></span><span class="dot"></span>
+    <span id="meta-topics"></span><span class="dot"></span>
+    <button class="s-export" id="export-button" type="button">Export .md</button>
+  </div>
+
+  <div class="status-legend" id="status-legend"></div>
+  <input class="s-search" id="search" placeholder="Search this topic breakdown...">
+  <div id="root"></div>
+</div>
+
+<script src="syllabus.js"></script>
+<script>
+const { buildTopicDetailData, renderLayerTree, filterLayerTree, layersToMarkdown, downloadMarkdown, renderStatusLegend, renderTopicStatusPicker, subscribeToTopicStatusChanges, applyPageTheme } = window.Syllabus;
+
+const params = new URLSearchParams(window.location.search);
+const topicId = params.get('topic');
+const detail = buildTopicDetailData(topicId);
+
+const root = document.getElementById('root');
+const searchInput = document.getElementById('search');
+const exportButton = document.getElementById('export-button');
+const backLink = document.getElementById('back-link');
+const heroTitle = document.getElementById('hero-title');
+const heroSummary = document.getElementById('hero-summary');
+const heroGrid = document.getElementById('hero-grid');
+const breadcrumbs = document.getElementById('breadcrumbs');
+const metaBar = document.getElementById('meta-bar');
+const topicStatusPicker = document.getElementById('topic-status-picker');
+const statusLegend = document.getElementById('status-legend');
+
+function updateMeta(stats) {
+  document.getElementById('meta-layers').textContent = `${stats.layers} layers`;
+  document.getElementById('meta-sections').textContent = `${stats.sections} sections`;
+  document.getElementById('meta-topics').textContent = `${stats.topics} topics`;
+}
+
+function renderBreadcrumbs(items) {
+  breadcrumbs.innerHTML = '';
+
+  items.forEach((item, index) => {
+    if (index > 0) {
+      const sep = document.createElement('span');
+      sep.className = 'crumb-sep';
+      sep.textContent = '›';
+      breadcrumbs.appendChild(sep);
+    }
+
+    const node = item.href ? document.createElement('a') : document.createElement('span');
+    node.className = item.href ? 'crumb-link' : '';
+    node.textContent = item.label;
+    if (item.href) {
+      node.href = item.href;
+    }
+    breadcrumbs.appendChild(node);
+  });
+}
+
+function renderHeroCards(cards) {
+  heroGrid.innerHTML = '';
+
+  cards.forEach(card => {
+    const cardEl = document.createElement('div');
+    cardEl.className = 'hero-card';
+
+    const label = document.createElement('div');
+    label.className = 'hero-card-label';
+    label.textContent = card.label;
+
+    const value = document.createElement('div');
+    value.className = 'hero-card-value';
+    value.textContent = card.value;
+
+    cardEl.appendChild(label);
+    cardEl.appendChild(value);
+    heroGrid.appendChild(cardEl);
+  });
+}
+
+function renderNotFound() {
+  document.title = 'Topic Not Found — AI Agent Systems';
+  breadcrumbs.innerHTML = '';
+  heroTitle.textContent = 'Topic not found';
+  heroSummary.textContent = 'The requested topic route did not resolve to a valid syllabus node. Go back to the overview and pick a topic directly from the taxonomy.';
+  heroGrid.innerHTML = '';
+  metaBar.style.display = 'none';
+  searchInput.style.display = 'none';
+  root.innerHTML = '<div class="not-found"><h1>Invalid topic link</h1><p>This usually means the route was edited manually or the topic identifier no longer exists in the current shared syllabus data.</p></div>';
+}
+
+function exportMarkdown() {
+  const markdown = layersToMarkdown(`${detail.entry.text} — Topic Detail`, detail.layers, [
+    `Primary path: ${detail.entry.layer.title} / ${detail.entry.section.title}`,
+    detail.summary
+  ]);
+  downloadMarkdown(`${detail.entry.text.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'topic'}_detail.md`, markdown);
+}
+
+function refreshStatusUI() {
+  if (!detail) {
+    return;
+  }
+
+  renderTopicStatusPicker(topicStatusPicker, detail.entry.id);
+  renderStatusLegend(statusLegend, {
+    noteText: `Status colors track your progress. Environment colors follow the ${detail.theme.label} classification.`
+  });
+}
+
+if (!detail) {
+  renderNotFound();
+} else {
+  document.title = `${detail.entry.text} — AI Agent Systems`;
+  applyPageTheme(detail.theme);
+  backLink.href = `index.html#topic-${detail.entry.id}`;
+  heroTitle.textContent = detail.entry.text;
+  heroSummary.textContent = detail.summary;
+  renderBreadcrumbs(detail.breadcrumbs);
+  renderHeroCards(detail.heroCards);
+  renderLayerTree(root, detail.layers, { openAll: true });
+  updateMeta(detail.stats);
+  refreshStatusUI();
+  subscribeToTopicStatusChanges(refreshStatusUI);
+
+  searchInput.addEventListener('input', event => {
+    filterLayerTree(root, event.target.value);
+  });
+
+  exportButton.addEventListener('click', exportMarkdown);
+}
+</script>
+</body>
+</html>
