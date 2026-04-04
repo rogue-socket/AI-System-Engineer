@@ -239,6 +239,7 @@
 
   function normalizeTopic(topic, extra = {}) {
     return {
+      ...(topic && typeof topic === 'object' ? topic : {}),
       text: topicText(topic),
       isNew: isNew(topic),
       ...extra
@@ -263,6 +264,18 @@
     return getRawSection(layerTitle, sectionTitle).topics.filter(filterFn).map(cloneTopic);
   }
 
+  function dedupeStrings(values) {
+    const seen = new Set();
+    return values.filter(value => {
+      const key = String(value || '').trim();
+      if (!key || seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
   function dedupeTopics(topics) {
     const seen = new Set();
     return topics
@@ -281,8 +294,18 @@
   function copySection(layerTitle, sectionTitle, overrides = {}) {
     return {
       title: overrides.title || sectionTitle,
+      prerequisites: dedupeStrings(overrides.prerequisites || []),
       topics: overrides.topics ? dedupeTopics(overrides.topics) : copyTopics(layerTitle, sectionTitle, overrides.filter || (() => true)),
       sourceRefs: (overrides.sourceRefs || [{ layerTitle, sectionTitle, synthetic: false }]).map(ref => ({ ...ref }))
+    };
+  }
+
+  function syntheticSection(title, topics, options = {}) {
+    return {
+      title,
+      prerequisites: dedupeStrings(options.prerequisites || []),
+      topics: dedupeTopics(topics),
+      sourceRefs: (options.sourceRefs || []).map(ref => ({ ...ref, synthetic: true }))
     };
   }
 
@@ -305,126 +328,325 @@
     'Non-repudiation for agent actions'
   ];
 
+  const workflowRuntimeTopics = [
+    'Long-running agent processes',
+    'Durable execution (Temporal, Inngest)'
+  ];
+
   function buildStructuredData() {
     return [
       {
         id: 1,
-        kind: 'Capabilities',
-        scope: 'What intelligence exists',
-        title: 'Models',
-        color: '#7F77DD',
-        bg: '#EEEDFE',
+        kind: 'Orientation',
+        scope: 'How the whole system fits together before the deep dive',
+        title: 'Mental Models',
+        color: '#111111',
+        bg: '#F3F4F6',
         sections: [
-          copySection('Foundation Models', 'Core transformer architecture'),
-          copySection('Foundation Models', 'Architecture extensions'),
-          copySection('Foundation Models', 'Model families'),
-          copySection('Foundation Models', 'Embedding & retrieval models'),
-          copySection('Foundation Models', 'Voice & audio models'),
-          copySection('Foundation Models', 'Reasoning & thinking models'),
-          copySection('Foundation Models', 'Multimodal & vision models'),
-          copySection('Foundation Models', 'Tool-calling & code models', {
-            title: 'Tool-capable & code-specialized models'
+          syntheticSection('Whole-system map', [
+            newTopic('Workflow vs agent vs multi-agent system'),
+            newTopic('Models, memory, tools, controllers, and environments'),
+            newTopic('The observe -> think -> act -> verify -> update loop'),
+            newTopic('Inputs, state, outputs, and side effects'),
+            newTopic('Deterministic workflow steps vs probabilistic model steps'),
+            newTopic('Compound AI systems'),
+            newTopic('Why an agent is usually a system, not a single model'),
+            newTopic('The difference between chat UX and agent architecture')
+          ], {
+            sourceRefs: [
+              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Agent architectures' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems' }
+            ]
           }),
-          copySection('Foundation Models', 'Open-weight model ecosystem'),
-          copySection('Foundation Models', 'Inference optimization')
+          syntheticSection('Core vocabulary', [
+            newTopic('Objectives vs tasks vs subtasks'),
+            newTopic('Prompts vs policies vs plans'),
+            newTopic('Context vs memory vs knowledge base'),
+            newTopic('Tokens vs embeddings vs generated text'),
+            newTopic('Structured outputs vs free-form generation'),
+            newTopic('Stateless calls vs stateful sessions'),
+            newTopic('Tool invocation vs workflow orchestration'),
+            newTopic('Latency, cost, reliability, and accuracy as system constraints')
+          ], {
+            prerequisites: ['Whole-system map'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Prompt engineering' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Memory taxonomy' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Tool interfaces' }
+            ]
+          }),
+          syntheticSection('Design trade-offs', [
+            newTopic('When simple automation beats agents'),
+            newTopic('Single-agent vs multi-agent design choice'),
+            newTopic('Long context vs RAG vs fine-tuning'),
+            newTopic('Closed-weight vs open-weight deployment'),
+            newTopic('Autonomy vs oversight'),
+            newTopic('Deterministic validation vs model judgment'),
+            newTopic('When to keep logic symbolic'),
+            newTopic('Toy demos vs durable systems')
+          ], {
+            prerequisites: ['Whole-system map', 'Core vocabulary'],
+            sourceRefs: [
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'RAG architectures' },
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Safety mechanisms' },
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Agent FinOps & cost economics' }
+            ]
+          }),
+          syntheticSection('Study route', [
+            newTopic('Rough system picture before local optimization'),
+            newTopic('Models first, then cognition, then memory, then agency'),
+            newTopic('Single-agent implementation before multi-agent orchestration'),
+            newTopic('Evaluation after implementation, governance after operational understanding'),
+            newTopic('Use cases as synthesis, not the starting point')
+          ], {
+            prerequisites: ['Whole-system map'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' },
+              { layerTitle: 'Evaluation, Observability & Applications', sectionTitle: 'Evaluation' },
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Governance & compliance' }
+            ]
+          }),
         ]
       },
       {
         id: 2,
-        kind: 'Cognition',
-        scope: 'How reasoning works',
-        title: 'Cognition',
-        color: '#1D9E75',
-        bg: '#E1F5EE',
+        kind: 'Capabilities',
+        scope: 'How models represent, generate, and specialize',
+        title: 'Models & Representations',
+        color: '#7F77DD',
+        bg: '#EEEDFE',
         sections: [
-          copySection('Reasoning & Intelligence', 'Reasoning paradigms', {
-            topics: copyTopics('Reasoning & Intelligence', 'Reasoning paradigms', topic => topicText(topic) !== 'ReAct (Reason+Act)')
+          syntheticSection('Representation primitives', [
+            'Tokenization',
+            'Byte-pair encoding (BPE)',
+            'Context windows',
+            'Positional encoding',
+            newTopic('Embeddings as semantic coordinates'),
+            newTopic('Similarity and vector distance intuition'),
+            newTopic('Generated tokens as iterative decoding steps'),
+            newTopic('Structured output as constrained generation')
+          ], {
+            prerequisites: ['Whole-system map', 'Core vocabulary'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' },
+              { layerTitle: 'Foundation Models', sectionTitle: 'Architecture extensions' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Retrieval techniques' }
+            ]
           }),
-          copySection('Reasoning & Intelligence', 'Reflection & self-improvement'),
-          copySection('Reasoning & Intelligence', 'Planning & control', { title: 'Decision-making & planning' }),
-          copySection('Reasoning & Intelligence', 'Neuro-symbolic AI'),
-          copySection('Reasoning & Intelligence', 'Meta-cognition')
+          copySection('Foundation Models', 'Core transformer architecture', {
+            prerequisites: ['Representation primitives'],
+            topics: copyTopics('Foundation Models', 'Core transformer architecture', topic => ![
+              'Tokenization',
+              'Byte-pair encoding (BPE)',
+              'Context windows',
+              'Positional encoding'
+            ].includes(topicText(topic)))
+          }),
+          syntheticSection('Model lifecycle & training fundamentals', [
+            newTopic('Pretraining and next-token prediction'),
+            'Instruction tuning',
+            newTopic('Preference tuning and alignment tuning'),
+            newTopic('Fine-tuning strategies (full, PEFT, LoRA, QLoRA)'),
+            newTopic('Inference-time adaptation vs weight updates'),
+            newTopic('Distillation as capability transfer'),
+            newTopic('Quantization (GPTQ, AWQ, GGUF)'),
+            newTopic('Data quality, contamination, and benchmark integrity')
+          ], {
+            prerequisites: ['Core transformer architecture'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Architecture extensions' },
+              { layerTitle: 'Foundation Models', sectionTitle: 'Prompt engineering' },
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Learning & adaptation' }
+            ]
+          }),
+          syntheticSection('Model interaction fundamentals', [
+            'Zero-shot prompting',
+            'Few-shot prompting',
+            'System vs user prompts',
+            'Prompt templates',
+            newTopic('Role prompting'),
+            newTopic('Structured output prompting'),
+            newTopic('Greedy decoding vs sampling'),
+            newTopic('Temperature'),
+            newTopic('Top-k sampling'),
+            newTopic('Top-p / nucleus sampling'),
+            newTopic('Max tokens and stop sequences'),
+            newTopic('Streaming vs non-streaming generation'),
+            newTopic('Logprobs and token confidence surfaces')
+          ], {
+            prerequisites: ['Representation primitives', 'Model lifecycle & training fundamentals'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Prompt engineering' },
+              { layerTitle: 'Foundation Models', sectionTitle: 'Architecture extensions' },
+              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Meta-cognition' }
+            ]
+          }),
+          copySection('Foundation Models', 'Model families', {
+            prerequisites: ['Core transformer architecture', 'Model lifecycle & training fundamentals']
+          }),
+          copySection('Foundation Models', 'Embedding & retrieval models', {
+            prerequisites: ['Representation primitives', 'Model families']
+          }),
+          copySection('Foundation Models', 'Reasoning & thinking models', {
+            prerequisites: ['Model families', 'Model interaction fundamentals']
+          }),
+          copySection('Foundation Models', 'Multimodal & vision models', {
+            prerequisites: ['Model families']
+          }),
+          copySection('Foundation Models', 'Voice & audio models', {
+            prerequisites: ['Model families']
+          }),
+          copySection('Foundation Models', 'Tool-calling & code models', {
+            title: 'Tool-capable & code-specialized models',
+            prerequisites: ['Model families', 'Model interaction fundamentals']
+          }),
+          copySection('Foundation Models', 'Open-weight model ecosystem', {
+            prerequisites: ['Model families', 'Model lifecycle & training fundamentals']
+          }),
+          copySection('Foundation Models', 'Inference optimization', {
+            prerequisites: ['Core transformer architecture', 'Model lifecycle & training fundamentals']
+          })
         ]
       },
       {
         id: 3,
+        kind: 'Cognition',
+        scope: 'How models plan, reflect, and decide under uncertainty',
+        title: 'Cognition & Control',
+        color: '#1D9E75',
+        bg: '#E1F5EE',
+        sections: [
+          copySection('Reasoning & Intelligence', 'Reasoning paradigms', {
+            prerequisites: ['Model interaction fundamentals', 'Model families']
+          }),
+          copySection('Reasoning & Intelligence', 'Planning & control', {
+            title: 'Decision-making & planning',
+            prerequisites: ['Reasoning paradigms']
+          }),
+          copySection('Reasoning & Intelligence', 'Reflection & self-improvement', {
+            prerequisites: ['Decision-making & planning']
+          }),
+          copySection('Reasoning & Intelligence', 'Meta-cognition', {
+            prerequisites: ['Reasoning paradigms', 'Reflection & self-improvement']
+          }),
+          copySection('Reasoning & Intelligence', 'Neuro-symbolic AI', {
+            prerequisites: ['Reasoning paradigms', 'Decision-making & planning']
+          })
+        ]
+      },
+      {
+        id: 4,
         kind: 'State',
         scope: 'How knowledge persists',
         title: 'Memory & Knowledge',
         color: '#378ADD',
         bg: '#E6F1FB',
         sections: [
-          copySection('Memory & Knowledge', 'Memory taxonomy'),
-          {
-            title: 'Memory operations',
-            topics: [
-              newTopic('Read / write memory policies'),
-              newTopic('Memory selection policies'),
-              newTopic('Memory routing'),
-              newTopic('Memory TTL / time decay'),
-              newTopic('Conflict resolution across memories'),
-              newTopic('Personalized vs shared memory'),
-              newTopic('Importance scoring & salience'),
-              newTopic('Compaction / summarization policies'),
-              newTopic('Archival / forgetting strategies'),
-              newTopic('Memory provenance & source lineage'),
-              newTopic('Memory permissions & access control')
-            ],
+          copySection('Memory & Knowledge', 'Memory taxonomy', {
+            prerequisites: ['Whole-system map', 'Core vocabulary']
+          }),
+          copySection('Memory & Knowledge', 'Knowledge stores', {
+            prerequisites: ['Memory taxonomy']
+          }),
+          copySection('Memory & Knowledge', 'Chunking & indexing', {
+            prerequisites: ['Knowledge stores', 'Embedding & retrieval models']
+          }),
+          copySection('Memory & Knowledge', 'Retrieval techniques', {
+            prerequisites: ['Embedding & retrieval models', 'Knowledge stores', 'Chunking & indexing']
+          }),
+          copySection('Memory & Knowledge', 'RAG architectures', {
+            prerequisites: ['Retrieval techniques', 'Decision-making & planning']
+          }),
+          copySection('Memory & Knowledge', 'Knowledge quality', {
+            prerequisites: ['Retrieval techniques', 'RAG architectures']
+          }),
+          syntheticSection('Memory operations', [
+            newTopic('Read / write memory policies'),
+            newTopic('Memory selection policies'),
+            newTopic('Memory routing'),
+            newTopic('Memory TTL / time decay'),
+            newTopic('Conflict resolution across memories'),
+            newTopic('Personalized vs shared memory'),
+            newTopic('Importance scoring & salience'),
+            newTopic('Compaction / summarization policies'),
+            newTopic('Archival / forgetting strategies'),
+            newTopic('Memory provenance & source lineage'),
+            newTopic('Memory permissions & access control')
+          ], {
+            prerequisites: ['Memory taxonomy', 'Knowledge quality'],
             sourceRefs: [
-              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Memory taxonomy', synthetic: true },
-              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Knowledge quality', synthetic: true }
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Memory taxonomy' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Knowledge quality' }
             ]
-          },
-          copySection('Memory & Knowledge', 'Retrieval techniques'),
-          copySection('Memory & Knowledge', 'Chunking & indexing'),
-          copySection('Memory & Knowledge', 'RAG architectures'),
-          copySection('Memory & Knowledge', 'Knowledge stores'),
-          copySection('Memory & Knowledge', 'Knowledge quality')
-        ]
-      },
-      {
-        id: 4,
-        kind: 'Action',
-        scope: 'How agents interact with environments',
-        title: 'Action & Tool Use',
-        color: '#EF9F27',
-        bg: '#FAEEDA',
-        sections: [
-          copySection('Foundation Models', 'Prompt engineering', { title: 'Prompt & interface design' }),
-          copySection('Agency & Tool Use', 'Tool interfaces'),
-          copySection('Agency & Tool Use', 'Information tools'),
-          copySection('Agency & Tool Use', 'Action tools'),
-          copySection('Agency & Tool Use', 'Meta tooling'),
-          copySection('Agency & Tool Use', 'Protocol convergence & standards'),
-          copySection('Agency & Tool Use', 'Agentic browsers')
+          })
         ]
       },
       {
         id: 5,
-        kind: 'Behavior',
-        scope: 'How agent systems behave',
-        title: 'Agency & Human Systems',
-        color: '#C96FDD',
-        bg: '#F6ECFB',
+        kind: 'Action',
+        scope: 'How a single agent decides, prompts, and acts',
+        title: 'Agency & Tool Use',
+        color: '#EF9F27',
+        bg: '#FAEEDA',
         sections: [
-          copySection('Reasoning & Intelligence', 'Agent architectures'),
+          copySection('Reasoning & Intelligence', 'Agent architectures', {
+            prerequisites: ['Reasoning paradigms', 'Decision-making & planning', 'Memory taxonomy'],
+            topics: copyTopics('Reasoning & Intelligence', 'Agent architectures', topic => topicText(topic) !== 'Compound AI systems')
+          }),
+          copySection('Multi-Agent Systems', 'Agent design patterns', {
+            prerequisites: ['Agent architectures']
+          }),
+          syntheticSection('Prompt & interface design', [
+            'Meta-prompting',
+            'Prompt chaining',
+            'Automatic prompt optimization',
+            newTopic('Prompt state injection from memory'),
+            newTopic('Prompt versioning and change control'),
+            newTopic('Prompt boundary design between planner and executor'),
+            newTopic('Prompt contracts for parsers and tools'),
+            newTopic('System prompt layering across collaborators')
+          ], {
+            prerequisites: ['Model interaction fundamentals', 'Agent architectures'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Prompt engineering' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Memory taxonomy' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Tool interfaces' }
+            ]
+          }),
           copySection('Agency & Tool Use', 'Interaction patterns', {
+            title: 'Interaction patterns & autonomy',
+            prerequisites: ['Agent architectures', 'Agent design patterns'],
             topics: copyTopics('Agency & Tool Use', 'Interaction patterns', topic => !validationTopics.includes(topicText(topic)))
           }),
-          {
-            title: 'Control & validation',
-            topics: dedupeTopics([
-              ...copyTopics('Agency & Tool Use', 'Interaction patterns', topic => validationTopics.includes(topicText(topic))),
-              newTopic('Mandatory vs optional approval gates'),
-              newTopic('Schema-driven output validation'),
-              newTopic('Tool approval gates vs output approval gates')
-            ]),
+          copySection('Agency & Tool Use', 'Tool interfaces', {
+            prerequisites: ['Prompt & interface design', 'Interaction patterns & autonomy']
+          }),
+          syntheticSection('Control & validation', dedupeTopics([
+            ...copyTopics('Agency & Tool Use', 'Interaction patterns', topic => validationTopics.includes(topicText(topic))),
+            newTopic('Mandatory vs optional approval gates'),
+            newTopic('Schema-driven output validation'),
+            newTopic('Tool approval gates vs output approval gates'),
+            newTopic('Validation before side effects vs after side effects')
+          ]), {
+            prerequisites: ['Interaction patterns & autonomy', 'Tool interfaces'],
             sourceRefs: [
-              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns', synthetic: true }
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns' },
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Safety mechanisms' }
             ]
-          },
-          copySection('Multi-Agent Systems', 'Agent design patterns'),
-          copySection('Evaluation, Observability & Applications', 'Human-agent teaming')
+          }),
+          copySection('Agency & Tool Use', 'Information tools', {
+            prerequisites: ['Tool interfaces', 'Memory taxonomy']
+          }),
+          copySection('Agency & Tool Use', 'Action tools', {
+            prerequisites: ['Tool interfaces', 'Information tools']
+          }),
+          copySection('Agency & Tool Use', 'Meta tooling', {
+            prerequisites: ['Tool interfaces', 'Control & validation']
+          }),
+          copySection('Agency & Tool Use', 'Agentic browsers', {
+            prerequisites: ['Action tools', 'Multimodal & vision models']
+          })
         ]
       },
       {
@@ -435,32 +657,51 @@
         color: '#D4537E',
         bg: '#FBEAF0',
         sections: [
-          copySection('Multi-Agent Systems', 'Multi-agent architectures'),
+          copySection('Multi-Agent Systems', 'Multi-agent architectures', {
+            prerequisites: ['Agent architectures', 'Agent design patterns']
+          }),
           copySection('Multi-Agent Systems', 'Coordination & communication', {
+            prerequisites: ['Multi-agent architectures'],
             topics: copyTopics('Multi-Agent Systems', 'Coordination & communication', topic => !['Agent protocol standardization', 'Trust & reputation systems'].includes(topicText(topic)))
           }),
-          {
-            title: 'Incentives & mechanism design',
-            topics: [
-              newTopic('Incentive design in agent systems'),
-              newTopic('Game-theoretic interactions'),
-              newTopic('Mechanism design'),
-              newTopic('Auctions & bidding between agents'),
-              newTopic('Voting / quorum protocols'),
-              newTopic('Coalition formation'),
-              newTopic('Market-based coordination'),
-              newTopic('Reward sharing & credit assignment'),
-              newTopic('Trust & reputation systems'),
-              newTopic('Emergent misalignment'),
-              newTopic('Cooperative vs competitive agent incentives')
-            ],
+          copySection('Multi-Agent Systems', 'Workflow systems', {
+            prerequisites: ['Multi-agent architectures', 'Decision-making & planning'],
+            topics: copyTopics('Multi-Agent Systems', 'Workflow systems', topic => !workflowRuntimeTopics.includes(topicText(topic)))
+          }),
+          syntheticSection('Interoperability & standards', dedupeTopics([
+            newTopic('Agent protocol standardization'),
+            ...copyTopics('Agency & Tool Use', 'Protocol convergence & standards')
+          ]), {
+            prerequisites: ['Coordination & communication', 'Tool interfaces'],
             sourceRefs: [
-              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Coordination & communication', synthetic: true }
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Protocol convergence & standards' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Coordination & communication' }
             ]
-          },
-          copySection('Multi-Agent Systems', 'Frameworks'),
-          copySection('Multi-Agent Systems', 'Workflow systems'),
-          copySection('Multi-Agent Systems', 'Failure modes at scale')
+          }),
+          syntheticSection('Incentives & mechanism design', [
+            newTopic('Incentive design in agent systems'),
+            newTopic('Game-theoretic interactions'),
+            newTopic('Mechanism design'),
+            newTopic('Auctions & bidding between agents'),
+            newTopic('Voting / quorum protocols'),
+            newTopic('Coalition formation'),
+            newTopic('Market-based coordination'),
+            newTopic('Reward sharing & credit assignment'),
+            newTopic('Trust & reputation systems'),
+            newTopic('Emergent misalignment'),
+            newTopic('Cooperative vs competitive agent incentives')
+          ], {
+            prerequisites: ['Multi-agent architectures', 'Coordination & communication'],
+            sourceRefs: [
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Coordination & communication' }
+            ]
+          }),
+          copySection('Multi-Agent Systems', 'Frameworks', {
+            prerequisites: ['Workflow systems', 'Interoperability & standards']
+          }),
+          copySection('Multi-Agent Systems', 'Failure modes at scale', {
+            prerequisites: ['Coordination & communication', 'Workflow systems', 'Frameworks']
+          })
         ]
       },
       {
@@ -471,133 +712,180 @@
         color: '#888780',
         bg: '#F1EFE8',
         sections: [
-          copySection('Infrastructure & Deployment', 'Model infrastructure'),
-          copySection('Infrastructure & Deployment', 'Data infrastructure'),
-          copySection('Infrastructure & Deployment', 'Scaling & operations'),
-          copySection('Infrastructure & Deployment', 'System infrastructure'),
-          {
-            title: 'Agent runtime & execution',
-            topics: [
-              newTopic('Agent runtime environments'),
-              newTopic('Execution sandboxes as architecture'),
-              newTopic('State persistence models'),
-              newTopic('Deterministic vs non-deterministic execution'),
-              newTopic('Idempotent task execution'),
-              newTopic('Replayability & resumability'),
-              newTopic('Event logs / task ledgers'),
-              newTopic('Ephemeral vs persistent workers'),
-              newTopic('Stateful vs stateless agents'),
-              newTopic('Isolation boundaries for agents'),
-              newTopic('Checkpointing & recovery'),
-              newTopic('Configuration versioning for prompts, tools, and models')
-            ],
+          copySection('Infrastructure & Deployment', 'Model infrastructure', {
+            prerequisites: ['Model families', 'Inference optimization']
+          }),
+          copySection('Infrastructure & Deployment', 'Data infrastructure', {
+            prerequisites: ['Knowledge stores', 'Retrieval techniques']
+          }),
+          syntheticSection('Agent runtime & execution', [
+            newTopic('Agent runtime environments'),
+            newTopic('Execution sandboxes as architecture'),
+            newTopic('State persistence models'),
+            newTopic('Deterministic vs non-deterministic execution'),
+            newTopic('Idempotent task execution'),
+            newTopic('Replayability and resumability'),
+            newTopic('Event logs / task ledgers'),
+            newTopic('Ephemeral vs persistent workers'),
+            newTopic('Stateful vs stateless agents'),
+            newTopic('Isolation boundaries for agents'),
+            newTopic('Checkpointing & recovery'),
+            newTopic('Configuration versioning for prompts, tools, and models'),
+            newTopic('Long-running agent processes'),
+            newTopic('Durable execution (Temporal, Inngest)')
+          ], {
+            prerequisites: ['Agent architectures', 'Tool interfaces', 'Workflow systems'],
             sourceRefs: [
-              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'System infrastructure', synthetic: true },
-              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems', synthetic: true }
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'System infrastructure' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems' }
             ]
-          },
-          copySection('Infrastructure & Deployment', 'Deployment patterns'),
-          {
-            title: 'Training & adaptation',
-            topics: dedupeTopics([
-              ...copyTopics('Reasoning & Intelligence', 'Training paradigms for agents'),
-              ...copyTopics('Infrastructure & Deployment', 'Learning & adaptation')
-            ]),
+          }),
+          copySection('Infrastructure & Deployment', 'System infrastructure', {
+            prerequisites: ['Agent runtime & execution']
+          }),
+          copySection('Infrastructure & Deployment', 'Scaling & operations', {
+            prerequisites: ['System infrastructure', 'Agent runtime & execution']
+          }),
+          copySection('Infrastructure & Deployment', 'Deployment patterns', {
+            prerequisites: ['Scaling & operations']
+          }),
+          syntheticSection('Training & adaptation', dedupeTopics([
+            ...copyTopics('Reasoning & Intelligence', 'Training paradigms for agents'),
+            ...copyTopics('Infrastructure & Deployment', 'Learning & adaptation')
+          ]), {
+            prerequisites: ['Model lifecycle & training fundamentals', 'Agent runtime & execution'],
             sourceRefs: [
-              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Training paradigms for agents', synthetic: true },
-              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Learning & adaptation', synthetic: true }
+              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Training paradigms for agents' },
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Learning & adaptation' }
             ]
-          },
-          copySection('Infrastructure & Deployment', 'Synthetic data for agents'),
-          copySection('Infrastructure & Deployment', 'Agent FinOps & cost economics')
+          }),
+          copySection('Infrastructure & Deployment', 'Synthetic data for agents', {
+            prerequisites: ['Training & adaptation']
+          }),
+          copySection('Infrastructure & Deployment', 'Agent FinOps & cost economics', {
+            prerequisites: ['Model infrastructure', 'Agent runtime & execution']
+          })
         ]
       },
       {
         id: 8,
-        kind: 'Constraints',
-        scope: 'How systems stay bounded',
-        title: 'Safety, Security & Governance',
-        color: '#E24B4A',
-        bg: '#FCEBEB',
-        sections: [
-          {
-            title: 'Agent-specific threats',
-            topics: dedupeTopics([
-              ...copyTopics('Safety, Security & Governance', 'Agent-specific threats'),
-              newTopic('Token draining attacks'),
-              newTopic('Cost explosion loops'),
-              newTopic('Tool abuse causing financial damage'),
-              newTopic('Budget exhaustion attacks')
-            ]),
-            sourceRefs: [
-              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Agent-specific threats', synthetic: true }
-            ]
-          },
-          copySection('Safety, Security & Governance', 'Safety mechanisms'),
-          {
-            title: 'Identity, trust & authorization',
-            topics: dedupeTopics([
-              ...copyTopics('Agency & Tool Use', 'Agent identity & authentication'),
-              ...copyTopics('Safety, Security & Governance', 'Governance & compliance', topic => governanceIdentityTopics.includes(topicText(topic)))
-            ]),
-            sourceRefs: [
-              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Agent identity & authentication', synthetic: true },
-              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Governance & compliance', synthetic: true }
-            ]
-          },
-          copySection('Safety, Security & Governance', 'Governance & compliance', {
-            topics: copyTopics('Safety, Security & Governance', 'Governance & compliance', topic => !governanceIdentityTopics.includes(topicText(topic)))
-          }),
-          copySection('Safety, Security & Governance', 'Alignment'),
-          copySection('Safety, Security & Governance', 'Privacy & data protection')
-        ]
-      },
-      {
-        id: 9,
         kind: 'Measurement',
         scope: 'How systems are measured',
         title: 'Evaluation & Observability',
         color: '#639922',
         bg: '#EAF3DE',
         sections: [
-          copySection('Evaluation, Observability & Applications', 'Evaluation'),
-          {
-            title: 'Specification vs emergence gap',
-            topics: [
-              newTopic('Measuring unintended behaviors'),
-              newTopic('Alignment drift over time'),
-              newTopic('Goal misgeneralization'),
-              newTopic('Emergent strategy detection'),
-              newTopic('Specification gaming'),
-              newTopic('Behavioral drift across model updates'),
-              newTopic('Long-horizon failure detection'),
-              newTopic('Distribution-shift robustness'),
-              newTopic('Human expectation mismatch'),
-              newTopic('Objective compliance vs apparent success')
-            ],
+          copySection('Evaluation, Observability & Applications', 'Evaluation', {
+            prerequisites: ['Agent architectures', 'Tool interfaces', 'Agent runtime & execution'],
+            topics: dedupeTopics([
+              newTopic('Offline evals vs online evals'),
+              newTopic('Unit, component, workflow, and system-level evals'),
+              newTopic('Golden datasets and reference traces'),
+              newTopic('LLM-as-judge caveats'),
+              ...copyTopics('Evaluation, Observability & Applications', 'Evaluation'),
+              newTopic('Acceptance thresholds and operational SLAs')
+            ])
+          }),
+          copySection('Evaluation, Observability & Applications', 'Observability', {
+            prerequisites: ['Evaluation', 'Agent runtime & execution']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Debugging & testing', {
+            prerequisites: ['Evaluation', 'Observability']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Performance engineering', {
+            prerequisites: ['Observability', 'Debugging & testing']
+          }),
+          syntheticSection('Specification vs emergence gap', [
+            newTopic('Measuring unintended behaviors'),
+            newTopic('Alignment drift over time'),
+            newTopic('Goal misgeneralization'),
+            newTopic('Emergent strategy detection'),
+            newTopic('Specification gaming'),
+            newTopic('Behavioral drift across model updates'),
+            newTopic('Long-horizon failure detection'),
+            newTopic('Distribution-shift robustness'),
+            newTopic('Human expectation mismatch'),
+            newTopic('Objective compliance vs apparent success')
+          ], {
+            prerequisites: ['Evaluation', 'Observability'],
             sourceRefs: [
-              { layerTitle: 'Evaluation, Observability & Applications', sectionTitle: 'Evaluation', synthetic: true },
-              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Alignment', synthetic: true }
+              { layerTitle: 'Evaluation, Observability & Applications', sectionTitle: 'Evaluation' },
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Alignment' }
             ]
-          },
-          copySection('Evaluation, Observability & Applications', 'Observability'),
-          copySection('Evaluation, Observability & Applications', 'Debugging & testing'),
-          copySection('Evaluation, Observability & Applications', 'Performance engineering')
+          })
         ]
       },
       {
-        id: 10,
+        id: 9,
         kind: 'Use Cases',
         scope: 'Where agent systems create value',
         title: 'Applications & Domains',
         color: '#2E8E73',
         bg: '#E7F6F1',
         sections: [
-          copySection('Evaluation, Observability & Applications', 'Developer & engineering agents'),
-          copySection('Evaluation, Observability & Applications', 'Enterprise & business agents'),
-          copySection('Evaluation, Observability & Applications', 'Research & domain agents'),
-          copySection('Evaluation, Observability & Applications', 'Consumer & personal agents'),
-          copySection('Evaluation, Observability & Applications', 'Physical AI & embodied agents')
+          copySection('Evaluation, Observability & Applications', 'Developer & engineering agents', {
+            prerequisites: ['Agent design patterns', 'Evaluation']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Enterprise & business agents', {
+            prerequisites: ['Workflow systems', 'Evaluation']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Research & domain agents', {
+            prerequisites: ['Evaluation']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Consumer & personal agents', {
+            prerequisites: ['Multimodal & vision models', 'Evaluation']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Physical AI & embodied agents', {
+            prerequisites: ['Multimodal & vision models', 'Action tools', 'Evaluation']
+          }),
+          copySection('Evaluation, Observability & Applications', 'Human-agent teaming', {
+            prerequisites: ['Evaluation', 'Interaction patterns & autonomy']
+          })
+        ]
+      },
+      {
+        id: 10,
+        kind: 'Constraints',
+        scope: 'How systems stay bounded after the implementation picture is clear',
+        title: 'Safety, Security & Governance',
+        color: '#E24B4A',
+        bg: '#FCEBEB',
+        sections: [
+          syntheticSection('Agent-specific threats', dedupeTopics([
+            ...copyTopics('Safety, Security & Governance', 'Agent-specific threats'),
+            newTopic('Token draining attacks'),
+            newTopic('Cost explosion loops'),
+            newTopic('Tool abuse causing financial damage'),
+            newTopic('Budget exhaustion attacks')
+          ]), {
+            prerequisites: ['Tool interfaces', 'Agent runtime & execution', 'Multi-agent architectures'],
+            sourceRefs: [
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Agent-specific threats' }
+            ]
+          }),
+          copySection('Safety, Security & Governance', 'Safety mechanisms', {
+            prerequisites: ['Agent-specific threats', 'Control & validation']
+          }),
+          syntheticSection('Identity, trust & authorization', dedupeTopics([
+            ...copyTopics('Agency & Tool Use', 'Agent identity & authentication'),
+            ...copyTopics('Safety, Security & Governance', 'Governance & compliance', topic => governanceIdentityTopics.includes(topicText(topic)))
+          ]), {
+            prerequisites: ['Safety mechanisms', 'Interoperability & standards'],
+            sourceRefs: [
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Agent identity & authentication' },
+              { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Governance & compliance' }
+            ]
+          }),
+          copySection('Safety, Security & Governance', 'Alignment', {
+            prerequisites: ['Evaluation', 'Specification vs emergence gap']
+          }),
+          copySection('Safety, Security & Governance', 'Privacy & data protection', {
+            prerequisites: ['Memory taxonomy', 'Knowledge stores', 'Safety mechanisms']
+          }),
+          copySection('Safety, Security & Governance', 'Governance & compliance', {
+            prerequisites: ['Safety mechanisms', 'Identity, trust & authorization', 'Alignment', 'Privacy & data protection'],
+            topics: copyTopics('Safety, Security & Governance', 'Governance & compliance', topic => !governanceIdentityTopics.includes(topicText(topic)))
+          })
         ]
       }
     ];
@@ -631,24 +919,36 @@
       ...layer,
       layerIndex,
       anchorId: `l-${layerIndex}`,
-      sections: layer.sections.map((section, sectionIndex) => ({
-        ...section,
-        sectionIndex,
-        anchorId: `sec-${layerIndex}-${sectionIndex}`,
-        sourceRefs: (section.sourceRefs || []).map(ref => ({ ...ref })),
-        topics: section.topics.map((topic, topicIndex) => {
-          const normalized = cloneTopic(topic);
-          const id = createTopicId(layer, section, normalized, layerIndex, sectionIndex, topicIndex);
-          return {
-            ...normalized,
-            id,
-            anchorId: `topic-${id}`,
-            layerIndex,
-            sectionIndex,
-            topicIndex
-          };
-        })
-      }))
+      sections: layer.sections.map((section, sectionIndex) => {
+        const sectionPrerequisites = dedupeStrings(section.prerequisites || []);
+
+        return {
+          ...section,
+          prerequisites: sectionPrerequisites,
+          sectionIndex,
+          anchorId: `sec-${layerIndex}-${sectionIndex}`,
+          sourceRefs: (section.sourceRefs || []).map(ref => ({ ...ref })),
+          topics: section.topics.map((topic, topicIndex) => {
+            const normalized = cloneTopic(topic);
+            const id = createTopicId(layer, section, normalized, layerIndex, sectionIndex, topicIndex);
+            const prerequisites = dedupeStrings([
+              ...sectionPrerequisites,
+              ...(normalized.prerequisites || []),
+              ...section.topics.slice(Math.max(0, topicIndex - 2), topicIndex).map(topicText)
+            ]).filter(prerequisite => prerequisite !== normalized.text).slice(0, 4);
+
+            return {
+              ...normalized,
+              prerequisites,
+              id,
+              anchorId: `topic-${id}`,
+              layerIndex,
+              sectionIndex,
+              topicIndex
+            };
+          })
+        };
+      })
     }));
   }
 
@@ -811,6 +1111,7 @@
 
   const topicEntries = [];
   const topicEntryMap = new Map();
+  const topicEntryTextMap = new Map();
   const sectionEntryMap = new Map();
 
   data.forEach((layer, layerIndex) => {
@@ -830,6 +1131,9 @@
         };
         topicEntries.push(entry);
         topicEntryMap.set(entry.id, entry);
+        if (!topicEntryTextMap.has(entry.text)) {
+          topicEntryTextMap.set(entry.text, entry);
+        }
         return entry;
       });
       sectionEntryMap.set(key, entries);
@@ -862,6 +1166,10 @@
     return topicEntryMap.get(topicId) || null;
   }
 
+  function getTopicEntryByText(text) {
+    return topicEntryTextMap.get(text) || null;
+  }
+
   function getTopicHref(topicId) {
     return `topic.html?topic=${encodeURIComponent(topicId)}`;
   }
@@ -879,12 +1187,34 @@
       .replace(/'/g, '&#39;');
   }
 
+  function getRenderablePrerequisites(prerequisites = []) {
+    return dedupeStrings(prerequisites).slice(0, 4).map(text => {
+      const entry = getTopicEntryByText(text);
+      return {
+        text,
+        href: entry ? getTopicHref(entry.id) : null,
+        topicId: entry ? entry.id : null
+      };
+    });
+  }
+
   function getRenderableTopic(topic) {
     if (typeof topic === 'string') {
-      return { text: topic, isNew: false, href: null, anchorId: null, current: false, topicId: null, status: 'default' };
+      return {
+        text: topic,
+        isNew: false,
+        href: null,
+        anchorId: null,
+        current: false,
+        topicId: null,
+        status: 'default',
+        prerequisites: [],
+        prerequisiteNote: ''
+      };
     }
 
     const topicId = topic.id || topic.topicId || null;
+    const prerequisites = getRenderablePrerequisites(topic.prerequisites || []);
     return {
       text: topic.text,
       isNew: !!topic.isNew,
@@ -892,15 +1222,34 @@
       anchorId: topic.anchorId || (topic.id ? `topic-${topic.id}` : null),
       current: !!topic.current,
       topicId,
-      status: topicId ? getTopicStatus(topicId) : 'default'
+      status: topicId ? getTopicStatus(topicId) : 'default',
+      prerequisites,
+      prerequisiteNote: topicId && !prerequisites.length ? 'Entry point for this section' : ''
     };
+  }
+
+  function setLayerOpenState(layerEl, isOpen) {
+    layerEl.classList.toggle('open', isOpen);
+    const control = layerEl.querySelector('.l-h');
+    if (control) {
+      control.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+  }
+
+  function setSectionOpenState(sectionEl, isOpen) {
+    sectionEl.classList.toggle('open', isOpen);
+    const control = sectionEl.querySelector('.sec-h');
+    if (control) {
+      control.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
   }
 
   function renderLayerTree(root, layers, options = {}) {
     root.innerHTML = '';
 
-    layers.forEach(layer => {
+    layers.forEach((layer, layerIndex) => {
       const totalTopics = layer.sections.reduce((count, section) => count + section.topics.length, 0);
+      const shouldDefaultOpenLayer = options.openAll || layerIndex === 0;
       const layerEl = document.createElement('div');
       layerEl.className = 'l';
       layerEl.id = layer.anchorId || `l-${layer.id}`;
@@ -910,15 +1259,17 @@
       layerEl.dataset.layerTitle = (layer.title || '').toLowerCase();
       layerEl.dataset.layerScope = (layer.scope || '').toLowerCase();
       layerEl.dataset.layerKind = (layer.kind || '').toLowerCase();
-      layerEl.dataset.defaultOpen = options.openAll ? 'true' : 'false';
+      layerEl.dataset.defaultOpen = shouldDefaultOpenLayer ? 'true' : 'false';
 
-      if (options.openAll) {
-        layerEl.classList.add('open');
+      if (shouldDefaultOpenLayer) {
+        setLayerOpenState(layerEl, true);
       }
 
-      const layerHeader = document.createElement('div');
+      const layerHeader = document.createElement('button');
+      layerHeader.type = 'button';
       layerHeader.className = 'l-h';
-      layerHeader.innerHTML = `<div class="l-accent" style="background:${escapeHtml(layer.color || '#111')}"></div>
+      layerHeader.setAttribute('aria-expanded', shouldDefaultOpenLayer ? 'true' : 'false');
+      layerHeader.innerHTML = `<span class="l-accent" style="background:${escapeHtml(layer.color || '#111')}"></span>
         <span class="l-n">${escapeHtml(String(layer.id).padStart(2, '0'))}</span>
         <span class="l-copy">
           <span class="l-k">${escapeHtml(layer.kind || 'Layer')}</span>
@@ -928,68 +1279,71 @@
         <span class="l-meta">${escapeHtml(String(layer.sections.length))} sec · ${escapeHtml(String(totalTopics))} topics</span>
         <span class="l-arrow">▶</span>`;
       layerHeader.addEventListener('click', () => {
-        layerEl.classList.toggle('open');
+        setLayerOpenState(layerEl, !layerEl.classList.contains('open'));
       });
       layerEl.appendChild(layerHeader);
 
       const layerBody = document.createElement('div');
       layerBody.className = 'l-b';
+      layerBody.id = `${layerEl.id}-body`;
+      layerHeader.setAttribute('aria-controls', layerBody.id);
       const layerInner = document.createElement('div');
       layerInner.className = 'l-inner';
 
-      layer.sections.forEach(section => {
+      layer.sections.forEach((section, sectionIndex) => {
+        const shouldDefaultOpenSection = options.openAll || layerIndex === 0;
         const sectionEl = document.createElement('div');
         sectionEl.className = 'sec';
         sectionEl.id = section.anchorId;
         sectionEl.dataset.sectionTitle = (section.title || '').toLowerCase();
-        sectionEl.dataset.defaultOpen = options.openAll ? 'true' : 'false';
+        sectionEl.dataset.defaultOpen = shouldDefaultOpenSection ? 'true' : 'false';
 
-        if (options.openAll) {
-          sectionEl.classList.add('open');
+        if (shouldDefaultOpenSection) {
+          setSectionOpenState(sectionEl, true);
         }
 
-        const sectionHeader = document.createElement('div');
+        const sectionHeader = document.createElement('button');
+        sectionHeader.type = 'button';
         sectionHeader.className = 'sec-h';
+        sectionHeader.setAttribute('aria-expanded', shouldDefaultOpenSection ? 'true' : 'false');
         sectionHeader.innerHTML = `<span class="sec-arrow">▶</span>
           <span class="sec-t">${escapeHtml(section.title || '')}</span>
           <span class="sec-c">${escapeHtml(String(section.topics.length))}</span>`;
         sectionHeader.addEventListener('click', event => {
           event.stopPropagation();
-          sectionEl.classList.toggle('open');
+          setSectionOpenState(sectionEl, !sectionEl.classList.contains('open'));
         });
         sectionEl.appendChild(sectionHeader);
 
         const sectionBody = document.createElement('div');
         sectionBody.className = 'sec-b';
+        sectionBody.id = `${section.anchorId}-body`;
+        sectionHeader.setAttribute('aria-controls', sectionBody.id);
         const sectionInner = document.createElement('div');
         sectionInner.className = 'sec-inner';
         const topicsEl = document.createElement('div');
         topicsEl.className = 'topics';
 
-        section.topics.forEach((topic, topicIndex) => {
-          if (topicIndex > 0) {
-            const sep = document.createElement('span');
-            sep.className = 't-sep';
-            sep.textContent = '·';
-            topicsEl.appendChild(sep);
-          }
-
+        section.topics.forEach(topic => {
           const renderable = getRenderableTopic(topic);
-          const wrapper = document.createElement('span');
+          const wrapper = document.createElement('div');
           wrapper.className = 'topic-token';
           wrapper.dataset.text = renderable.text.toLowerCase();
+          wrapper.dataset.prereqs = renderable.prerequisites.map(item => item.text.toLowerCase()).join(' ');
           wrapper.dataset.status = renderable.status;
           if (renderable.topicId) {
             wrapper.dataset.topicId = renderable.topicId;
           }
+          if (options.anchorIds && renderable.anchorId) {
+            wrapper.id = renderable.anchorId;
+          }
 
+          const head = document.createElement('div');
+          head.className = 'topic-head';
           const node = renderable.href ? document.createElement('a') : document.createElement('span');
           node.className = `${renderable.isNew ? 't-new' : 't'}${renderable.href ? ' t-link' : ''}${renderable.current ? ' t-current' : ''}`;
           if (renderable.href) {
             node.href = renderable.href;
-          }
-          if (options.anchorIds && renderable.anchorId) {
-            wrapper.id = renderable.anchorId;
           }
 
           if (renderable.isNew) {
@@ -1001,7 +1355,7 @@
             node.textContent = renderable.text;
           }
 
-          wrapper.appendChild(node);
+          head.appendChild(node);
 
           if (renderable.topicId && options.showStatusControls !== false) {
             const button = document.createElement('button');
@@ -1014,7 +1368,38 @@
               event.stopPropagation();
               cycleTopicStatus(renderable.topicId);
             });
-            wrapper.appendChild(button);
+            head.appendChild(button);
+          }
+
+          wrapper.appendChild(head);
+
+          if (options.showPrerequisites !== false && (renderable.prerequisites.length || renderable.prerequisiteNote)) {
+            const prerequisites = document.createElement('div');
+            prerequisites.className = 'topic-prereqs';
+
+            const label = document.createElement('span');
+            label.className = 'topic-prereq-label';
+            label.textContent = 'Prereqs';
+            prerequisites.appendChild(label);
+
+            if (renderable.prerequisites.length) {
+              renderable.prerequisites.forEach(item => {
+                const prerequisiteNode = item.href ? document.createElement('a') : document.createElement('span');
+                prerequisiteNode.className = item.href ? 'topic-prereq topic-prereq-link' : 'topic-prereq';
+                prerequisiteNode.textContent = item.text;
+                if (item.href) {
+                  prerequisiteNode.href = item.href;
+                }
+                prerequisites.appendChild(prerequisiteNode);
+              });
+            } else if (renderable.prerequisiteNote) {
+              const note = document.createElement('span');
+              note.className = 'topic-prereq-empty';
+              note.textContent = renderable.prerequisiteNote;
+              prerequisites.appendChild(note);
+            }
+
+            wrapper.appendChild(prerequisites);
           }
 
           topicsEl.appendChild(wrapper);
@@ -1050,25 +1435,19 @@
 
         sectionEl.querySelectorAll('.topic-token').forEach(topicEl => {
           const text = topicEl.dataset.text || '';
-          const hit = !value || titleHit || text.includes(value);
+          const prereqs = topicEl.dataset.prereqs || '';
+          const hit = !value || titleHit || text.includes(value) || prereqs.includes(value);
           topicEl.classList.toggle('faded', !hit && !!value);
           if (hit) {
             sectionHit = true;
           }
         });
 
-        sectionEl.querySelectorAll('.t-sep').forEach(sep => {
-          const prev = sep.previousElementSibling;
-          const next = sep.nextElementSibling;
-          const show = !value || (prev && !prev.classList.contains('faded')) || (next && !next.classList.contains('faded'));
-          sep.classList.toggle('faded', !show && !!value);
-        });
-
         sectionEl.classList.toggle('faded', !sectionHit && !!value);
         if (value) {
-          sectionEl.classList.toggle('open', sectionHit);
+          setSectionOpenState(sectionEl, sectionHit);
         } else {
-          sectionEl.classList.toggle('open', sectionEl.dataset.defaultOpen === 'true');
+          setSectionOpenState(sectionEl, sectionEl.dataset.defaultOpen === 'true');
         }
 
         if (sectionHit) {
@@ -1078,9 +1457,9 @@
 
       layerEl.classList.toggle('faded', !layerHit && !!value);
       if (value) {
-        layerEl.classList.toggle('open', layerHit);
+        setLayerOpenState(layerEl, layerHit);
       } else {
-        layerEl.classList.toggle('open', layerEl.dataset.defaultOpen === 'true');
+        setLayerOpenState(layerEl, layerEl.dataset.defaultOpen === 'true');
       }
     });
   }
@@ -1098,10 +1477,10 @@
     const section = target.closest('.sec');
     const layer = target.closest('.l');
     if (layer) {
-      layer.classList.add('open');
+      setLayerOpenState(layer, true);
     }
     if (section) {
-      section.classList.add('open');
+      setSectionOpenState(section, true);
     }
 
     target.scrollIntoView({ block: 'center' });
@@ -1141,9 +1520,15 @@
 
       layer.sections.forEach(section => {
         md += `### ${section.title}\n\n`;
+        if (section.prerequisites && section.prerequisites.length) {
+          md += `> Prerequisites: ${section.prerequisites.join(' · ')}\n\n`;
+        }
         section.topics.forEach(topic => {
           const renderable = getRenderableTopic(topic);
           md += `- ${renderable.text}${renderable.isNew ? ' *(new)*' : ''}\n`;
+          if (renderable.prerequisites.length) {
+            md += `  - Prerequisites: ${renderable.prerequisites.map(item => item.text).join(' · ')}\n`;
+          }
         });
         md += '\n';
       });
@@ -1166,7 +1551,7 @@
       return;
     }
 
-    const noteText = options.noteText || 'Click the small square beside any topic to cycle its learning status.';
+    const noteText = options.noteText || 'Click the status marker beside any topic to cycle its learning status.';
     const counts = getTopicStatusCounts(options.topicIds || allTopicIds);
     container.innerHTML = '';
 
@@ -1290,6 +1675,7 @@
       isNew: entry.isNew,
       href: getTopicHref(entry.id),
       topicId: entry.id,
+      prerequisites: entry.topic.prerequisites || [],
       current: !!options.current
     };
   }
@@ -1438,6 +1824,10 @@
       return null;
     }
 
+    const prerequisiteTopics = dedupeStrings(entry.topic.prerequisites || []).map(text => {
+      const prerequisiteEntry = getTopicEntryByText(text);
+      return prerequisiteEntry ? entryTopic(prerequisiteEntry, { path: true }) : text;
+    });
     const siblings = getSectionEntries(entry.layerIndex, entry.sectionIndex).filter(item => item.id !== entry.id);
     const learnFirst = getPreviousContextEntries(entry, 8);
     const learnNext = getNextContextEntries(entry, 8);
@@ -1447,7 +1837,7 @@
 
     const practiceLinks = uniqueEntries([
       ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Evaluation & Observability'] }),
-      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Infrastructure & Runtime', 'Action & Tool Use'] }),
+      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Infrastructure & Runtime', 'Agency & Tool Use'] }),
       ...getRelatedEntries(entry, { limit: 4, minScore: 2, layerTitles: ['Safety, Security & Governance'] }),
       ...pickEntriesByRefs([
         { layerTitle: 'Evaluation & Observability', sectionTitles: ['Evaluation', 'Performance engineering'] },
@@ -1457,9 +1847,9 @@
     ]).filter(item => item.id !== entry.id).slice(0, 10);
 
     const operationalLinks = uniqueEntries([
-      ...getRelatedEntries(entry, { limit: 8, minScore: 2, layerTitles: ['Action & Tool Use', 'Infrastructure & Runtime', 'Applications & Domains'] }),
+      ...getRelatedEntries(entry, { limit: 8, minScore: 2, layerTitles: ['Agency & Tool Use', 'Infrastructure & Runtime', 'Applications & Domains'] }),
       ...pickEntriesByRefs([
-        { layerTitle: 'Action & Tool Use', sectionTitles: ['Tool interfaces', 'Information tools', 'Action tools'] },
+        { layerTitle: 'Agency & Tool Use', sectionTitles: ['Tool interfaces', 'Information tools', 'Action tools'] },
         { layerTitle: 'Infrastructure & Runtime', sectionTitles: ['Model infrastructure', 'System infrastructure'] },
         { layerTitle: 'Applications & Domains', sectionTitles: ['Developer & engineering agents', 'Enterprise & business agents'] }
       ], 10, 2)
@@ -1512,6 +1902,12 @@
       color: '#378ADD',
       bg: '#E6F1FB',
       sections: [
+        {
+          title: 'Prerequisites',
+          topics: prerequisiteTopics.length
+            ? prerequisiteTopics
+            : ['This topic opens a section or starts a new branch of the syllabus']
+        },
         {
           title: 'Study first',
           topics: learnFirst.length
@@ -1592,6 +1988,7 @@
       heroCards: [
         { label: 'Primary path', value: `${entry.layer.title} / ${entry.section.title}` },
         { label: 'Section position', value: `${entry.topicIndex + 1} of ${entry.section.topics.length}` },
+        { label: 'Prerequisites', value: prerequisiteTopics.length ? `${prerequisiteTopics.length} mapped` : 'Section entry point' },
         { label: 'Occurrences', value: `${exactStructuredMatches.length + 1} structured · ${rawMatches.length} raw` },
         { label: 'Connected topics', value: `${crossLayerConnections.length + siblings.length} mapped links` }
       ]
