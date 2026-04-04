@@ -1,298 +1,903 @@
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.wrap{padding:16px 0;max-width:680px}
-.search-bar{width:100%;padding:10px 14px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);color:var(--color-text-primary);font-size:14px;margin-bottom:16px;outline:none}
-.search-bar:focus{border-color:var(--color-border-primary)}
-.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary)}
-.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.layer{margin-bottom:12px;border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
-.layer-header{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;background:var(--color-background-secondary)}
-.layer-header:hover{background:var(--color-background-tertiary)}
-.layer-num{font-size:11px;font-weight:500;padding:2px 7px;border-radius:20px}
-.layer-title{font-size:15px;font-weight:500;color:var(--color-text-primary);flex:1}
-.layer-count{font-size:12px;color:var(--color-text-tertiary)}
-.caret{font-size:12px;color:var(--color-text-tertiary);transition:transform 0.2s}
-.caret.open{transform:rotate(90deg)}
-.layer-body{display:none;padding:12px 16px;gap:8px;flex-wrap:wrap}
-.layer-body.open{display:flex}
-.section{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;min-width:160px;flex:1;cursor:pointer;transition:border-color 0.15s}
-.section:hover{border-color:var(--color-border-primary)}
-.section-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
-.section-count{font-size:11px;color:var(--color-text-tertiary)}
-.badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
-.badge.new{background:#EAF3DE;color:#3B6D11}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
-.modal-bg.open{display:flex}
-.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);width:100%;max-width:560px;padding:24px;position:relative;border:1px solid var(--color-border-secondary)}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--color-text-secondary)}
-.modal-title{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
-.modal-layer{font-size:12px;color:var(--color-text-tertiary);margin-bottom:16px}
-.topic-list{list-style:none}
-.topic-list li{font-size:13px;color:var(--color-text-secondary);padding:4px 0;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:center;gap:6px}
-.topic-list li:last-child{border-bottom:none}
-.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.gap-tag{font-size:10px;color:#3B6D11;background:#EAF3DE;padding:1px 6px;border-radius:10px;margin-left:auto}
-.hidden{display:none}
-.stats{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
-.stat{text-align:center}
-.stat-num{font-size:22px;font-weight:500;color:var(--color-text-primary)}
-.stat-label{font-size:11px;color:var(--color-text-tertiary)}
-</style>
-<div class="wrap">
-<div class="stats">
-  <div class="stat"><div class="stat-num">8</div><div class="stat-label">layers</div></div>
-  <div class="stat"><div class="stat-num">40</div><div class="stat-label">sections</div></div>
-  <div class="stat"><div class="stat-num">200+</div><div class="stat-label">topics</div></div>
-  <div class="stat"><div class="stat-num">12</div><div class="stat-label">new additions</div></div>
-</div>
-<input class="search-bar" placeholder="Search topics..." oninput="filterTopics(this.value)" />
-<div class="legend">
-  <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Foundation</div>
-  <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Intelligence</div>
-  <div class="leg"><div class="leg-dot" style="background:#378ADD"></div>Memory & Knowledge</div>
-  <div class="leg"><div class="leg-dot" style="background:#EF9F27"></div>Agency & Tools</div>
-  <div class="leg"><div class="leg-dot" style="background:#D4537E"></div>Multi-Agent</div>
-  <div class="leg"><div class="leg-dot" style="background:#888780"></div>Infrastructure</div>
-  <div class="leg"><div class="leg-dot" style="background:#E24B4A"></div>Safety & Governance</div>
-  <div class="leg"><div class="leg-dot" style="background:#639922"></div>Production</div>
-</div>
-<div id="layers"></div>
-</div>
-
-<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
-<div class="modal" id="modal">
-  <button class="modal-close" onclick="closeModal(null)">✕</button>
-  <div class="modal-title" id="modal-title"></div>
-  <div class="modal-layer" id="modal-layer"></div>
-  <ul class="topic-list" id="modal-topics"></ul>
-</div>
-</div>
-
-<script>
-const data = [
-  {
-    id:1, title:"Foundation Models", color:"#7F77DD", bg:"#EEEDFE",
-    sections:[
-      {title:"Transformer architecture", topics:[
-        "Attention mechanisms","Multi-head attention","Positional encoding","Feed-forward layers","Layer normalization","Residual connections","Tokenization","Byte-pair encoding (BPE)","Context windows","KV cache","Speculative decoding","Mixture of Experts (MoE)"
-      ]},
-      {title:"Model families", topics:[
-        "GPT-style (decoder-only)","BERT-style (encoder-only)","T5-style (encoder-decoder)","Multimodal models (LMM/VLM)","Small language models (SLM)","Open-source vs proprietary","Model cards & documentation"
-      ]},
-      {title:"Prompt engineering", topics:[
-        "Zero-shot prompting","Few-shot prompting","Instruction tuning","System vs user prompts","Prompt templates","Meta-prompting","Prompt chaining","Automatic prompt optimization","Prompt compression"
-      ]}
-    ]
-  },
-  {
-    id:2, title:"Reasoning & Intelligence", color:"#1D9E75", bg:"#E1F5EE",
-    sections:[
-      {title:"Reasoning paradigms", topics:[
-        "Chain-of-Thought (CoT)","ReAct (Reason+Act)","Tree-of-Thought (ToT)","Graph-of-Thought (GoT)","Program-of-Thought (PoT)","Self-consistency","Debate reasoning","Skeleton-of-Thought","Chain-of-Emotion"
-      ]},
-      {title:"Reflection & self-improvement", topics:[
-        "Reflection loops","Self-critique","Self-evaluation","Iterative refinement","Constitutional AI","Self-play","Online learning from feedback"
-      ]},
-      {title:"Agent architectures", topics:[
-        "ReAct agents","Plan-and-Execute agents","Reflection agents","Autonomous agents (AutoGPT-style)","Tool-using agents","Generalist agents","Subagent patterns","Mixture-of-Agents (MoA)","World models",{text:"Skeleton planner",isNew:true}
-      ]},
-      {title:"Planning & control", topics:[
-        "Task decomposition","Hierarchical planning","Agent loop design","Rule-based controllers","LLM-based controllers","Execution engines","Retry & backoff strategies","Failure handling","Goal prioritization","Constraint satisfaction"
-      ]}
-    ]
-  },
-  {
-    id:3, title:"Memory & Knowledge", color:"#378ADD", bg:"#E6F1FB",
-    sections:[
-      {title:"Memory taxonomy", topics:[
-        "In-context (working) memory","External / long-term memory","Episodic memory","Semantic memory","Procedural memory","Memory compression","Memory versioning","Memory pruning"
-      ]},
-      {title:"Retrieval & RAG", topics:[
-        "Vector search (ANN / HNSW)","Hybrid search","Keyword search (BM25)","Embeddings","Chunking strategies","Sliding window chunking","Document hierarchies","Reranking","Cohere Rerank / cross-encoders","Query rewriting","Query expansion","Multi-hop RAG","Agentic RAG","Corrective RAG (CRAG)","Self-RAG",{text:"GraphRAG",isNew:true}
-      ]},
-      {title:"Knowledge stores", topics:[
-        "Vector databases (Pinecone, Weaviate, Qdrant)","Knowledge graphs","Relational DBs","Document stores","Conversation history","Episodic logs"
-      ]},
-      {title:"Knowledge quality", topics:[
-        "Hallucination detection","Grounding techniques","Freshness & staleness","Data pipelines & ingestion","Source attribution","Confidence scoring",{text:"Fact-checking agents",isNew:true}
-      ]}
-    ]
-  },
-  {
-    id:4, title:"Agency & Tool Use", color:"#EF9F27", bg:"#FAEEDA",
-    sections:[
-      {title:"Tool interfaces", topics:[
-        "Function calling","Tool schema design (OpenAI / Anthropic style)","Tool selection logic","Tool chaining","Tool error handling","Parallel tool calls","Tool result handling"
-      ]},
-      {title:"Information tools", topics:[
-        "Web search","Web scraping","APIs & REST","File ingestion (PDF, CSV, DOCX)","Code interpreters","Database queries"
-      ]},
-      {title:"Action tools", topics:[
-        "Code execution (sandboxed)","File system operations","Shell / CLI automation","Browser automation",{text:"Computer use / GUI agents",isNew:true},"Email & calendar APIs","Form filling"
-      ]},
-      {title:"Meta tooling", topics:[
-        "Tool discovery","Dynamic tool registration","Tool ranking & selection","Tool learning from feedback","MCP (Model Context Protocol)","OpenAI tool schema","A2A protocol",{text:"ACP (Agent Communication Protocol)",isNew:true},"Interoperability standards"
-      ]},
-      {title:"Interaction patterns", topics:[
-        "Tool-calling loops","Human-in-the-loop (HITL)","Conversational agents","Task-oriented agents","Event-driven agents","Streaming agents","Sync vs async","Voice / multimodal I/O"
-      ]}
-    ]
-  },
-  {
-    id:5, title:"Multi-Agent Systems", color:"#D4537E", bg:"#FBEAF0",
-    sections:[
-      {title:"Multi-agent architectures", topics:[
-        "Orchestrator-subagent pattern","Role-based agent teams","Peer-to-peer agents","Hierarchical agent networks","Debate agents","Mixture-of-Agents (MoA)","Puppeteer + specialist pattern",{text:"Governance agents",isNew:true}
-      ]},
-      {title:"Coordination & communication", topics:[
-        "Message passing","Shared state management","Context handoff","Conflict resolution","Task delegation","Emergent behavior","Swarm intelligence","Agent discovery"
-      ]},
-      {title:"Frameworks", topics:[
-        "LangChain / LangGraph","LlamaIndex","AutoGen","CrewAI","OpenAI Agents SDK","Google ADK","PydanticAI","Haystack","Microsoft AutoGen","Dify"
-      ]},
-      {title:"Workflow systems", topics:[
-        "DAG pipelines","State machines","Event-driven orchestration","Async orchestration","Parallel execution","Fan-out / fan-in","Workflow recovery & checkpointing"
-      ]}
-    ]
-  },
-  {
-    id:6, title:"Infrastructure & Deployment", color:"#888780", bg:"#F1EFE8",
-    sections:[
-      {title:"Model infrastructure", topics:[
-        "API providers (OpenAI, Anthropic, Google)","Local inference (Ollama, vLLM, llama.cpp)","Model routing","Model switching","Multi-model ensembles","Token streaming"
-      ]},
-      {title:"Data infrastructure", topics:[
-        "Vector databases","SQL / NoSQL systems","Object storage","Data lakes","Stream processing (Kafka)","Data versioning"
-      ]},
-      {title:"System infrastructure", topics:[
-        "Caching (Redis, semantic cache)","Message queues","Background workers","Rate limiting","Load balancing","API gateways"
-      ]},
-      {title:"Deployment patterns", topics:[
-        "Docker containers","Kubernetes","Serverless agents","Persistent agent processes","Edge vs cloud","Blue-green deployments","Agent registries",{text:"Shadow AI discovery",isNew:true}
-      ]},
-      {title:"Learning & adaptation", topics:[
-        "Fine-tuning (full, PEFT, LoRA, QLoRA)","RLHF","Direct Preference Optimization (DPO)","Continual learning","Online learning","Personalization systems","Feedback loops","Synthetic data generation"
-      ]}
-    ]
-  },
-  {
-    id:7, title:"Safety, Security & Governance", color:"#E24B4A", bg:"#FCEBEB",
-    sections:[
-      {title:"Agent-specific threats", topics:[
-        "Prompt injection","Indirect prompt injection","Goal hijacking","Tool misuse","Identity abuse",{text:"Memory poisoning",isNew:true},{text:"Cascading hallucinations",isNew:true},{text:"Rogue agents",isNew:true},"Supply chain attacks on tools","Data exfiltration via agents"
-      ]},
-      {title:"Safety mechanisms", topics:[
-        "Guardrails","Output validation","Sandboxing","Permission systems (least privilege)","Capability gating","Red teaming","Constitutional AI","Kill switches","Human oversight checkpoints"
-      ]},
-      {title:"Governance & compliance", topics:[
-        {text:"OWASP Agentic AI Top 10",isNew:true},{text:"EU AI Act",isNew:true},{text:"NIST AI RMF",isNew:true},{text:"ISO/IEC 42001",isNew:true},"Agent identity management","Agent registries & inventories","Audit trails","Policy enforcement","Zero-trust for agents","Regulatory mapping"
-      ]},
-      {title:"Alignment", topics:[
-        "Value alignment","Intent detection","Behavioral monitoring","Transparency & explainability","Bias detection","Fairness metrics","Controllability"
-      ]}
-    ]
-  },
-  {
-    id:8, title:"Evaluation, Observability & Applications", color:"#639922", bg:"#EAF3DE",
-    sections:[
-      {title:"Evaluation", topics:[
-        "Automated benchmarks (MMLU, HumanEval, GAIA)","Human evaluation","Task success rate","Hallucination detection","Faithfulness scoring","Relevance scoring","End-to-end agent evals","Multi-turn evals","Adversarial testing","A/B testing agents"
-      ]},
-      {title:"Observability", topics:[
-        "Distributed tracing (LangSmith, Langfuse)","Step-level logging","Cost tracking","Latency monitoring","Token usage dashboards","Agent audit logs"
-      ]},
-      {title:"Debugging & testing", topics:[
-        "Prompt debugging","Tool call debugging",{text:"Deterministic replay",isNew:true},"Failure analysis","Unit tests for agents","Integration tests","Regression testing","Chaos engineering for agents"
-      ]},
-      {title:"Performance engineering", topics:[
-        "Latency optimization","Cost optimization","Semantic caching","Parallel execution","Batching","Model routing (small→large)","Prompt compression","Context pruning"
-      ]},
-      {title:"Applications", topics:[
-        "Coding agents","Research agents","Customer support agents","Data analysis agents","Automation / RPA agents","Personal assistants","Healthcare agents","Legal agents","Financial agents","Scientific discovery agents",{text:"Embodied / robotics agents",isNew:true},{text:"Browser / computer-use agents",isNew:true},"Education agents","Multi-modal agents"
-      ]}
-    ]
-  }
-];
-
-function render(d){
-  const layers = document.getElementById('layers');
-  layers.innerHTML='';
-  d.forEach((layer,li)=>{
-    const el = document.createElement('div');
-    el.className='layer';
-    const totalTopics = layer.sections.reduce((a,s)=>a+s.topics.length,0);
-    el.innerHTML=`
-      <div class="layer-header" onclick="toggleLayer(${li})">
-        <span class="layer-num" style="background:${layer.bg};color:${layer.color}">${layer.id}</span>
-        <span class="layer-title">${layer.title}</span>
-        <span class="layer-count">${layer.sections.length} sections · ${totalTopics} topics</span>
-        <span class="caret" id="caret-${li}">▶</span>
-      </div>
-      <div class="layer-body" id="body-${li}">
-        ${layer.sections.map((s,si)=>{
-          const newCount = s.topics.filter(t=>t&&t.isNew).length;
-          return `<div class="section" onclick="openModal('${layer.title}',${li},${si})" style="border-left:3px solid ${layer.color}">
-            <div class="section-title">${s.title}${newCount?`<span class="badge new">+${newCount} new</span>`:''}</div>
-            <div class="section-count">${s.topics.length} topics</div>
-          </div>`;
-        }).join('')}
-      </div>`;
-    layers.appendChild(el);
-  });
-}
-
-function toggleLayer(i){
-  const body=document.getElementById('body-'+i);
-  const caret=document.getElementById('caret-'+i);
-  const open=body.classList.toggle('open');
-  caret.classList.toggle('open',open);
-}
-
-function openModal(layerTitle,li,si){
-  const layer=data[li];
-  const sec=layer.sections[si];
-  document.getElementById('modal-title').textContent=sec.title;
-  document.getElementById('modal-layer').textContent='Layer '+layer.id+': '+layerTitle;
-  const ul=document.getElementById('modal-topics');
-  ul.innerHTML=sec.topics.map(t=>{
-    const text=t&&t.isNew?t.text:t;
-    const isNew=t&&t.isNew;
-    return `<li><span class="dot" style="background:${layer.color}"></span>${text}${isNew?'<span class="gap-tag">newly added</span>':''}</li>`;
-  }).join('');
-  document.getElementById('modal-bg').classList.add('open');
-}
-
-function closeModal(e){
-  if(!e||e.target===document.getElementById('modal-bg'))
-    document.getElementById('modal-bg').classList.remove('open');
-}
-
-function filterTopics(q){
-  const v=q.toLowerCase();
-  data.forEach((layer,li)=>{
-    let layerMatch=false;
-    layer.sections.forEach((s,si)=>{
-      const titleMatch=s.title.toLowerCase().includes(v);
-      const topicMatch=s.topics.some(t=>(t&&t.isNew?t.text:t).toLowerCase().includes(v));
-      const match=!v||titleMatch||topicMatch||layer.title.toLowerCase().includes(v);
-      const el=document.querySelector(`#body-${li} .section:nth-child(${si+1})`);
-      if(el)el.classList.toggle('hidden',!match);
-      if(match)layerMatch=true;
-    });
-    const layerEl=document.querySelector(`.layer:nth-child(${li+1})`);
-    if(layerEl){
-      layerEl.classList.toggle('hidden',!layerMatch);
-      if(v&&layerMatch){
-        document.getElementById('body-'+li).classList.add('open');
-        document.getElementById('caret-'+li).classList.add('open');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Systems - Complete Syllabus</title>
+  <style>
+    :root {
+      --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f7f8fa;
+      --color-background-tertiary: #eef1f5;
+      --color-border-primary: #a5b4c3;
+      --color-border-secondary: #d5dbe3;
+      --color-border-tertiary: #e5e9ef;
+      --color-text-primary: #17212b;
+      --color-text-secondary: #3f4d5a;
+      --color-text-tertiary: #6b7785;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: #f4f6f8;
+      color: var(--color-text-primary);
+      padding: 0 16px 24px;
+    }
+    .wrap {
+      padding: 16px 0;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border-secondary);
+      border-radius: var(--border-radius-lg);
+      background: var(--color-background-secondary);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    .search-bar:focus {
+      border-color: var(--color-border-primary);
+    }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+    .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .layer {
+      margin-bottom: 12px;
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+    }
+    .layer-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--color-background-secondary);
+    }
+    .layer-header:hover {
+      background: var(--color-background-tertiary);
+    }
+    .layer-num {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+    .layer-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      flex: 1;
+    }
+    .layer-count {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+    }
+    .caret {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      transition: transform 0.2s;
+    }
+    .caret.open {
+      transform: rotate(90deg);
+    }
+    .layer-body {
+      display: none;
+      padding: 12px 16px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .layer-body.open {
+      display: flex;
+    }
+    .section {
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 10px 12px;
+      min-width: 160px;
+      flex: 1;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .section:hover {
+      border-color: var(--color-border-primary);
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+    .section-count {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .badge.new {
+      background: #EAF3DE;
+      color: #3B6D11;
+    }
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 100;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .modal-bg.open {
+      display: flex;
+    }
+    .modal {
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-lg);
+      width: 100%;
+      max-width: 560px;
+      padding: 24px;
+      position: relative;
+      border: 1px solid var(--color-border-secondary);
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+    .modal-layer {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      margin-bottom: 16px;
+    }
+    .topic-list {
+      list-style: none;
+    }
+    .topic-list li {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--color-border-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .topic-list li:last-child {
+      border-bottom: none;
+    }
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .gap-tag {
+      font-size: 10px;
+      color: #3B6D11;
+      background: #EAF3DE;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: auto;
+    }
+    .hidden {
+      display: none;
+    }
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+    }
+    @media (max-width: 640px) {
+      .layer-header {
+        flex-wrap: wrap;
+      }
+      .layer-count {
+        width: 100%;
+      }
+      .section {
+        min-width: 100%;
+      }
+      .modal {
+        padding: 18px;
       }
     }
-  });
-}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">layers</div></div>
+      <div class="stat"><div class="stat-num">40</div><div class="stat-label">sections</div></div>
+      <div class="stat"><div class="stat-num">200+</div><div class="stat-label">topics</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">new additions</div></div>
+    </div>
+    <input class="search-bar" placeholder="Search topics..." oninput="filterTopics(this.value)">
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#7F77DD"></div>Foundation</div>
+      <div class="leg"><div class="leg-dot" style="background:#1D9E75"></div>Intelligence</div>
+      <div class="leg"><div class="leg-dot" style="background:#378ADD"></div>Memory & Knowledge</div>
+      <div class="leg"><div class="leg-dot" style="background:#EF9F27"></div>Agency & Tools</div>
+      <div class="leg"><div class="leg-dot" style="background:#D4537E"></div>Multi-Agent</div>
+      <div class="leg"><div class="leg-dot" style="background:#888780"></div>Infrastructure</div>
+      <div class="leg"><div class="leg-dot" style="background:#E24B4A"></div>Safety & Governance</div>
+      <div class="leg"><div class="leg-dot" style="background:#639922"></div>Production</div>
+    </div>
+    <div id="layers"></div>
+  </div>
 
-render(data);
-toggleLayer(0);
-</script>
+  <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal(null)">✕</button>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-layer" id="modal-layer"></div>
+      <ul class="topic-list" id="modal-topics"></ul>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      {
+        id: 1,
+        title: "Foundation Models",
+        color: "#7F77DD",
+        bg: "#EEEDFE",
+        sections: [
+          {
+            title: "Transformer architecture",
+            topics: [
+              "Attention mechanisms",
+              "Multi-head attention",
+              "Positional encoding",
+              "Feed-forward layers",
+              "Layer normalization",
+              "Residual connections",
+              "Tokenization",
+              "Byte-pair encoding (BPE)",
+              "Context windows",
+              "KV cache",
+              "Speculative decoding",
+              "Mixture of Experts (MoE)"
+            ]
+          },
+          {
+            title: "Model families",
+            topics: [
+              "GPT-style (decoder-only)",
+              "BERT-style (encoder-only)",
+              "T5-style (encoder-decoder)",
+              "Multimodal models (LMM/VLM)",
+              "Small language models (SLM)",
+              "Open-source vs proprietary",
+              "Model cards & documentation"
+            ]
+          },
+          {
+            title: "Prompt engineering",
+            topics: [
+              "Zero-shot prompting",
+              "Few-shot prompting",
+              "Instruction tuning",
+              "System vs user prompts",
+              "Prompt templates",
+              "Meta-prompting",
+              "Prompt chaining",
+              "Automatic prompt optimization",
+              "Prompt compression"
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Reasoning & Intelligence",
+        color: "#1D9E75",
+        bg: "#E1F5EE",
+        sections: [
+          {
+            title: "Reasoning paradigms",
+            topics: [
+              "Chain-of-Thought (CoT)",
+              "ReAct (Reason+Act)",
+              "Tree-of-Thought (ToT)",
+              "Graph-of-Thought (GoT)",
+              "Program-of-Thought (PoT)",
+              "Self-consistency",
+              "Debate reasoning",
+              "Skeleton-of-Thought",
+              "Chain-of-Emotion"
+            ]
+          },
+          {
+            title: "Reflection & self-improvement",
+            topics: [
+              "Reflection loops",
+              "Self-critique",
+              "Self-evaluation",
+              "Iterative refinement",
+              "Constitutional AI",
+              "Self-play",
+              "Online learning from feedback"
+            ]
+          },
+          {
+            title: "Agent architectures",
+            topics: [
+              "ReAct agents",
+              "Plan-and-Execute agents",
+              "Reflection agents",
+              "Autonomous agents (AutoGPT-style)",
+              "Tool-using agents",
+              "Generalist agents",
+              "Subagent patterns",
+              "Mixture-of-Agents (MoA)",
+              "World models",
+              { text: "Skeleton planner", isNew: true }
+            ]
+          },
+          {
+            title: "Planning & control",
+            topics: [
+              "Task decomposition",
+              "Hierarchical planning",
+              "Agent loop design",
+              "Rule-based controllers",
+              "LLM-based controllers",
+              "Execution engines",
+              "Retry & backoff strategies",
+              "Failure handling",
+              "Goal prioritization",
+              "Constraint satisfaction"
+            ]
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "Memory & Knowledge",
+        color: "#378ADD",
+        bg: "#E6F1FB",
+        sections: [
+          {
+            title: "Memory taxonomy",
+            topics: [
+              "In-context (working) memory",
+              "External / long-term memory",
+              "Episodic memory",
+              "Semantic memory",
+              "Procedural memory",
+              "Memory compression",
+              "Memory versioning",
+              "Memory pruning"
+            ]
+          },
+          {
+            title: "Retrieval & RAG",
+            topics: [
+              "Vector search (ANN / HNSW)",
+              "Hybrid search",
+              "Keyword search (BM25)",
+              "Embeddings",
+              "Chunking strategies",
+              "Sliding window chunking",
+              "Document hierarchies",
+              "Reranking",
+              "Cohere Rerank / cross-encoders",
+              "Query rewriting",
+              "Query expansion",
+              "Multi-hop RAG",
+              "Agentic RAG",
+              "Corrective RAG (CRAG)",
+              "Self-RAG",
+              { text: "GraphRAG", isNew: true }
+            ]
+          },
+          {
+            title: "Knowledge stores",
+            topics: [
+              "Vector databases (Pinecone, Weaviate, Qdrant)",
+              "Knowledge graphs",
+              "Relational DBs",
+              "Document stores",
+              "Conversation history",
+              "Episodic logs"
+            ]
+          },
+          {
+            title: "Knowledge quality",
+            topics: [
+              "Hallucination detection",
+              "Grounding techniques",
+              "Freshness & staleness",
+              "Data pipelines & ingestion",
+              "Source attribution",
+              "Confidence scoring",
+              { text: "Fact-checking agents", isNew: true }
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Agency & Tool Use",
+        color: "#EF9F27",
+        bg: "#FAEEDA",
+        sections: [
+          {
+            title: "Tool interfaces",
+            topics: [
+              "Function calling",
+              "Tool schema design (OpenAI / Anthropic style)",
+              "Tool selection logic",
+              "Tool chaining",
+              "Tool error handling",
+              "Parallel tool calls",
+              "Tool result handling"
+            ]
+          },
+          {
+            title: "Information tools",
+            topics: [
+              "Web search",
+              "Web scraping",
+              "APIs & REST",
+              "File ingestion (PDF, CSV, DOCX)",
+              "Code interpreters",
+              "Database queries"
+            ]
+          },
+          {
+            title: "Action tools",
+            topics: [
+              "Code execution (sandboxed)",
+              "File system operations",
+              "Shell / CLI automation",
+              "Browser automation",
+              { text: "Computer use / GUI agents", isNew: true },
+              "Email & calendar APIs",
+              "Form filling"
+            ]
+          },
+          {
+            title: "Meta tooling",
+            topics: [
+              "Tool discovery",
+              "Dynamic tool registration",
+              "Tool ranking & selection",
+              "Tool learning from feedback",
+              "MCP (Model Context Protocol)",
+              "OpenAI tool schema",
+              "A2A protocol",
+              { text: "ACP (Agent Communication Protocol)", isNew: true },
+              "Interoperability standards"
+            ]
+          },
+          {
+            title: "Interaction patterns",
+            topics: [
+              "Tool-calling loops",
+              "Human-in-the-loop (HITL)",
+              "Conversational agents",
+              "Task-oriented agents",
+              "Event-driven agents",
+              "Streaming agents",
+              "Sync vs async",
+              "Voice / multimodal I/O"
+            ]
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "Multi-Agent Systems",
+        color: "#D4537E",
+        bg: "#FBEAF0",
+        sections: [
+          {
+            title: "Multi-agent architectures",
+            topics: [
+              "Orchestrator-subagent pattern",
+              "Role-based agent teams",
+              "Peer-to-peer agents",
+              "Hierarchical agent networks",
+              "Debate agents",
+              "Mixture-of-Agents (MoA)",
+              "Puppeteer + specialist pattern",
+              { text: "Governance agents", isNew: true }
+            ]
+          },
+          {
+            title: "Coordination & communication",
+            topics: [
+              "Message passing",
+              "Shared state management",
+              "Context handoff",
+              "Conflict resolution",
+              "Task delegation",
+              "Emergent behavior",
+              "Swarm intelligence",
+              "Agent discovery"
+            ]
+          },
+          {
+            title: "Frameworks",
+            topics: [
+              "LangChain / LangGraph",
+              "LlamaIndex",
+              "AutoGen",
+              "CrewAI",
+              "OpenAI Agents SDK",
+              "Google ADK",
+              "PydanticAI",
+              "Haystack",
+              "Microsoft AutoGen",
+              "Dify"
+            ]
+          },
+          {
+            title: "Workflow systems",
+            topics: [
+              "DAG pipelines",
+              "State machines",
+              "Event-driven orchestration",
+              "Async orchestration",
+              "Parallel execution",
+              "Fan-out / fan-in",
+              "Workflow recovery & checkpointing"
+            ]
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "Infrastructure & Deployment",
+        color: "#888780",
+        bg: "#F1EFE8",
+        sections: [
+          {
+            title: "Model infrastructure",
+            topics: [
+              "API providers (OpenAI, Anthropic, Google)",
+              "Local inference (Ollama, vLLM, llama.cpp)",
+              "Model routing",
+              "Model switching",
+              "Multi-model ensembles",
+              "Token streaming"
+            ]
+          },
+          {
+            title: "Data infrastructure",
+            topics: [
+              "Vector databases",
+              "SQL / NoSQL systems",
+              "Object storage",
+              "Data lakes",
+              "Stream processing (Kafka)",
+              "Data versioning"
+            ]
+          },
+          {
+            title: "System infrastructure",
+            topics: [
+              "Caching (Redis, semantic cache)",
+              "Message queues",
+              "Background workers",
+              "Rate limiting",
+              "Load balancing",
+              "API gateways"
+            ]
+          },
+          {
+            title: "Deployment patterns",
+            topics: [
+              "Docker containers",
+              "Kubernetes",
+              "Serverless agents",
+              "Persistent agent processes",
+              "Edge vs cloud",
+              "Blue-green deployments",
+              "Agent registries",
+              { text: "Shadow AI discovery", isNew: true }
+            ]
+          },
+          {
+            title: "Learning & adaptation",
+            topics: [
+              "Fine-tuning (full, PEFT, LoRA, QLoRA)",
+              "RLHF",
+              "Direct Preference Optimization (DPO)",
+              "Continual learning",
+              "Online learning",
+              "Personalization systems",
+              "Feedback loops",
+              "Synthetic data generation"
+            ]
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "Safety, Security & Governance",
+        color: "#E24B4A",
+        bg: "#FCEBEB",
+        sections: [
+          {
+            title: "Agent-specific threats",
+            topics: [
+              "Prompt injection",
+              "Indirect prompt injection",
+              "Goal hijacking",
+              "Tool misuse",
+              "Identity abuse",
+              { text: "Memory poisoning", isNew: true },
+              { text: "Cascading hallucinations", isNew: true },
+              { text: "Rogue agents", isNew: true },
+              "Supply chain attacks on tools",
+              "Data exfiltration via agents"
+            ]
+          },
+          {
+            title: "Safety mechanisms",
+            topics: [
+              "Guardrails",
+              "Output validation",
+              "Sandboxing",
+              "Permission systems (least privilege)",
+              "Capability gating",
+              "Red teaming",
+              "Constitutional AI",
+              "Kill switches",
+              "Human oversight checkpoints"
+            ]
+          },
+          {
+            title: "Governance & compliance",
+            topics: [
+              { text: "OWASP Agentic AI Top 10", isNew: true },
+              { text: "EU AI Act", isNew: true },
+              { text: "NIST AI RMF", isNew: true },
+              { text: "ISO/IEC 42001", isNew: true },
+              "Agent identity management",
+              "Agent registries & inventories",
+              "Audit trails",
+              "Policy enforcement",
+              "Zero-trust for agents",
+              "Regulatory mapping"
+            ]
+          },
+          {
+            title: "Alignment",
+            topics: [
+              "Value alignment",
+              "Intent detection",
+              "Behavioral monitoring",
+              "Transparency & explainability",
+              "Bias detection",
+              "Fairness metrics",
+              "Controllability"
+            ]
+          }
+        ]
+      },
+      {
+        id: 8,
+        title: "Evaluation, Observability & Applications",
+        color: "#639922",
+        bg: "#EAF3DE",
+        sections: [
+          {
+            title: "Evaluation",
+            topics: [
+              "Automated benchmarks (MMLU, HumanEval, GAIA)",
+              "Human evaluation",
+              "Task success rate",
+              "Hallucination detection",
+              "Faithfulness scoring",
+              "Relevance scoring",
+              "End-to-end agent evals",
+              "Multi-turn evals",
+              "Adversarial testing",
+              "A/B testing agents"
+            ]
+          },
+          {
+            title: "Observability",
+            topics: [
+              "Distributed tracing (LangSmith, Langfuse)",
+              "Step-level logging",
+              "Cost tracking",
+              "Latency monitoring",
+              "Token usage dashboards",
+              "Agent audit logs"
+            ]
+          },
+          {
+            title: "Debugging & testing",
+            topics: [
+              "Prompt debugging",
+              "Tool call debugging",
+              { text: "Deterministic replay", isNew: true },
+              "Failure analysis",
+              "Unit tests for agents",
+              "Integration tests",
+              "Regression testing",
+              "Chaos engineering for agents"
+            ]
+          },
+          {
+            title: "Performance engineering",
+            topics: [
+              "Latency optimization",
+              "Cost optimization",
+              "Semantic caching",
+              "Parallel execution",
+              "Batching",
+              "Model routing (small→large)",
+              "Prompt compression",
+              "Context pruning"
+            ]
+          },
+          {
+            title: "Applications",
+            topics: [
+              "Coding agents",
+              "Research agents",
+              "Customer support agents",
+              "Data analysis agents",
+              "Automation / RPA agents",
+              "Personal assistants",
+              "Healthcare agents",
+              "Legal agents",
+              "Financial agents",
+              "Scientific discovery agents",
+              { text: "Embodied / robotics agents", isNew: true },
+              { text: "Browser / computer-use agents", isNew: true },
+              "Education agents",
+              "Multi-modal agents"
+            ]
+          }
+        ]
+      }
+    ];
+
+    function render(d) {
+      const layers = document.getElementById('layers');
+      layers.innerHTML = '';
+      d.forEach((layer, li) => {
+        const el = document.createElement('div');
+        el.className = 'layer';
+        const totalTopics = layer.sections.reduce((a, s) => a + s.topics.length, 0);
+        el.innerHTML = `
+          <div class="layer-header" onclick="toggleLayer(${li})">
+            <span class="layer-num" style="background:${layer.bg};color:${layer.color}">${layer.id}</span>
+            <span class="layer-title">${layer.title}</span>
+            <span class="layer-count">${layer.sections.length} sections · ${totalTopics} topics</span>
+            <span class="caret" id="caret-${li}">▶</span>
+          </div>
+          <div class="layer-body" id="body-${li}">
+            ${layer.sections.map((s, si) => {
+              const newCount = s.topics.filter(t => t && t.isNew).length;
+              return `<div class="section" onclick="openModal('${layer.title}', ${li}, ${si})" style="border-left:3px solid ${layer.color}">
+                <div class="section-title">${s.title}${newCount ? `<span class="badge new">+${newCount} new</span>` : ''}</div>
+                <div class="section-count">${s.topics.length} topics</div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        layers.appendChild(el);
+      });
+    }
+
+    function toggleLayer(i) {
+      const body = document.getElementById('body-' + i);
+      const caret = document.getElementById('caret-' + i);
+      const open = body.classList.toggle('open');
+      caret.classList.toggle('open', open);
+    }
+
+    function openModal(layerTitle, li, si) {
+      const layer = data[li];
+      const sec = layer.sections[si];
+      document.getElementById('modal-title').textContent = sec.title;
+      document.getElementById('modal-layer').textContent = 'Layer ' + layer.id + ': ' + layerTitle;
+      const ul = document.getElementById('modal-topics');
+      ul.innerHTML = sec.topics.map(t => {
+        const text = t && t.isNew ? t.text : t;
+        const isNew = t && t.isNew;
+        return `<li><span class="dot" style="background:${layer.color}"></span>${text}${isNew ? '<span class="gap-tag">newly added</span>' : ''}</li>`;
+      }).join('');
+      document.getElementById('modal-bg').classList.add('open');
+    }
+
+    function closeModal(e) {
+      if (!e || e.target === document.getElementById('modal-bg'))
+        document.getElementById('modal-bg').classList.remove('open');
+    }
+
+    function filterTopics(q) {
+      const v = q.toLowerCase();
+      data.forEach((layer, li) => {
+        let layerMatch = false;
+        layer.sections.forEach((s, si) => {
+          const titleMatch = s.title.toLowerCase().includes(v);
+          const topicMatch = s.topics.some(t => (t && t.isNew ? t.text : t).toLowerCase().includes(v));
+          const match = !v || titleMatch || topicMatch || layer.title.toLowerCase().includes(v);
+          const el = document.querySelector(`#body-${li} .section:nth-child(${si + 1})`);
+          if (el) el.classList.toggle('hidden', !match);
+          if (match) layerMatch = true;
+        });
+        const layerEl = document.querySelector(`.layer:nth-child(${li + 1})`);
+        if (layerEl) {
+          layerEl.classList.toggle('hidden', !layerMatch);
+          if (v && layerMatch) {
+            document.getElementById('body-' + li).classList.add('open');
+            document.getElementById('caret-' + li).classList.add('open');
+          }
+        }
+      });
+    }
+
+    render(data);
+    toggleLayer(0);
+  </script>
+</body>
+</html>
