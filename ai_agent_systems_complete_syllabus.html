@@ -92,8 +92,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
 <div class="s">
   <div class="s-meta">
     <span>8 layers</span><span class="dot"></span>
-    <span>40 sections</span><span class="dot"></span>
-    <span>360+ topics</span>
+    <span>34 sections</span><span class="dot"></span>
+    <span>368 topics</span>
   </div>
   <input class="s-search" placeholder="Search..." oninput="search(this.value)" />
   <div id="root"></div>
@@ -245,84 +245,134 @@ const data = [
   }
 ];
 
-    function render(d) {
-      const layers = document.getElementById('layers');
-      layers.innerHTML = '';
-      d.forEach((layer, li) => {
-        const el = document.createElement('div');
-        el.className = 'layer';
-        const totalTopics = layer.sections.reduce((a, s) => a + s.topics.length, 0);
-        el.innerHTML = `
-          <div class="layer-header" onclick="toggleLayer(${li})">
-            <span class="layer-num" style="background:${layer.bg};color:${layer.color}">${layer.id}</span>
-            <span class="layer-title">${layer.title}</span>
-            <span class="layer-count">${layer.sections.length} sections · ${totalTopics} topics</span>
-            <span class="caret" id="caret-${li}">▶</span>
-          </div>
-          <div class="layer-body" id="body-${li}">
-            ${layer.sections.map((s, si) => {
-              const newCount = s.topics.filter(t => t && t.isNew).length;
-              return `<div class="section" onclick="openModal('${layer.title}', ${li}, ${si})" style="border-left:3px solid ${layer.color}">
-                <div class="section-title">${s.title}${newCount ? `<span class="badge new">+${newCount} new</span>` : ''}</div>
-                <div class="section-count">${s.topics.length} topics</div>
-              </div>`;
-            }).join('')}
-          </div>`;
-        layers.appendChild(el);
-      });
-    }
+    function getText(t){ return t && t.isNew ? t.text : t; }
+    function isNew(t){ return !!(t && t.isNew); }
 
-    function toggleLayer(i) {
-      const body = document.getElementById('body-' + i);
-      const caret = document.getElementById('caret-' + i);
-      const open = body.classList.toggle('open');
-      caret.classList.toggle('open', open);
-    }
-
-    function openModal(layerTitle, li, si) {
-      const layer = data[li];
-      const sec = layer.sections[si];
-      document.getElementById('modal-title').textContent = sec.title;
-      document.getElementById('modal-layer').textContent = 'Layer ' + layer.id + ': ' + layerTitle;
-      const ul = document.getElementById('modal-topics');
-      ul.innerHTML = sec.topics.map(t => {
-        const text = t && t.isNew ? t.text : t;
-        const isNew = t && t.isNew;
-        return `<li><span class="dot" style="background:${layer.color}"></span>${text}${isNew ? '<span class="gap-tag">newly added</span>' : ''}</li>`;
-      }).join('');
-      document.getElementById('modal-bg').classList.add('open');
-    }
-
-    function closeModal(e) {
-      if (!e || e.target === document.getElementById('modal-bg'))
-        document.getElementById('modal-bg').classList.remove('open');
-    }
-
-    function filterTopics(q) {
-      const v = q.toLowerCase();
+    function render(){
+      const root = document.getElementById('root');
+      root.innerHTML = '';
       data.forEach((layer, li) => {
-        let layerMatch = false;
-        layer.sections.forEach((s, si) => {
-          const titleMatch = s.title.toLowerCase().includes(v);
-          const topicMatch = s.topics.some(t => (t && t.isNew ? t.text : t).toLowerCase().includes(v));
-          const match = !v || titleMatch || topicMatch || layer.title.toLowerCase().includes(v);
-          const el = document.querySelector(`#body-${li} .section:nth-child(${si + 1})`);
-          if (el) el.classList.toggle('hidden', !match);
-          if (match) layerMatch = true;
+        const totalTopics = layer.sections.reduce((a,s) => a + s.topics.length, 0);
+        const lDiv = document.createElement('div');
+        lDiv.className = 'l';
+        lDiv.id = 'l-' + li;
+
+        // Layer header
+        const lh = document.createElement('div');
+        lh.className = 'l-h';
+        lh.innerHTML = `<div class="l-accent" style="background:${layer.color}"></div>
+          <span class="l-n">0${layer.id}</span>
+          <span class="l-t">${layer.title}</span>
+          <span class="l-meta">${totalTopics}</span>
+          <span class="l-arrow">▶</span>`;
+        lh.onclick = () => lDiv.classList.toggle('open');
+        lDiv.appendChild(lh);
+
+        // Layer body (animated grid wrapper)
+        const lb = document.createElement('div');
+        lb.className = 'l-b';
+        const lInner = document.createElement('div');
+        lInner.className = 'l-inner';
+
+        layer.sections.forEach((sec, si) => {
+          const sDiv = document.createElement('div');
+          sDiv.className = 'sec';
+          sDiv.id = 'sec-' + li + '-' + si;
+
+          // Section header
+          const sh = document.createElement('div');
+          sh.className = 'sec-h';
+          sh.innerHTML = `<span class="sec-arrow">▶</span>
+            <span class="sec-t">${sec.title}</span>
+            <span class="sec-c">${sec.topics.length}</span>`;
+          sh.onclick = (e) => { e.stopPropagation(); sDiv.classList.toggle('open'); };
+          sDiv.appendChild(sh);
+
+          // Section body (animated grid wrapper) with inline topics
+          const sb = document.createElement('div');
+          sb.className = 'sec-b';
+          const sInner = document.createElement('div');
+          sInner.className = 'sec-inner';
+          const topics = document.createElement('div');
+          topics.className = 'topics';
+
+          sec.topics.forEach((t, ti) => {
+            if(ti > 0){
+              const sep = document.createElement('span');
+              sep.className = 't-sep';
+              sep.textContent = '·';
+              topics.appendChild(sep);
+            }
+            const span = document.createElement('span');
+            if(isNew(t)){
+              span.className = 't-new';
+              const dot = document.createElement('span');
+              dot.className = 't-new-dot';
+              span.appendChild(dot);
+              span.appendChild(document.createTextNode(getText(t)));
+            } else {
+              span.className = 't';
+              span.textContent = getText(t);
+            }
+            span.dataset.text = getText(t).toLowerCase();
+            topics.appendChild(span);
+          });
+
+          sInner.appendChild(topics);
+          sb.appendChild(sInner);
+          sDiv.appendChild(sb);
+          lInner.appendChild(sDiv);
         });
-        const layerEl = document.querySelector(`.layer:nth-child(${li + 1})`);
-        if (layerEl) {
-          layerEl.classList.toggle('hidden', !layerMatch);
-          if (v && layerMatch) {
-            document.getElementById('body-' + li).classList.add('open');
-            document.getElementById('caret-' + li).classList.add('open');
-          }
-        }
+
+        lb.appendChild(lInner);
+        lDiv.appendChild(lb);
+        root.appendChild(lDiv);
       });
     }
 
-    render(data);
-    toggleLayer(0);
+    function search(q){
+      const v = q.toLowerCase().trim();
+      document.querySelectorAll('.l').forEach((lEl, li) => {
+        const layer = data[li];
+        let layerHit = false;
+
+        lEl.querySelectorAll('.sec').forEach((sEl, si) => {
+          const sec = layer.sections[si];
+          const titleHit = sec.title.toLowerCase().includes(v);
+          const layerTitleHit = layer.title.toLowerCase().includes(v);
+          let secHit = false;
+
+          sEl.querySelectorAll('.t, .t-new').forEach(span => {
+            const text = span.dataset.text || '';
+            const hit = !v || text.includes(v) || titleHit || layerTitleHit;
+            span.classList.toggle('faded', !hit && !!v);
+            if(hit) secHit = true;
+          });
+
+          // Also un-fade separators next to visible topics
+          sEl.querySelectorAll('.t-sep').forEach(sep => {
+            const prev = sep.previousElementSibling;
+            const next = sep.nextElementSibling;
+            const show = (prev && !prev.classList.contains('faded')) || (next && !next.classList.contains('faded'));
+            sep.classList.toggle('faded', !show && !!v);
+          });
+
+          sEl.classList.toggle('faded', !secHit && !!v);
+          if(secHit) layerHit = true;
+
+          // Auto-expand matching sections during search
+          if(v && secHit) sEl.classList.add('open');
+          if(!v) sEl.classList.remove('open');
+        });
+
+        lEl.classList.toggle('faded', !layerHit && !!v);
+        // Auto-expand matching layers during search
+        if(v && layerHit) lEl.classList.add('open');
+        if(!v) lEl.classList.remove('open');
+      });
+    }
+
+    render();
   </script>
 </body>
 </html>
