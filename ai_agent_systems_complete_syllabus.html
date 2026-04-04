@@ -1,20 +1,26 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Systems — Syllabus</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:var(--color-background-primary,#FAFAFA);
-  --fg:var(--color-text-primary,#111);
-  --fg2:var(--color-text-secondary,#555);
-  --fg3:var(--color-text-tertiary,#999);
-  --bd:var(--color-border-tertiary,#E8E8E8);
-  --font:var(--font-sans,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif);
+  --bg:#FAFAFA;
+  --fg:#111;
+  --fg2:#555;
+  --fg3:#999;
+  --bd:#E8E8E8;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
   --mono:"SF Mono","Cascadia Code","Fira Code","Consolas",monospace;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
 
-.s{max-width:620px;padding:24px 0}
+.s{max-width:620px;margin:0 auto;padding:32px 20px}
 
-/* ── header ── */
+/* header */
 .s-meta{font-size:11px;color:var(--fg3);letter-spacing:0.4px;margin-bottom:20px;display:flex;gap:6px;align-items:center}
 .s-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--fg3);display:inline-block}
 .s-search{
@@ -28,8 +34,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
 .s-search:focus{border-bottom-color:var(--fg)}
 .s-search::placeholder{color:var(--fg3);font-weight:300}
 
-/* ── layer ── */
+/* layer */
 .l{position:relative;margin-bottom:1px}
+.l+.l{border-top:1px solid var(--bd)}
 .l-h{
   display:flex;align-items:center;gap:14px;
   padding:13px 0;cursor:pointer;user-select:none;
@@ -44,12 +51,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
 .l-arrow{font-size:9px;color:var(--fg3);transition:transform 0.25s ease;display:inline-block}
 .l.open .l-arrow{transform:rotate(90deg)}
 
-/* layer body – smooth grid animation */
+/* layer body */
 .l-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.3s ease}
 .l.open .l-b{grid-template-rows:1fr}
 .l-inner{overflow:hidden}
 
-/* ── section ── */
+/* section */
 .sec{padding-left:33px}
 .sec-h{
   display:flex;align-items:center;gap:8px;
@@ -62,32 +69,29 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
 .sec-t{font-size:12.5px;color:var(--fg2);flex:1;font-weight:400}
 .sec-c{font-family:var(--mono);font-size:9px;color:var(--fg3)}
 
-/* section body – smooth grid animation */
+/* section body */
 .sec-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.25s ease}
 .sec.open .sec-b{grid-template-rows:1fr}
 .sec-inner{overflow:hidden}
 
-/* ── topics (flowing inline) ── */
+/* topics */
 .topics{padding:4px 0 12px 18px;line-height:1.9}
 .t{font-size:12px;color:var(--fg2);white-space:nowrap}
 .t-new{font-size:12px;color:var(--fg);border-bottom:1px dotted var(--fg3);white-space:nowrap}
 .t-sep{color:var(--bd);margin:0 5px;font-size:10px;user-select:none}
 .t-new-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:#1D9E75;margin-right:3px;vertical-align:middle;position:relative;top:-1px}
 
-/* ── search states ── */
+/* search */
 .faded{opacity:0.08!important;pointer-events:none;transition:opacity 0.2s}
-.match-highlight{background:rgba(255,200,50,0.3);border-radius:2px;padding:0 2px;margin:0 -2px}
 
-/* ── divider between layers ── */
-.l+.l{border-top:1px solid var(--bd)}
-
-/* ── responsive ── */
 @media(max-width:480px){
-  .s{padding:16px 0}
+  .s{padding:16px 12px}
   .sec{padding-left:24px}
   .topics{padding-left:10px}
 }
 </style>
+</head>
+<body>
 
 <div class="s">
   <div class="s-meta">
@@ -245,134 +249,127 @@ const data = [
   }
 ];
 
-    function getText(t){ return t && t.isNew ? t.text : t; }
-    function isNew(t){ return !!(t && t.isNew); }
+function getText(t) { return t && t.isNew ? t.text : t; }
+function isNew(t) { return !!(t && t.isNew); }
 
-    function render(){
-      const root = document.getElementById('root');
-      root.innerHTML = '';
-      data.forEach((layer, li) => {
-        const totalTopics = layer.sections.reduce((a,s) => a + s.topics.length, 0);
-        const lDiv = document.createElement('div');
-        lDiv.className = 'l';
-        lDiv.id = 'l-' + li;
+function render() {
+  const root = document.getElementById('root');
+  root.innerHTML = '';
+  data.forEach((layer, li) => {
+    const totalTopics = layer.sections.reduce((a, s) => a + s.topics.length, 0);
+    const lDiv = document.createElement('div');
+    lDiv.className = 'l';
+    lDiv.id = 'l-' + li;
 
-        // Layer header
-        const lh = document.createElement('div');
-        lh.className = 'l-h';
-        lh.innerHTML = `<div class="l-accent" style="background:${layer.color}"></div>
-          <span class="l-n">0${layer.id}</span>
-          <span class="l-t">${layer.title}</span>
-          <span class="l-meta">${totalTopics}</span>
-          <span class="l-arrow">▶</span>`;
-        lh.onclick = () => lDiv.classList.toggle('open');
-        lDiv.appendChild(lh);
+    const lh = document.createElement('div');
+    lh.className = 'l-h';
+    lh.innerHTML = `<div class="l-accent" style="background:${layer.color}"></div>
+      <span class="l-n">0${layer.id}</span>
+      <span class="l-t">${layer.title}</span>
+      <span class="l-meta">${totalTopics}</span>
+      <span class="l-arrow">▶</span>`;
+    lh.onclick = () => lDiv.classList.toggle('open');
+    lDiv.appendChild(lh);
 
-        // Layer body (animated grid wrapper)
-        const lb = document.createElement('div');
-        lb.className = 'l-b';
-        const lInner = document.createElement('div');
-        lInner.className = 'l-inner';
+    const lb = document.createElement('div');
+    lb.className = 'l-b';
+    const lInner = document.createElement('div');
+    lInner.className = 'l-inner';
 
-        layer.sections.forEach((sec, si) => {
-          const sDiv = document.createElement('div');
-          sDiv.className = 'sec';
-          sDiv.id = 'sec-' + li + '-' + si;
+    layer.sections.forEach((sec, si) => {
+      const sDiv = document.createElement('div');
+      sDiv.className = 'sec';
+      sDiv.id = 'sec-' + li + '-' + si;
 
-          // Section header
-          const sh = document.createElement('div');
-          sh.className = 'sec-h';
-          sh.innerHTML = `<span class="sec-arrow">▶</span>
-            <span class="sec-t">${sec.title}</span>
-            <span class="sec-c">${sec.topics.length}</span>`;
-          sh.onclick = (e) => { e.stopPropagation(); sDiv.classList.toggle('open'); };
-          sDiv.appendChild(sh);
+      const sh = document.createElement('div');
+      sh.className = 'sec-h';
+      sh.innerHTML = `<span class="sec-arrow">▶</span>
+        <span class="sec-t">${sec.title}</span>
+        <span class="sec-c">${sec.topics.length}</span>`;
+      sh.onclick = (e) => { e.stopPropagation(); sDiv.classList.toggle('open'); };
+      sDiv.appendChild(sh);
 
-          // Section body (animated grid wrapper) with inline topics
-          const sb = document.createElement('div');
-          sb.className = 'sec-b';
-          const sInner = document.createElement('div');
-          sInner.className = 'sec-inner';
-          const topics = document.createElement('div');
-          topics.className = 'topics';
+      const sb = document.createElement('div');
+      sb.className = 'sec-b';
+      const sInner = document.createElement('div');
+      sInner.className = 'sec-inner';
+      const topics = document.createElement('div');
+      topics.className = 'topics';
 
-          sec.topics.forEach((t, ti) => {
-            if(ti > 0){
-              const sep = document.createElement('span');
-              sep.className = 't-sep';
-              sep.textContent = '·';
-              topics.appendChild(sep);
-            }
-            const span = document.createElement('span');
-            if(isNew(t)){
-              span.className = 't-new';
-              const dot = document.createElement('span');
-              dot.className = 't-new-dot';
-              span.appendChild(dot);
-              span.appendChild(document.createTextNode(getText(t)));
-            } else {
-              span.className = 't';
-              span.textContent = getText(t);
-            }
-            span.dataset.text = getText(t).toLowerCase();
-            topics.appendChild(span);
-          });
-
-          sInner.appendChild(topics);
-          sb.appendChild(sInner);
-          sDiv.appendChild(sb);
-          lInner.appendChild(sDiv);
-        });
-
-        lb.appendChild(lInner);
-        lDiv.appendChild(lb);
-        root.appendChild(lDiv);
+      sec.topics.forEach((t, ti) => {
+        if (ti > 0) {
+          const sep = document.createElement('span');
+          sep.className = 't-sep';
+          sep.textContent = '·';
+          topics.appendChild(sep);
+        }
+        const span = document.createElement('span');
+        if (isNew(t)) {
+          span.className = 't-new';
+          const dot = document.createElement('span');
+          dot.className = 't-new-dot';
+          span.appendChild(dot);
+          span.appendChild(document.createTextNode(getText(t)));
+        } else {
+          span.className = 't';
+          span.textContent = getText(t);
+        }
+        span.dataset.text = getText(t).toLowerCase();
+        topics.appendChild(span);
       });
-    }
 
-    function search(q){
-      const v = q.toLowerCase().trim();
-      document.querySelectorAll('.l').forEach((lEl, li) => {
-        const layer = data[li];
-        let layerHit = false;
+      sInner.appendChild(topics);
+      sb.appendChild(sInner);
+      sDiv.appendChild(sb);
+      lInner.appendChild(sDiv);
+    });
 
-        lEl.querySelectorAll('.sec').forEach((sEl, si) => {
-          const sec = layer.sections[si];
-          const titleHit = sec.title.toLowerCase().includes(v);
-          const layerTitleHit = layer.title.toLowerCase().includes(v);
-          let secHit = false;
+    lb.appendChild(lInner);
+    lDiv.appendChild(lb);
+    root.appendChild(lDiv);
+  });
+}
 
-          sEl.querySelectorAll('.t, .t-new').forEach(span => {
-            const text = span.dataset.text || '';
-            const hit = !v || text.includes(v) || titleHit || layerTitleHit;
-            span.classList.toggle('faded', !hit && !!v);
-            if(hit) secHit = true;
-          });
+function search(q) {
+  const v = q.toLowerCase().trim();
+  document.querySelectorAll('.l').forEach((lEl, li) => {
+    const layer = data[li];
+    let layerHit = false;
 
-          // Also un-fade separators next to visible topics
-          sEl.querySelectorAll('.t-sep').forEach(sep => {
-            const prev = sep.previousElementSibling;
-            const next = sep.nextElementSibling;
-            const show = (prev && !prev.classList.contains('faded')) || (next && !next.classList.contains('faded'));
-            sep.classList.toggle('faded', !show && !!v);
-          });
+    lEl.querySelectorAll('.sec').forEach((sEl, si) => {
+      const sec = layer.sections[si];
+      const titleHit = sec.title.toLowerCase().includes(v);
+      const layerTitleHit = layer.title.toLowerCase().includes(v);
+      let secHit = false;
 
-          sEl.classList.toggle('faded', !secHit && !!v);
-          if(secHit) layerHit = true;
-
-          // Auto-expand matching sections during search
-          if(v && secHit) sEl.classList.add('open');
-          if(!v) sEl.classList.remove('open');
-        });
-
-        lEl.classList.toggle('faded', !layerHit && !!v);
-        // Auto-expand matching layers during search
-        if(v && layerHit) lEl.classList.add('open');
-        if(!v) lEl.classList.remove('open');
+      sEl.querySelectorAll('.t, .t-new').forEach(span => {
+        const text = span.dataset.text || '';
+        const hit = !v || text.includes(v) || titleHit || layerTitleHit;
+        span.classList.toggle('faded', !hit && !!v);
+        if (hit) secHit = true;
       });
-    }
 
-    render();
-  </script>
+      sEl.querySelectorAll('.t-sep').forEach(sep => {
+        const prev = sep.previousElementSibling;
+        const next = sep.nextElementSibling;
+        const show = (prev && !prev.classList.contains('faded')) || (next && !next.classList.contains('faded'));
+        sep.classList.toggle('faded', !show && !!v);
+      });
+
+      sEl.classList.toggle('faded', !secHit && !!v);
+      if (secHit) layerHit = true;
+
+      if (v && secHit) sEl.classList.add('open');
+      if (!v) sEl.classList.remove('open');
+    });
+
+    lEl.classList.toggle('faded', !layerHit && !!v);
+    if (v && layerHit) lEl.classList.add('open');
+    if (!v) lEl.classList.remove('open');
+  });
+}
+
+render();
+</script>
 </body>
 </html>
