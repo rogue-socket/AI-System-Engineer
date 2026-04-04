@@ -45,8 +45,8 @@ body{font-family:var(--font-sans)}
 <div class="stats">
   <div class="stat"><div class="stat-num">8</div><div class="stat-label">layers</div></div>
   <div class="stat"><div class="stat-num">40</div><div class="stat-label">sections</div></div>
-  <div class="stat"><div class="stat-num">200+</div><div class="stat-label">topics</div></div>
-  <div class="stat"><div class="stat-num">12</div><div class="stat-label">new additions</div></div>
+  <div class="stat"><div class="stat-num">360+</div><div class="stat-label">topics</div></div>
+  <div class="stat"><div class="stat-num">95+</div><div class="stat-label">new additions</div></div>
 </div>
 <input class="search-bar" placeholder="Search topics..." oninput="filterTopics(this.value)" />
 <div class="legend">
@@ -77,13 +77,13 @@ const data = [
     id:1, title:"Foundation Models", color:"#7F77DD", bg:"#EEEDFE",
     sections:[
       {title:"Transformer architecture", topics:[
-        "Attention mechanisms","Multi-head attention","Positional encoding","Feed-forward layers","Layer normalization","Residual connections","Tokenization","Byte-pair encoding (BPE)","Context windows","KV cache","Speculative decoding","Mixture of Experts (MoE)"
+        "Attention mechanisms","Multi-head attention","Positional encoding","Feed-forward layers","Layer normalization","Residual connections","Tokenization","Byte-pair encoding (BPE)","Context windows","KV cache","Speculative decoding","Mixture of Experts (MoE)",{text:"Structured output / JSON mode",isNew:true},{text:"Prompt caching",isNew:true},{text:"Quantization (GPTQ, AWQ, GGUF)",isNew:true},{text:"State-space models (Mamba, RWKV)",isNew:true}
       ]},
       {title:"Model families", topics:[
-        "GPT-style (decoder-only)","BERT-style (encoder-only)","T5-style (encoder-decoder)","Multimodal models (LMM/VLM)","Small language models (SLM)","Open-source vs proprietary","Model cards & documentation"
+        "GPT-style (decoder-only)","BERT-style (encoder-only)","T5-style (encoder-decoder)","Multimodal models (LMM/VLM)","Small language models (SLM)","Open-source vs proprietary","Model cards & documentation",{text:"Reasoning models (o1, o3, DeepSeek-R1)",isNew:true},{text:"Code-specialized models",isNew:true},{text:"Embedding models",isNew:true},{text:"Voice & audio models",isNew:true}
       ]},
       {title:"Prompt engineering", topics:[
-        "Zero-shot prompting","Few-shot prompting","Instruction tuning","System vs user prompts","Prompt templates","Meta-prompting","Prompt chaining","Automatic prompt optimization","Prompt compression"
+        "Zero-shot prompting","Few-shot prompting","Instruction tuning","System vs user prompts","Prompt templates","Meta-prompting","Prompt chaining","Automatic prompt optimization","Prompt compression",{text:"Role prompting",isNew:true},{text:"Structured output prompting",isNew:true}
       ]}
     ]
   },
@@ -91,16 +91,16 @@ const data = [
     id:2, title:"Reasoning & Intelligence", color:"#1D9E75", bg:"#E1F5EE",
     sections:[
       {title:"Reasoning paradigms", topics:[
-        "Chain-of-Thought (CoT)","ReAct (Reason+Act)","Tree-of-Thought (ToT)","Graph-of-Thought (GoT)","Program-of-Thought (PoT)","Self-consistency","Debate reasoning","Skeleton-of-Thought","Chain-of-Emotion"
+        "Chain-of-Thought (CoT)","ReAct (Reason+Act)","Tree-of-Thought (ToT)","Graph-of-Thought (GoT)","Program-of-Thought (PoT)","Self-consistency","Debate reasoning","Skeleton-of-Thought","Chain-of-Emotion",{text:"Test-time compute scaling",isNew:true},{text:"Process reward models (PRM)",isNew:true},{text:"Outcome reward models (ORM)",isNew:true},{text:"Verification & self-verification",isNew:true}
       ]},
       {title:"Reflection & self-improvement", topics:[
-        "Reflection loops","Self-critique","Self-evaluation","Iterative refinement","Constitutional AI","Self-play","Online learning from feedback"
+        "Reflection loops","Self-critique","Self-evaluation","Iterative refinement","Constitutional AI","Self-play","Online learning from feedback",{text:"Reward modeling",isNew:true},{text:"Critique agents",isNew:true}
       ]},
       {title:"Agent architectures", topics:[
-        "ReAct agents","Plan-and-Execute agents","Reflection agents","Autonomous agents (AutoGPT-style)","Tool-using agents","Generalist agents","Subagent patterns","Mixture-of-Agents (MoA)","World models",{text:"Skeleton planner",isNew:true}
+        "ReAct agents","Plan-and-Execute agents","Reflection agents","Autonomous agents (AutoGPT-style)","Tool-using agents","Generalist agents","Subagent patterns","Mixture-of-Agents (MoA)","World models",{text:"Skeleton planner",isNew:true},{text:"Compound AI systems",isNew:true},{text:"Cognitive architectures (ACT-R, SOAR)",isNew:true}
       ]},
       {title:"Planning & control", topics:[
-        "Task decomposition","Hierarchical planning","Agent loop design","Rule-based controllers","LLM-based controllers","Execution engines","Retry & backoff strategies","Failure handling","Goal prioritization","Constraint satisfaction"
+        "Task decomposition","Hierarchical planning","Agent loop design","Rule-based controllers","LLM-based controllers","Execution engines","Retry & backoff strategies","Failure handling","Goal prioritization","Constraint satisfaction",{text:"Monte Carlo Tree Search planning",isNew:true},{text:"Budget-aware planning",isNew:true}
       ]}
     ]
   },
@@ -108,13 +108,13 @@ const data = [
     id:3, title:"Memory & Knowledge", color:"#378ADD", bg:"#E6F1FB",
     sections:[
       {title:"Memory taxonomy", topics:[
-        "In-context (working) memory","External / long-term memory","Episodic memory","Semantic memory","Procedural memory","Memory compression","Memory versioning","Memory pruning"
+        "In-context (working) memory","External / long-term memory","Episodic memory","Semantic memory","Procedural memory","Memory compression","Memory versioning","Memory pruning",{text:"MemGPT / Letta patterns",isNew:true},{text:"Context window management",isNew:true}
       ]},
       {title:"Retrieval & RAG", topics:[
-        "Vector search (ANN / HNSW)","Hybrid search","Keyword search (BM25)","Embeddings","Chunking strategies","Sliding window chunking","Document hierarchies","Reranking","Cohere Rerank / cross-encoders","Query rewriting","Query expansion","Multi-hop RAG","Agentic RAG","Corrective RAG (CRAG)","Self-RAG",{text:"GraphRAG",isNew:true}
+        "Vector search (ANN / HNSW)","Hybrid search","Keyword search (BM25)","Embeddings","Chunking strategies","Sliding window chunking","Document hierarchies","Reranking","Cohere Rerank / cross-encoders","Query rewriting","Query expansion","Multi-hop RAG","Agentic RAG","Corrective RAG (CRAG)","Self-RAG",{text:"GraphRAG",isNew:true},{text:"Contextual retrieval",isNew:true},{text:"Late chunking",isNew:true},{text:"HyDE (Hypothetical Document Embeddings)",isNew:true},{text:"ColBERT / late interaction models",isNew:true},{text:"Multimodal RAG",isNew:true},{text:"Parent-child retrieval",isNew:true},{text:"RAPTOR (tree-structured RAG)",isNew:true}
       ]},
       {title:"Knowledge stores", topics:[
-        "Vector databases (Pinecone, Weaviate, Qdrant)","Knowledge graphs","Relational DBs","Document stores","Conversation history","Episodic logs"
+        "Vector databases (Pinecone, Weaviate, Qdrant)","Knowledge graphs","Relational DBs","Document stores","Conversation history","Episodic logs",{text:"Graph databases (Neo4j, Neptune)",isNew:true}
       ]},
       {title:"Knowledge quality", topics:[
         "Hallucination detection","Grounding techniques","Freshness & staleness","Data pipelines & ingestion","Source attribution","Confidence scoring",{text:"Fact-checking agents",isNew:true}
@@ -125,19 +125,19 @@ const data = [
     id:4, title:"Agency & Tool Use", color:"#EF9F27", bg:"#FAEEDA",
     sections:[
       {title:"Tool interfaces", topics:[
-        "Function calling","Tool schema design (OpenAI / Anthropic style)","Tool selection logic","Tool chaining","Tool error handling","Parallel tool calls","Tool result handling"
+        "Function calling","Tool schema design (OpenAI / Anthropic style)","Tool selection logic","Tool chaining","Tool error handling","Parallel tool calls","Tool result handling",{text:"Structured output for tool calls",isNew:true},{text:"Tool-use benchmarks (BFCL)",isNew:true}
       ]},
       {title:"Information tools", topics:[
         "Web search","Web scraping","APIs & REST","File ingestion (PDF, CSV, DOCX)","Code interpreters","Database queries"
       ]},
       {title:"Action tools", topics:[
-        "Code execution (sandboxed)","File system operations","Shell / CLI automation","Browser automation",{text:"Computer use / GUI agents",isNew:true},"Email & calendar APIs","Form filling"
+        "Code execution (sandboxed)","File system operations","Shell / CLI automation","Browser automation",{text:"Computer use / GUI agents",isNew:true},"Email & calendar APIs","Form filling",{text:"Voice & telephony agents",isNew:true},{text:"Image / video generation tools",isNew:true}
       ]},
       {title:"Meta tooling", topics:[
-        "Tool discovery","Dynamic tool registration","Tool ranking & selection","Tool learning from feedback","MCP (Model Context Protocol)","OpenAI tool schema","A2A protocol",{text:"ACP (Agent Communication Protocol)",isNew:true},"Interoperability standards"
+        "Tool discovery","Dynamic tool registration","Tool ranking & selection","Tool learning from feedback","MCP (Model Context Protocol)","OpenAI tool schema","A2A protocol",{text:"ACP (Agent Communication Protocol)",isNew:true},"Interoperability standards",{text:"MCP server ecosystem",isNew:true},{text:"OAuth & authentication for agents",isNew:true},{text:"Agent credential management",isNew:true}
       ]},
       {title:"Interaction patterns", topics:[
-        "Tool-calling loops","Human-in-the-loop (HITL)","Conversational agents","Task-oriented agents","Event-driven agents","Streaming agents","Sync vs async","Voice / multimodal I/O"
+        "Tool-calling loops","Human-in-the-loop (HITL)","Conversational agents","Task-oriented agents","Event-driven agents","Streaming agents","Sync vs async","Voice / multimodal I/O",{text:"Webhooks & event triggers",isNew:true},{text:"Approval workflows",isNew:true}
       ]}
     ]
   },
@@ -145,16 +145,16 @@ const data = [
     id:5, title:"Multi-Agent Systems", color:"#D4537E", bg:"#FBEAF0",
     sections:[
       {title:"Multi-agent architectures", topics:[
-        "Orchestrator-subagent pattern","Role-based agent teams","Peer-to-peer agents","Hierarchical agent networks","Debate agents","Mixture-of-Agents (MoA)","Puppeteer + specialist pattern",{text:"Governance agents",isNew:true}
+        "Orchestrator-subagent pattern","Role-based agent teams","Peer-to-peer agents","Hierarchical agent networks","Debate agents","Mixture-of-Agents (MoA)","Puppeteer + specialist pattern",{text:"Governance agents",isNew:true},{text:"Agent marketplaces",isNew:true},{text:"Competitive agent systems",isNew:true}
       ]},
       {title:"Coordination & communication", topics:[
-        "Message passing","Shared state management","Context handoff","Conflict resolution","Task delegation","Emergent behavior","Swarm intelligence","Agent discovery"
+        "Message passing","Shared state management","Context handoff","Conflict resolution","Task delegation","Emergent behavior","Swarm intelligence","Agent discovery",{text:"Agent protocol standardization",isNew:true},{text:"Trust & reputation systems",isNew:true}
       ]},
       {title:"Frameworks", topics:[
-        "LangChain / LangGraph","LlamaIndex","AutoGen","CrewAI","OpenAI Agents SDK","Google ADK","PydanticAI","Haystack","Microsoft AutoGen","Dify"
+        "LangChain / LangGraph","LlamaIndex","AutoGen","CrewAI","OpenAI Agents SDK","Google ADK","PydanticAI","Haystack","Microsoft AutoGen","Dify",{text:"Smolagents (HuggingFace)",isNew:true},{text:"Mastra",isNew:true},{text:"Vercel AI SDK",isNew:true},{text:"Agno (formerly Phidata)",isNew:true},{text:"Agency Swarm",isNew:true}
       ]},
       {title:"Workflow systems", topics:[
-        "DAG pipelines","State machines","Event-driven orchestration","Async orchestration","Parallel execution","Fan-out / fan-in","Workflow recovery & checkpointing"
+        "DAG pipelines","State machines","Event-driven orchestration","Async orchestration","Parallel execution","Fan-out / fan-in","Workflow recovery & checkpointing",{text:"Long-running agent processes",isNew:true},{text:"Durable execution (Temporal, Inngest)",isNew:true}
       ]}
     ]
   },
@@ -162,19 +162,19 @@ const data = [
     id:6, title:"Infrastructure & Deployment", color:"#888780", bg:"#F1EFE8",
     sections:[
       {title:"Model infrastructure", topics:[
-        "API providers (OpenAI, Anthropic, Google)","Local inference (Ollama, vLLM, llama.cpp)","Model routing","Model switching","Multi-model ensembles","Token streaming"
+        "API providers (OpenAI, Anthropic, Google)","Local inference (Ollama, vLLM, llama.cpp)","Model routing","Model switching","Multi-model ensembles","Token streaming",{text:"Inference providers (Groq, Together, Fireworks)",isNew:true},{text:"GPU orchestration",isNew:true},{text:"Model distillation",isNew:true}
       ]},
       {title:"Data infrastructure", topics:[
         "Vector databases","SQL / NoSQL systems","Object storage","Data lakes","Stream processing (Kafka)","Data versioning"
       ]},
       {title:"System infrastructure", topics:[
-        "Caching (Redis, semantic cache)","Message queues","Background workers","Rate limiting","Load balancing","API gateways"
+        "Caching (Redis, semantic cache)","Message queues","Background workers","Rate limiting","Load balancing","API gateways",{text:"Agent sandboxing (E2B, Modal, Daytona)",isNew:true},{text:"MCP server hosting",isNew:true}
       ]},
       {title:"Deployment patterns", topics:[
-        "Docker containers","Kubernetes","Serverless agents","Persistent agent processes","Edge vs cloud","Blue-green deployments","Agent registries",{text:"Shadow AI discovery",isNew:true}
+        "Docker containers","Kubernetes","Serverless agents","Persistent agent processes","Edge vs cloud","Blue-green deployments","Agent registries",{text:"Shadow AI discovery",isNew:true},{text:"Agent-as-a-service",isNew:true},{text:"Hybrid local / cloud agents",isNew:true}
       ]},
       {title:"Learning & adaptation", topics:[
-        "Fine-tuning (full, PEFT, LoRA, QLoRA)","RLHF","Direct Preference Optimization (DPO)","Continual learning","Online learning","Personalization systems","Feedback loops","Synthetic data generation"
+        "Fine-tuning (full, PEFT, LoRA, QLoRA)","RLHF","Direct Preference Optimization (DPO)","Continual learning","Online learning","Personalization systems","Feedback loops","Synthetic data generation",{text:"Model merging (TIES, DARE, SLERP)",isNew:true},{text:"Preference tuning (KTO, IPO)",isNew:true}
       ]}
     ]
   },
@@ -182,13 +182,13 @@ const data = [
     id:7, title:"Safety, Security & Governance", color:"#E24B4A", bg:"#FCEBEB",
     sections:[
       {title:"Agent-specific threats", topics:[
-        "Prompt injection","Indirect prompt injection","Goal hijacking","Tool misuse","Identity abuse",{text:"Memory poisoning",isNew:true},{text:"Cascading hallucinations",isNew:true},{text:"Rogue agents",isNew:true},"Supply chain attacks on tools","Data exfiltration via agents"
+        "Prompt injection","Indirect prompt injection","Goal hijacking","Tool misuse","Identity abuse",{text:"Memory poisoning",isNew:true},{text:"Cascading hallucinations",isNew:true},{text:"Rogue agents",isNew:true},"Supply chain attacks on tools","Data exfiltration via agents",{text:"Multi-hop prompt injection",isNew:true},{text:"Agent credential theft",isNew:true},{text:"Excessive agency",isNew:true}
       ]},
       {title:"Safety mechanisms", topics:[
-        "Guardrails","Output validation","Sandboxing","Permission systems (least privilege)","Capability gating","Red teaming","Constitutional AI","Kill switches","Human oversight checkpoints"
+        "Guardrails","Output validation","Sandboxing","Permission systems (least privilege)","Capability gating","Red teaming","Constitutional AI","Kill switches","Human oversight checkpoints",{text:"Input / output filtering",isNew:true},{text:"Agent boundary testing",isNew:true},{text:"Canary tokens",isNew:true}
       ]},
       {title:"Governance & compliance", topics:[
-        {text:"OWASP Agentic AI Top 10",isNew:true},{text:"EU AI Act",isNew:true},{text:"NIST AI RMF",isNew:true},{text:"ISO/IEC 42001",isNew:true},"Agent identity management","Agent registries & inventories","Audit trails","Policy enforcement","Zero-trust for agents","Regulatory mapping"
+        {text:"OWASP Agentic AI Top 10",isNew:true},{text:"EU AI Act",isNew:true},{text:"NIST AI RMF",isNew:true},{text:"ISO/IEC 42001",isNew:true},"Agent identity management","Agent registries & inventories","Audit trails","Policy enforcement","Zero-trust for agents","Regulatory mapping",{text:"Agent authorization frameworks",isNew:true},{text:"Responsible AI frameworks",isNew:true},{text:"Agent liability & accountability",isNew:true}
       ]},
       {title:"Alignment", topics:[
         "Value alignment","Intent detection","Behavioral monitoring","Transparency & explainability","Bias detection","Fairness metrics","Controllability"
@@ -199,10 +199,10 @@ const data = [
     id:8, title:"Evaluation, Observability & Applications", color:"#639922", bg:"#EAF3DE",
     sections:[
       {title:"Evaluation", topics:[
-        "Automated benchmarks (MMLU, HumanEval, GAIA)","Human evaluation","Task success rate","Hallucination detection","Faithfulness scoring","Relevance scoring","End-to-end agent evals","Multi-turn evals","Adversarial testing","A/B testing agents"
+        "Automated benchmarks (MMLU, HumanEval, GAIA)","Human evaluation","Task success rate","Hallucination detection","Faithfulness scoring","Relevance scoring","End-to-end agent evals","Multi-turn evals","Adversarial testing","A/B testing agents",{text:"SWE-bench",isNew:true},{text:"WebArena",isNew:true},{text:"AgentBench",isNew:true},{text:"BFCL (Berkeley Function Calling Leaderboard)",isNew:true},{text:"ToolBench",isNew:true}
       ]},
       {title:"Observability", topics:[
-        "Distributed tracing (LangSmith, Langfuse)","Step-level logging","Cost tracking","Latency monitoring","Token usage dashboards","Agent audit logs"
+        "Distributed tracing (LangSmith, Langfuse)","Step-level logging","Cost tracking","Latency monitoring","Token usage dashboards","Agent audit logs",{text:"OpenTelemetry for agents",isNew:true},{text:"Arize / Phoenix",isNew:true},{text:"Braintrust",isNew:true}
       ]},
       {title:"Debugging & testing", topics:[
         "Prompt debugging","Tool call debugging",{text:"Deterministic replay",isNew:true},"Failure analysis","Unit tests for agents","Integration tests","Regression testing","Chaos engineering for agents"
@@ -211,7 +211,7 @@ const data = [
         "Latency optimization","Cost optimization","Semantic caching","Parallel execution","Batching","Model routing (small→large)","Prompt compression","Context pruning"
       ]},
       {title:"Applications", topics:[
-        "Coding agents","Research agents","Customer support agents","Data analysis agents","Automation / RPA agents","Personal assistants","Healthcare agents","Legal agents","Financial agents","Scientific discovery agents",{text:"Embodied / robotics agents",isNew:true},{text:"Browser / computer-use agents",isNew:true},"Education agents","Multi-modal agents"
+        "Coding agents","Research agents","Customer support agents","Data analysis agents","Automation / RPA agents","Personal assistants","Healthcare agents","Legal agents","Financial agents","Scientific discovery agents",{text:"Embodied / robotics agents",isNew:true},{text:"Browser / computer-use agents",isNew:true},"Education agents","Multi-modal agents",{text:"Agentic coding (Cursor, Copilot, Devin)",isNew:true},{text:"Voice agents & assistants",isNew:true},{text:"DevOps / SRE agents",isNew:true},{text:"Supply chain agents",isNew:true},{text:"Sales & marketing agents",isNew:true}
       ]}
     ]
   }
