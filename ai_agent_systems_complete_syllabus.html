@@ -84,6 +84,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
 /* search */
 .faded{opacity:0.08!important;pointer-events:none;transition:opacity 0.2s}
 
+.s-export{background:none;border:1px solid var(--bd);color:var(--fg3);font-size:11px;font-family:var(--font);padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;letter-spacing:0.3px}
+.s-export:hover{color:var(--fg);border-color:var(--fg)}
+
 @media(max-width:480px){
   .s{padding:16px 12px}
   .sec{padding-left:24px}
@@ -97,7 +100,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-s
   <div class="s-meta">
     <span>8 layers</span><span class="dot"></span>
     <span>34 sections</span><span class="dot"></span>
-    <span>368 topics</span>
+    <span>368 topics</span><span class="dot"></span>
+    <button class="s-export" onclick="exportMD()">Export .md</button>
   </div>
   <input class="s-search" placeholder="Search..." oninput="search(this.value)" />
   <div id="root"></div>
@@ -367,6 +371,29 @@ function search(q) {
     if (v && layerHit) lEl.classList.add('open');
     if (!v) lEl.classList.remove('open');
   });
+}
+
+function exportMD() {
+  let md = '# AI Agent Systems — Syllabus\n\n';
+  md += '> 8 layers · 34 sections · 368 topics\n\n';
+  data.forEach(layer => {
+    md += `## ${layer.id}. ${layer.title}\n\n`;
+    layer.sections.forEach(sec => {
+      md += `### ${sec.title}\n\n`;
+      sec.topics.forEach(t => {
+        const text = getText(t);
+        const tag = isNew(t) ? ' *(new)*' : '';
+        md += `- ${text}${tag}\n`;
+      });
+      md += '\n';
+    });
+  });
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ai_agent_systems_syllabus.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 render();
