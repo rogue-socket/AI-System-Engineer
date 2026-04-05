@@ -1306,6 +1306,22 @@
     };
   }
 
+  function getRenderableMetaPair(renderable) {
+    if (!renderable || renderable.href || renderable.prerequisites.length || renderable.prerequisiteNote) {
+      return null;
+    }
+
+    const match = renderable.text.match(/^([^:]{2,48})\s*:\s+(.+)$/);
+    if (!match) {
+      return null;
+    }
+
+    return {
+      label: match[1].trim(),
+      value: match[2].trim()
+    };
+  }
+
   function setLayerOpenState(layerEl, isOpen) {
     layerEl.classList.toggle('open', isOpen);
     const control = layerEl.querySelector('.l-h');
@@ -1400,12 +1416,14 @@
         const sectionInner = document.createElement('div');
         sectionInner.className = 'sec-inner';
         const topicsEl = document.createElement('div');
-        topicsEl.className = 'topics';
+        const renderables = section.topics.map(getRenderableTopic);
+        const metaPairCount = renderables.reduce((count, renderable) => count + (getRenderableMetaPair(renderable) ? 1 : 0), 0);
+        topicsEl.className = metaPairCount >= 2 ? 'topics topics-meta' : 'topics';
 
-        section.topics.forEach(topic => {
-          const renderable = getRenderableTopic(topic);
+        renderables.forEach(renderable => {
+          const metaPair = getRenderableMetaPair(renderable);
           const wrapper = document.createElement('div');
-          wrapper.className = 'topic-token';
+          wrapper.className = `topic-token${metaPair ? ' topic-token-meta' : ''}`;
           wrapper.dataset.text = renderable.text.toLowerCase();
           wrapper.dataset.prereqs = renderable.prerequisites.map(item => item.text.toLowerCase()).join(' ');
           wrapper.dataset.status = renderable.status;
@@ -1416,40 +1434,57 @@
             wrapper.id = renderable.anchorId;
           }
 
-          const head = document.createElement('div');
-          head.className = 'topic-head';
-          const node = renderable.href ? document.createElement('a') : document.createElement('span');
-          node.className = `${renderable.isNew ? 't-new' : 't'}${renderable.href ? ' t-link' : ''}${renderable.current ? ' t-current' : ''}`;
-          if (renderable.href) {
-            node.href = renderable.href;
-          }
+          if (metaPair) {
+            const metaRow = document.createElement('div');
+            metaRow.className = 'topic-meta-row';
 
-          if (renderable.isNew) {
-            const dot = document.createElement('span');
-            dot.className = 't-new-dot';
-            node.appendChild(dot);
-            node.appendChild(document.createTextNode(renderable.text));
+            const label = document.createElement('div');
+            label.className = 'topic-meta-label';
+            label.textContent = metaPair.label;
+
+            const value = document.createElement('div');
+            value.className = 'topic-meta-value';
+            value.textContent = metaPair.value;
+
+            metaRow.appendChild(label);
+            metaRow.appendChild(value);
+            wrapper.appendChild(metaRow);
           } else {
-            node.textContent = renderable.text;
+            const head = document.createElement('div');
+            head.className = 'topic-head';
+            const node = renderable.href ? document.createElement('a') : document.createElement('span');
+            node.className = `${renderable.isNew ? 't-new' : 't'}${renderable.href ? ' t-link' : ''}${renderable.current ? ' t-current' : ''}`;
+            if (renderable.href) {
+              node.href = renderable.href;
+            }
+
+            if (renderable.isNew) {
+              const dot = document.createElement('span');
+              dot.className = 't-new-dot';
+              node.appendChild(dot);
+              node.appendChild(document.createTextNode(renderable.text));
+            } else {
+              node.textContent = renderable.text;
+            }
+
+            head.appendChild(node);
+
+            if (renderable.topicId && options.showStatusControls !== false) {
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'topic-status-control';
+              button.dataset.topicId = renderable.topicId;
+              button.dataset.status = renderable.status;
+              button.addEventListener('click', event => {
+                event.preventDefault();
+                event.stopPropagation();
+                cycleTopicStatus(renderable.topicId);
+              });
+              head.appendChild(button);
+            }
+
+            wrapper.appendChild(head);
           }
-
-          head.appendChild(node);
-
-          if (renderable.topicId && options.showStatusControls !== false) {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'topic-status-control';
-            button.dataset.topicId = renderable.topicId;
-            button.dataset.status = renderable.status;
-            button.addEventListener('click', event => {
-              event.preventDefault();
-              event.stopPropagation();
-              cycleTopicStatus(renderable.topicId);
-            });
-            head.appendChild(button);
-          }
-
-          wrapper.appendChild(head);
 
           if (options.showPrerequisites !== false && (renderable.prerequisites.length || renderable.prerequisiteNote)) {
             const prerequisites = document.createElement('div');

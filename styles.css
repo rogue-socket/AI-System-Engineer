@@ -350,6 +350,11 @@ a{color:inherit;text-decoration:none}
   gap:4px 18px;
 }
 
+.topics-meta{
+  grid-template-columns:1fr;
+  gap:0;
+}
+
 .topic-token{
   display:flex;
   flex-direction:column;
@@ -370,6 +375,32 @@ a{color:inherit;text-decoration:none}
 .topic-token[data-status="need-visit"]{color:var(--status-need-visit);border-color:rgba(33,102,229,0.14)}
 .topic-token[data-status="learning"]{color:var(--status-learning);border-color:rgba(184,134,0,0.18)}
 .topic-token[data-status="done"]{color:var(--status-done);border-color:rgba(17,133,83,0.16)}
+
+.topic-token-meta{
+  padding:7px 0;
+}
+
+.topic-meta-row{
+  display:grid;
+  grid-template-columns:minmax(120px,170px) 1fr;
+  gap:16px;
+  align-items:start;
+}
+
+.topic-meta-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--fg3);
+  padding-top:3px;
+}
+
+.topic-meta-value{
+  font-size:14px;
+  line-height:1.45;
+  color:var(--fg);
+}
 
 .topic-head{
   display:flex;
@@ -506,6 +537,7 @@ a{color:inherit;text-decoration:none}
   .hero-summary{font-size:14px}
   .sec{padding-left:24px}
   .topics{padding-left:10px;grid-template-columns:1fr;gap:2px}
+  .topic-meta-row{grid-template-columns:1fr;gap:4px}
   .l-h{gap:10px;padding:14px 0}
   .l-t{font-size:16px}
   .l-s{white-space:normal}
