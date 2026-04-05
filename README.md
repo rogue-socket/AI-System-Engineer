@@ -13,6 +13,7 @@ The site is a static GitHub Pages project with no build step. It presents the sy
 - Topic detail pages that expand a selected topic into related context, neighboring concepts, and study guidance
 - Local progress markers for topics: Default, Need to visit, Learning, and Done
 - Search, collapse/expand controls, and Markdown export
+- Hand-authored topic briefs for selected topic detail pages, with generated fallbacks for the rest
 - A minimal static frontend designed to work well on GitHub Pages
 
 ## Running Locally
@@ -21,6 +22,7 @@ Because this is a static site, you can run it in any simple local web server.
 
 - [index.html](/c:/workdir/AI-System-Engineer/index.html): main syllabus page
 - [topic.html](/c:/workdir/AI-System-Engineer/topic.html): topic detail page
+- [topic-briefs.js](/c:/workdir/AI-System-Engineer/topic-briefs.js): hand-authored topic brief content for selected topic pages
 - [syllabus.js](/c:/workdir/AI-System-Engineer/syllabus.js): syllabus data, derived structure, rendering logic, filters, exports, and topic detail generation
 - [styles.css](/c:/workdir/AI-System-Engineer/styles.css): visual system and layout
 - [README.md](/c:/workdir/AI-System-Engineer/README.md): project overview
