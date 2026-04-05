@@ -26,6 +26,7 @@
     <span id="meta-layers"></span><span class="dot"></span>
     <span id="meta-sections"></span><span class="dot"></span>
     <span id="meta-topics"></span><span class="dot"></span>
+    <button class="s-collapse" id="collapse-button" type="button">Expand all</button>
     <button class="s-export" id="export-button" type="button">Export .md</button>
   </div>
 
@@ -34,9 +35,11 @@
   <div id="root"></div>
 </div>
 
+<button class="scroll-top" id="scroll-top" type="button" aria-label="Scroll to top">↑</button>
+
 <script src="syllabus.js"></script>
 <script>
-const { buildTopicDetailData, renderLayerTree, filterLayerTree, layersToMarkdown, downloadMarkdown, renderStatusLegend, renderTopicStatusPicker, subscribeToTopicStatusChanges, applyPageTheme } = window.Syllabus;
+const { buildTopicDetailData, renderLayerTree, filterLayerTree, layersToMarkdown, downloadMarkdown, renderStatusLegend, renderTopicStatusPicker, subscribeToTopicStatusChanges, applyPageTheme, setAllLayersOpen } = window.Syllabus;
 
 const params = new URLSearchParams(window.location.search);
 const topicId = params.get('topic');
@@ -142,7 +145,7 @@ if (!detail) {
   heroSummary.textContent = detail.summary;
   renderBreadcrumbs(detail.breadcrumbs);
   renderHeroCards(detail.heroCards);
-  renderLayerTree(root, detail.layers, { openAll: true });
+  renderLayerTree(root, detail.layers, { openAll: false });
   updateMeta(detail.stats);
   refreshStatusUI();
   subscribeToTopicStatusChanges(refreshStatusUI);
@@ -152,7 +155,23 @@ if (!detail) {
   });
 
   exportButton.addEventListener('click', exportMarkdown);
+
+  const collapseButton = document.getElementById('collapse-button');
+  let allExpanded = false;
+  collapseButton.addEventListener('click', () => {
+    allExpanded = !allExpanded;
+    setAllLayersOpen(root, allExpanded);
+    collapseButton.textContent = allExpanded ? 'Collapse all' : 'Expand all';
+  });
 }
+
+const scrollTopBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 </script>
 </body>
 </html>

@@ -13,6 +13,7 @@
     <span id="meta-layers"></span><span class="dot"></span>
     <span id="meta-sections"></span><span class="dot"></span>
     <span id="meta-topics"></span><span class="dot"></span>
+    <button class="s-collapse" id="collapse-button" type="button">Collapse all</button>
     <button class="s-export" id="export-button" type="button">Export .md</button>
   </div>
   <div class="status-legend" id="status-legend"></div>
@@ -20,9 +21,11 @@
   <div id="root"></div>
 </div>
 
+<button class="scroll-top" id="scroll-top" type="button" aria-label="Scroll to top">↑</button>
+
 <script src="syllabus.js"></script>
 <script>
-const { data, getStats, renderLayerTree, filterLayerTree, wireHashFocus, layersToMarkdown, downloadMarkdown, renderStatusLegend, subscribeToTopicStatusChanges, applyPageTheme } = window.Syllabus;
+const { data, getStats, renderLayerTree, filterLayerTree, wireHashFocus, layersToMarkdown, downloadMarkdown, renderStatusLegend, subscribeToTopicStatusChanges, applyPageTheme, setAllLayersOpen } = window.Syllabus;
 
 const root = document.getElementById('root');
 const searchInput = document.getElementById('search');
@@ -61,6 +64,22 @@ searchInput.addEventListener('input', event => {
 });
 
 exportButton.addEventListener('click', exportMarkdown);
+
+const collapseButton = document.getElementById('collapse-button');
+let allCollapsed = false;
+collapseButton.addEventListener('click', () => {
+  allCollapsed = !allCollapsed;
+  setAllLayersOpen(root, !allCollapsed);
+  collapseButton.textContent = allCollapsed ? 'Expand all' : 'Collapse all';
+});
+
+const scrollTopBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 </script>
 </body>
 </html>

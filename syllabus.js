@@ -359,21 +359,57 @@
               { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems' }
             ]
           }),
-          syntheticSection('Core vocabulary', [
-            newTopic('Objectives vs tasks vs subtasks'),
-            newTopic('Prompts vs policies vs plans'),
-            newTopic('Context vs memory vs knowledge base'),
+          syntheticSection('Model/runtime vocabulary', [
             newTopic('Tokens vs embeddings vs generated text'),
+            newTopic('Pretraining vs fine-tuning vs inference'),
+            newTopic('Inference vs serving vs deployment'),
+            newTopic('Prompt tokens vs completion tokens vs reasoning tokens'),
+            newTopic('Context window vs working context vs max output length'),
+            newTopic('Decoding vs sampling vs generation'),
+            newTopic('Greedy decoding vs temperature vs top-p sampling'),
             newTopic('Structured outputs vs free-form generation'),
             newTopic('Stateless calls vs stateful sessions'),
-            newTopic('Tool invocation vs workflow orchestration'),
+            newTopic('Single-turn completion vs multi-turn interaction'),
+            newTopic('Inference-time compute vs training-time compute'),
+            newTopic('Model weights vs runtime state vs external state'),
+            newTopic('Cold start vs warm path vs cached path'),
+            newTopic('Latency vs throughput vs concurrency'),
             newTopic('Latency, cost, reliability, and accuracy as system constraints')
           ], {
             prerequisites: ['Whole-system map'],
             sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' },
               { layerTitle: 'Foundation Models', sectionTitle: 'Prompt engineering' },
+              { layerTitle: 'Foundation Models', sectionTitle: 'Inference optimization' },
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Model infrastructure' },
+              { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Scaling & operations' }
+            ]
+          }),
+          syntheticSection('Agent/system vocabulary', [
+            newTopic('Objectives vs tasks vs subtasks'),
+            newTopic('Prompts vs policies vs plans'),
+            newTopic('Context vs memory vs knowledge base'),
+            newTopic('Reasoning vs planning vs acting'),
+            newTopic('Reasoning models vs chat models vs tool-using agents'),
+            newTopic('Retrieval vs search vs reranking'),
+            newTopic('Memory write vs memory recall vs context injection'),
+            newTopic('Grounding vs hallucination vs verification'),
+            newTopic('Tool invocation vs workflow orchestration'),
+            newTopic('Function calling vs tool use vs agent action'),
+            newTopic('Routing vs orchestration vs delegation'),
+            newTopic('Supervision vs oversight vs approval'),
+            newTopic('Guardrails vs validators vs evaluators'),
+            newTopic('Session state vs agent state vs workflow state'),
+            newTopic('Single-agent system vs multi-agent system')
+          ], {
+            prerequisites: ['Whole-system map', 'Model/runtime vocabulary'],
+            sourceRefs: [
+              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Reasoning paradigms' },
               { layerTitle: 'Memory & Knowledge', sectionTitle: 'Memory taxonomy' },
-              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Tool interfaces' }
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Retrieval techniques' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Tool interfaces' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems' }
             ]
           }),
           syntheticSection('Design trade-offs', [
@@ -381,28 +417,70 @@
             newTopic('Single-agent vs multi-agent design choice'),
             newTopic('Long context vs RAG vs fine-tuning'),
             newTopic('Closed-weight vs open-weight deployment'),
+            newTopic('Hosted APIs vs self-hosted inference'),
+            newTopic('General-purpose model vs specialist model stack'),
+            newTopic('Reasoning-first model vs low-latency model routing'),
+            newTopic('One big prompt vs explicit workflow decomposition'),
+            newTopic('Prompt logic vs code logic vs symbolic logic'),
+            newTopic('Structured outputs vs natural-language post-processing'),
+            newTopic('Tool calling vs direct API integration in code'),
+            newTopic('Synchronous request-response vs asynchronous background execution'),
+            newTopic('Single-shot generation vs iterative refinement loops'),
+            newTopic('Parallel execution vs sequential dependency-aware execution'),
+            newTopic('Dynamic planning vs fixed playbooks'),
+            newTopic('Shared memory vs isolated memory per agent'),
+            newTopic('Centralized orchestrator vs peer-to-peer coordination'),
+            newTopic('Human approval gates vs full autonomy'),
             newTopic('Autonomy vs oversight'),
+            newTopic('Flexible autonomy vs hard capability boundaries'),
+            newTopic('Broad tool access vs least-privilege tool scopes'),
             newTopic('Deterministic validation vs model judgment'),
+            newTopic('Rule-based guardrails vs model-based guardrails'),
+            newTopic('Strict schemas vs flexible schemas'),
+            newTopic('Immediate execution vs simulation / dry-run first'),
+            newTopic('Short-term context stuffing vs durable memory systems'),
+            newTopic('Raw retrieval recall vs reranked precision'),
+            newTopic('Freshness of knowledge vs cost of continuous ingestion'),
+            newTopic('Latency optimization vs answer quality'),
+            newTopic('Reliability engineering vs maximum capability reach'),
+            newTopic('Cheap-model-first cascades vs premium-model default'),
+            newTopic('Observability depth vs operational overhead'),
+            newTopic('Experimentation speed vs governance maturity'),
             newTopic('When to keep logic symbolic'),
             newTopic('Toy demos vs durable systems')
           ], {
-            prerequisites: ['Whole-system map', 'Core vocabulary'],
+            prerequisites: ['Whole-system map', 'Model/runtime vocabulary', 'Agent/system vocabulary'],
             sourceRefs: [
               { layerTitle: 'Memory & Knowledge', sectionTitle: 'RAG architectures' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'Knowledge quality' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Agent design patterns' },
+              { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Workflow systems' },
               { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Safety mechanisms' },
               { layerTitle: 'Infrastructure & Deployment', sectionTitle: 'Agent FinOps & cost economics' }
             ]
           }),
           syntheticSection('Study route', [
             newTopic('Rough system picture before local optimization'),
+            newTopic('Model/runtime vocabulary before deep architecture analysis'),
+            newTopic('Agent/system vocabulary before orchestration patterns'),
             newTopic('Models first, then cognition, then memory, then agency'),
-            newTopic('Single-agent implementation before multi-agent orchestration'),
-            newTopic('Evaluation after implementation, governance after operational understanding'),
+            newTopic('Learn prompting and decoding before tool use abstractions'),
+            newTopic('Understand reasoning and planning before autonomy decisions'),
+            newTopic('Study memory and retrieval before advanced RAG patterns'),
+            newTopic('Build one good single-agent workflow before multi-agent orchestration'),
+            newTopic('Add validation and observability before increasing autonomy'),
+            newTopic('Do evaluation alongside implementation, not only at the end'),
+            newTopic('Study governance after you understand real system failure modes'),
+            newTopic('Use production constraints early: latency, cost, permissions, retries'),
             newTopic('Use cases as synthesis, not the starting point')
           ], {
-            prerequisites: ['Whole-system map'],
+            prerequisites: ['Whole-system map', 'Model/runtime vocabulary', 'Agent/system vocabulary'],
             sourceRefs: [
               { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' },
+              { layerTitle: 'Reasoning & Intelligence', sectionTitle: 'Planning & control' },
+              { layerTitle: 'Memory & Knowledge', sectionTitle: 'RAG architectures' },
+              { layerTitle: 'Agency & Tool Use', sectionTitle: 'Interaction patterns' },
               { layerTitle: 'Evaluation, Observability & Applications', sectionTitle: 'Evaluation' },
               { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Governance & compliance' }
             ]
@@ -427,7 +505,7 @@
             newTopic('Generated tokens as iterative decoding steps'),
             newTopic('Structured output as constrained generation')
           ], {
-            prerequisites: ['Whole-system map', 'Core vocabulary'],
+            prerequisites: ['Whole-system map', 'Model/runtime vocabulary'],
             sourceRefs: [
               { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' },
               { layerTitle: 'Foundation Models', sectionTitle: 'Architecture extensions' },
@@ -544,7 +622,7 @@
         bg: '#E6F1FB',
         sections: [
           copySection('Memory & Knowledge', 'Memory taxonomy', {
-            prerequisites: ['Whole-system map', 'Core vocabulary']
+            prerequisites: ['Whole-system map', 'Agent/system vocabulary']
           }),
           copySection('Memory & Knowledge', 'Knowledge stores', {
             prerequisites: ['Memory taxonomy']
@@ -1995,6 +2073,15 @@
     };
   }
 
+  function setAllLayersOpen(root, isOpen) {
+    root.querySelectorAll('.l').forEach(function (layerEl) {
+      setLayerOpenState(layerEl, isOpen);
+      layerEl.querySelectorAll('.sec').forEach(function (sectionEl) {
+        setSectionOpenState(sectionEl, isOpen);
+      });
+    });
+  }
+
   window.Syllabus = {
     rawData,
     data,
@@ -2017,6 +2104,7 @@
     getTopicHref,
     getIndexAnchorHref,
     getTopicEntryById,
-    buildTopicDetailData
+    buildTopicDetailData,
+    setAllLayersOpen
   };
 }());
