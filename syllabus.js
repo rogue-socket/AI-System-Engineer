@@ -2264,6 +2264,116 @@
     exampleScenario: 'an assistant with access to data, tools, or side effects that could become costly or unsafe if left unchecked'
   };
 
+  const distinctionTopicBriefGuide = {
+    roleLabel: 'a distinction or trade-off topic',
+    purpose: 'where nearby concepts diverge or which constraint should dominate a design choice before implementation begins',
+    used: 'architecture reviews, vocabulary cleanup, and system design conversations where teams need sharper boundaries',
+    unlock: 'cleaner reasoning about trade-offs and adjacent ideas that are easy to blur together',
+    analogy: 'a planning meeting where a team has to separate urgent work from important work and decide which constraint actually controls the plan',
+    withoutCase: 'teams mix neighboring concepts together or pretend incompatible goals can all be optimized at once',
+    withCase: 'teams can name the real axis of choice and design around it instead of arguing past each other',
+    exampleScenario: 'a team deciding which system shape, constraint, or operating mode should steer the architecture'
+  };
+
+  const systemDecompositionTopicBriefGuide = {
+    roleLabel: 'a system-mapping topic',
+    purpose: 'how the major pieces, flows, and boundaries of an agent system fit together before local optimization starts',
+    used: 'architecture diagrams, scoping sessions, debugging, and system reviews that need an end-to-end picture',
+    unlock: 'a cleaner view of how parts connect, where state changes happen, and where side effects should be expected',
+    analogy: 'an operations lead sketching intake, handoffs, working state, approvals, and outbound actions on a whiteboard before the team changes the process',
+    withoutCase: 'teams talk about the system as one blurry blob and struggle to explain how changes propagate',
+    withCase: 'the system becomes easier to reason about end to end because handoffs, boundaries, and side effects are visible',
+    exampleScenario: 'a team mapping an agent workflow before adding new tools, memory, or autonomy'
+  };
+
+  const trainingMethodTopicBriefGuide = {
+    roleLabel: 'a model adaptation or learning-method topic',
+    purpose: 'how behavior changes through data, objectives, and post-training choices rather than only runtime prompts',
+    used: 'fine-tuning pipelines, alignment work, domain adaptation, personalization, and research on better post-training',
+    unlock: 'specific ways to change model behavior at the training layer',
+    analogy: 'an enablement team changing how staff are trained, coached, and evaluated rather than just sending a one-off reminder before today\'s shift',
+    withoutCase: 'teams keep asking prompts to solve problems that really require different training signals',
+    withCase: 'teams can choose the right post-training lever for the behavior change they actually need',
+    exampleScenario: 'a platform team trying to make a model more helpful, safer, or better adapted to a domain'
+  };
+
+  const memoryOperationsTopicBriefGuide = {
+    roleLabel: 'a memory-operations topic',
+    purpose: 'how stored context is selected, aged, compressed, shared, governed, and recalled over time',
+    used: 'assistants with durable memory, personalized systems, long-running workflows, and knowledge-heavy agents',
+    unlock: 'cleaner memory hygiene instead of letting recall drift into one giant log',
+    analogy: 'records management staff deciding what stays on the active case file, what moves to archive storage, and who is allowed to read it',
+    withoutCase: 'memory becomes noisy, stale, or unsafe to reuse',
+    withCase: 'memory stays more relevant, governable, and cheaper to operate',
+    exampleScenario: 'a long-running assistant that has to remember the right things without carrying every past detail forever'
+  };
+
+  const policyControlTopicBriefGuide = {
+    roleLabel: 'a policy and validation control topic',
+    purpose: 'where rules, approvals, and checks are enforced before the agent is allowed to continue or act',
+    used: 'tool approval flows, enterprise agents, safety reviews, regulated workflows, and schema-constrained systems',
+    unlock: 'safer execution with clearer enforcement points',
+    analogy: 'an operations workflow with required sign-offs, form validation, and separation of duties before a risky change is approved',
+    withoutCase: 'the agent crosses trust boundaries with too little validation or too much ambiguity about who approves what',
+    withCase: 'teams can place clear gates where mistakes would otherwise become side effects',
+    exampleScenario: 'an agent that prepares work automatically but must satisfy policy before anything binding happens'
+  };
+
+  const identityTrustTopicBriefGuide = {
+    roleLabel: 'an identity, trust, or delegation topic',
+    purpose: 'how agents prove who they are, what authority they carry, and how other systems decide whether to trust them',
+    used: 'authentication flows, delegated tool use, multi-agent communication, regulated APIs, and cross-organizational integrations',
+    unlock: 'cleaner trust boundaries and safer delegation',
+    analogy: 'a contractor showing ID, a signed work order, and a limited badge before entering a client site on someone else\'s behalf',
+    withoutCase: 'credentials, identity, and authority blur together in unsafe ways',
+    withCase: 'agents can act with clearer provenance, scoped authority, and auditable trust',
+    exampleScenario: 'an agent acting on behalf of a user across several systems with different permissions'
+  };
+
+  const runtimeDurabilityTopicBriefGuide = {
+    roleLabel: 'a runtime durability topic',
+    purpose: 'how work persists, resumes, retries, isolates, and stays operational when the agent runs under real workload',
+    used: 'background workers, durable workflows, queue-based systems, long-running jobs, and production runtimes',
+    unlock: 'recoverable execution instead of fragile one-shot runs',
+    analogy: 'an operations team designing shift handoffs, incident logs, and recovery playbooks so work continues cleanly across interruptions',
+    withoutCase: 'execution state becomes brittle, hard to replay, or easy to corrupt',
+    withCase: 'work can survive interruptions, retries, and service boundaries with much less drama',
+    exampleScenario: 'a long-running task that must survive restarts, retries, and partial failure'
+  };
+
+  const threatFailureTopicBriefGuide = {
+    roleLabel: 'a threat, failure-mode, or adversarial topic',
+    purpose: 'how capable systems break, drift, or get exploited when incentives, attacks, or long chains of behavior go wrong',
+    used: 'red teaming, risk review, incident analysis, safety evaluation, and production hardening',
+    unlock: 'clearer threat models and earlier detection of dangerous failure patterns',
+    analogy: 'a risk team mapping known fraud patterns and operational failure modes before a new service is exposed to the public',
+    withoutCase: 'teams discover the bad pattern only after users, budgets, or downstream systems are already hit',
+    withCase: 'teams can recognize the pattern sooner and add controls that match the actual failure mode',
+    exampleScenario: 'a production agent that can touch tools, money, sensitive data, or long-running workflows'
+  };
+
+  const detectionMeasurementTopicBriefGuide = {
+    roleLabel: 'a detection and measurement topic',
+    purpose: 'how teams notice subtle behavior gaps, robustness limits, or long-horizon failures before they become visible incidents',
+    used: 'evaluation design, monitoring, regression analysis, model updates, and robustness testing',
+    unlock: 'earlier visibility into issues that do not show up in simple happy-path checks',
+    analogy: 'a quality team designing audits, spot checks, and review triggers so drift is caught before customers feel the damage',
+    withoutCase: 'teams miss the behavior entirely or notice it only after the system has already behaved badly in the field',
+    withCase: 'teams can instrument the blind spot directly and decide whether it is acceptable, fixable, or release-blocking',
+    exampleScenario: 'a team trying to prove that an agent stays aligned under changing data, longer horizons, or unseen tasks'
+  };
+
+  const protocolStandardsTopicBriefGuide = {
+    roleLabel: 'a protocol or interoperability topic',
+    purpose: 'how agent systems describe capabilities, exchange requests, and integrate through shared standards instead of one-off glue',
+    used: 'tool ecosystems, multi-vendor environments, agent platforms, and cross-team integrations',
+    unlock: 'portability and cleaner interoperability across runtimes and vendors',
+    analogy: 'different organizations agreeing on common forms, field names, and handoff procedures so work can move between them without custom retraining every time',
+    withoutCase: 'every integration becomes bespoke and fragile',
+    withCase: 'capabilities can move across tools and platforms with far less custom stitching',
+    exampleScenario: 'a team trying to connect agents, tools, and vendors without rewriting the contract for each new integration'
+  };
+
   const layerTopicBriefGuides = {
     'Mental Models': mentalModelTopicBriefGuide,
     'Models & Representations': modelTopicBriefGuide,
@@ -2290,9 +2400,46 @@
     { pattern: /safety|security|governance|alignment|privacy/i, guide: safetyTopicBriefGuide }
   ];
 
+  const topicBriefKindRules = [
+    { pattern: /\bvs\b|trade-offs?|choice|beats|difference between/i, kind: 'comparison' },
+    { pattern: /inputs?, state, outputs?, and side effects|compound ai systems|rough system picture/i, kind: 'system-decomposition' },
+    { pattern: /^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, kind: 'decision-lens' },
+    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|rlhf|rlaif|dpo|ppo|grpo|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, kind: 'training-method' },
+    { pattern: /read \/ write memory policies|memory selection policies|memory routing|memory ttl|time decay|conflict resolution across memories|personalized vs shared memory|importance scoring|salience|compaction|summarization policies|archival|forgetting|memory provenance|source lineage|memory permissions|access control/i, kind: 'memory-operations' },
+    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|compliance|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, kind: 'policy-control' },
+    { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, kind: 'detection-measurement' },
+    { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, kind: 'threat-failure' },
+    { pattern: /oauth|authentication|credential|mTLS|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, kind: 'identity-trust' },
+    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|registry standards|interop layers|agent card|a2a|acp|anp|mcp/i, kind: 'protocol-standards' },
+    { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, kind: 'runtime-durability' }
+  ];
+
+  const topicBriefGuideRules = [
+    { pattern: /inputs?, state, outputs?, and side effects|compound ai systems|rough system picture/i, guide: systemDecompositionTopicBriefGuide },
+    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|rlhf|rlaif|dpo|ppo|grpo|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, guide: trainingMethodTopicBriefGuide },
+    { pattern: /read \/ write memory policies|memory selection policies|memory routing|memory ttl|time decay|conflict resolution across memories|personalized vs shared memory|importance scoring|salience|compaction|summarization policies|archival|forgetting|memory provenance|source lineage|memory permissions|access control/i, guide: memoryOperationsTopicBriefGuide },
+    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|compliance|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, guide: policyControlTopicBriefGuide },
+    { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, guide: detectionMeasurementTopicBriefGuide },
+    { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, guide: threatFailureTopicBriefGuide },
+    { pattern: /oauth|authentication|credential|mTLS|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, guide: identityTrustTopicBriefGuide },
+    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|registry standards|interop layers|agent card|a2a|acp|anp|mcp/i, guide: protocolStandardsTopicBriefGuide },
+    { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, guide: runtimeDurabilityTopicBriefGuide },
+    { pattern: /\bvs\b|trade-offs?|choice|beats|difference between|^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, guide: distinctionTopicBriefGuide }
+  ];
+
+  function getTopicBriefKind(entry) {
+    const titleRule = topicBriefKindRules.find(rule => rule.pattern.test(entry.text));
+    return titleRule ? titleRule.kind : 'default';
+  }
+
   function getTopicBriefGuide(entry) {
-    const matchText = `${entry.section.title} ${entry.layer.title}`;
-    const sectionRule = topicBriefSectionRules.find(rule => rule.pattern.test(matchText));
+    const titleRule = topicBriefGuideRules.find(rule => rule.pattern.test(entry.text));
+    if (titleRule) {
+      return titleRule.guide;
+    }
+
+    const sectionMatchText = `${entry.section.title} ${entry.layer.title}`;
+    const sectionRule = topicBriefSectionRules.find(rule => rule.pattern.test(sectionMatchText));
     if (sectionRule) {
       return sectionRule.guide;
     }
@@ -2320,39 +2467,376 @@
     return lines.map(line => override[line.label] ? { ...line, text: override[line.label] } : line);
   }
 
+  function getTopicBriefComparisonParts(text) {
+    const differenceMatch = text.match(/^the difference between (.+?) and (.+)$/i);
+    if (differenceMatch) {
+      return [differenceMatch[1].trim(), differenceMatch[2].trim()];
+    }
+
+    const beatsMatch = text.match(/^when (.+?) beats (.+)$/i);
+    if (beatsMatch) {
+      return [beatsMatch[1].trim(), beatsMatch[2].trim()];
+    }
+
+    return text.split(/\s+vs\s+/i).map(part => part.trim()).filter(Boolean);
+  }
+
+  function buildGeneratedTopicBrief(entry, guide, briefKind, partnerText, relatedLayerText) {
+    const comparisonParts = getTopicBriefComparisonParts(entry.text);
+
+    switch (briefKind) {
+      case 'comparison': {
+        const comparisonText = comparisonParts.length
+          ? `the boundary between ${joinNaturalLanguage(comparisonParts)}`
+          : 'where nearby ideas diverge and why the distinction matters';
+
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a distinction topic about ${comparisonText}. It helps explain where the concepts overlap, where they diverge, and why the difference matters in practice.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when teams have to choose between adjacent options rather than treat them as interchangeable. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by making the decision axis explicit before architecture choices harden around the wrong assumption.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is to understand which mode fits the job instead of pretending every situation wants the same operating style.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear read on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams often pick an option for the wrong reason or mix several patterns into one blurry design.`
+          },
+          {
+            label: 'With it',
+            text: `With the distinction in place, ${guide.withCase}. In ${guide.exampleScenario}, the team can explain why one option fits better than the alternatives.`
+          }
+        ];
+      }
+
+      case 'system-decomposition':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a system-mapping topic about the major pieces, flows, or boundaries that make up one agent system. It is less about one isolated algorithm and more about how the moving parts fit together.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when a team needs a shared picture before optimizing one local detail. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning a fuzzy system sketch into an explainable structure with visible boundaries and handoffs.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The value is having one map of the work before people start changing separate pieces in isolation.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear picture of ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams tend to optimize one component while misunderstanding what it does to the rest of the workflow.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, design reviews become easier because everyone is talking about the same system picture.`
+          }
+        ];
+
+      case 'decision-lens':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a design-lens topic about one pressure or constraint that shapes architecture choices upstream. It helps teams notice the hidden variable that should be steering the design.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when the hard part is not implementation but choosing what to optimize first. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by making the controlling constraint explicit before the system grows around the wrong trade-off.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is to name the pressure that should be driving the plan.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear read on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams often pull in several directions at once or optimize the wrong thing.`
+          },
+          {
+            label: 'With it',
+            text: `With the lens in place, ${guide.withCase}. In ${guide.exampleScenario}, the team can align design choices to the real constraint instead of fighting symptoms.`
+          }
+        ];
+
+      case 'training-method':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a learning-method topic about how model behavior changes through data, optimization, or post-training choices after the base model already exists.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when prompts alone cannot reliably create the behavior change the product needs. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by giving the team a concrete training-side lever instead of only tweaking runtime instructions.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The common thread is that the organization is changing how people are trained, not just what they are told today.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams either overfit on one technique or keep using runtime patches for problems that belong in training.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} understood, ${guide.withCase}. In ${guide.exampleScenario}, the team can choose a training intervention that matches the actual behavior gap.`
+          }
+        ];
+
+      case 'memory-operations':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a memory-operations topic about how stored context is selected, aged, compressed, shared, or governed after it has already been written.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially once an agent has more history than can safely stay in the active prompt. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning memory from a passive log into something that can be curated and governed deliberately.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The key idea is that remembered material needs upkeep, not just storage.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear approach to ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, recall gets noisier over time and memory becomes harder to trust.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the agent can carry history forward without letting the memory system turn into clutter.`
+          }
+        ];
+
+      case 'policy-control':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a control-layer topic about where rules, approvals, validation checks, or policy boundaries are enforced before the agent is allowed to continue.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially where side effects, trust boundaries, or compliance obligations mean the agent cannot simply improvise. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by giving the system a visible enforcement point instead of hoping good behavior emerges on its own.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is that risky work usually needs an explicit checkpoint, not just trust in good intentions.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams discover too late that the agent crossed a boundary nobody formalized.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the agent can move faster inside the allowed lane because the control point is explicit.`
+          }
+        ];
+
+      case 'detection-measurement':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a detection-and-measurement topic about how teams notice subtle behavior gaps, robustness limits, or long-horizon failures before they become visible incidents.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when the system can appear successful on the surface while drifting underneath. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning a vague concern into something the team can probe, monitor, and compare over time.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is to design checks that reveal hidden quality problems before they become public failures.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams often discover the weakness only after deployment pressure has already raised the stakes.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the team can see the weak signal earlier and decide what action it warrants.`
+          }
+        ];
+
+      case 'identity-trust':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is an identity-and-trust topic about how agents prove who they are, what authority they carry, and how other systems decide whether to honor that authority.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when agents act on behalf of users or cross organizational boundaries. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by separating identity, permission, and provenance instead of letting them collapse into one vague trust assumption.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. What matters is not only who the actor is, but also what they are allowed to do on whose behalf.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear approach to ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams end up with hard-to-audit delegation and brittle trust boundaries.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, delegation becomes easier to reason about and much safer to operate.`
+          }
+        ];
+
+      case 'protocol-standards':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is an interoperability topic about how agent systems describe capabilities, exchange requests, or integrate through shared conventions instead of bespoke glue.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when multiple runtimes, tools, or vendors need to work together without custom wiring for every connection. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning integration from a one-off craft project into something closer to a reusable contract.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. Shared handoff rules reduce the amount of translation work every team has to reinvent.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear contract around ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, integrations become expensive to build and fragile to change.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, ecosystems can interoperate without rewriting the interface each time.`
+          }
+        ];
+
+      case 'runtime-durability':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a runtime-durability topic about how work executes, persists, resumes, or stays isolated when the agent runs as software under real operating conditions.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when jobs outlive one request, one process, or one happy-path call. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by making execution survivable under retries, interruptions, and uneven workload instead of assuming everything finishes cleanly on the first attempt.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The key is not brilliance in one moment, but clean continuity across interruptions and handoffs.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, the system may appear fine in demos yet fail when work spans time, retries, or service boundaries.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the agent can keep moving even when the runtime environment gets messy.`
+          }
+        ];
+
+      case 'threat-failure':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} names a concrete failure or attack mode that can distort behavior, waste resources, or create unsafe outcomes in an otherwise capable agent system.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially once the system has tools, long-running loops, or meaningful side effects. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `Treating it explicitly unlocks ${guide.unlock}. The value is not just naming the bad outcome, but recognizing the pattern early enough to design against it.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. Strong operations usually improve faster once they can name recurring failure patterns instead of treating each incident as a surprise.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear model of ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, the team often mistakes the symptom for the cause until the damage is already visible.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} understood, ${guide.withCase}. In ${guide.exampleScenario}, the team can add controls, alarms, or limits that match the real failure mode.`
+          }
+        ];
+
+      default:
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is ${guide.roleLabel}, focused on ${guide.purpose}. It sits in ${entry.layer.title} > ${entry.section.title}.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock}, turning ${entry.text} into a concrete design lever instead of a vague idea.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, that usually means more drift, more cleanup, or weaker reliability.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the system can take on a broader or more dependable role.`
+          }
+        ];
+    }
+  }
+
   function buildTopicBrief(entry, context = {}) {
     const guide = getTopicBriefGuide(entry);
+    const briefKind = getTopicBriefKind(entry);
     const partnerText = getTopicBriefPartnerText(entry, context.siblings || []);
     const relatedLayerText = context.relatedLayerTitles && context.relatedLayerTitles.length
       ? ` It also tends to connect into ${joinNaturalLanguage(context.relatedLayerTitles.slice(0, 2))}.`
       : '';
 
-    return applyTopicBriefOverrides(entry, [
-      {
-        label: 'What it is',
-        text: `${entry.text} lives in ${entry.layer.title} > ${entry.section.title}. It is best read as ${guide.roleLabel}, focused on ${guide.purpose}.`
-      },
-      {
-        label: 'Where it is used',
-        text: `You run into it in ${guide.used}. It usually travels with ${partnerText}.${relatedLayerText}`
-      },
-      {
-        label: 'What it unlocks',
-        text: `It unlocks ${guide.unlock}, which gives the agent a new control point instead of relying on vague defaults or manual patchwork.`
-      },
-      {
-        label: 'Human analogy',
-        text: `In a human setting, it is like ${guide.analogy}. That makes the role of the topic easier to picture in day-to-day work.`
-      },
-      {
-        label: 'Without it',
-        text: `Without ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, that usually means more guessing, more operator cleanup, or weaker reliability.`
-      },
-      {
-        label: 'With it',
-        text: `With ${entry.text}, ${guide.withCase}. In ${guide.exampleScenario}, the agent can take on a broader or more dependable role.`
-      }
-    ]);
+    return applyTopicBriefOverrides(entry, buildGeneratedTopicBrief(entry, guide, briefKind, partnerText, relatedLayerText));
   }
 
   const officialResourceMatchers = [
