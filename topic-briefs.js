@@ -1,4 +1,6 @@
 (function () {
+  // Keep these override slots aligned to the topic detail brief contract:
+  // definition, usage, unlock, human workflow analogy, failure mode, improvement.
   window.TopicBriefOverrides = Object.freeze({
     'Workflow vs agent vs multi-agent system': {
       'What it is': 'This topic draws the basic line between three system shapes. A workflow is mostly predetermined steps, an agent is a model-centered loop with local judgment, and a multi-agent system splits work across several collaborating agents.',
@@ -108,7 +110,7 @@
       'What it is': 'Distributed tracing gives a time-ordered view of what the agent did across prompts, tool calls, model responses, retries, and downstream actions. It is the execution story of the system, not just the final answer on the screen.',
       'Where it is used': 'It is used in production debugging, regression analysis, eval investigation, latency tuning, and incident response. As soon as an agent has more than one step, tracing stops being optional if the team wants to understand failures.',
       'What it unlocks': 'It unlocks observability at the level that agent systems actually fail. Teams can inspect which prompt fired, which tool was slow, where the loop branched, and why the final answer looked wrong.',
-      'Human analogy': 'The closest analogy is a flight recorder or a detailed work log. Instead of only seeing the final mistake, you can reconstruct the sequence of choices that produced it.',
+      'Human analogy': 'The human analogy is an incident team working from a detailed operations log during an investigation. Instead of only seeing the final mistake, the team can reconstruct the sequence of choices that produced it.',
       'Without it': 'Without tracing, teams diagnose agent behavior from symptoms and anecdotes. They see the wrong output, but they do not see the exact chain of steps, prompts, and tool results that made it happen.',
       'With it': 'With tracing, failure becomes legible. The system can be debugged step by step, which is what turns agent engineering from mysticism into something closer to normal software operations.'
     },
@@ -132,7 +134,7 @@
       'What it is': 'A context window is the amount of information a model can actively attend to during a single call. It defines the size of the model\'s short-term working space, not the total knowledge the system could possibly access.',
       'Where it is used': 'It matters in long-document analysis, chat memory, coding sessions, multimodal tasks, and any workflow where too much relevant material competes for space. Many higher-level design choices are really responses to this one limit.',
       'What it unlocks': 'It unlocks broader local reasoning over more tokens at once, but it also forces teams to think about prioritization, compression, and external memory instead of assuming everything can fit.',
-      'Human analogy': 'The human analogy is the size of the desk or whiteboard you can actively work from at one time. A bigger surface helps, but you still have to decide what stays in view.',
+      'Human analogy': 'The human analogy is a project team deciding what stays on the active working board during a meeting and what gets pushed into notes or reference folders. A bigger board helps, but the team still has to choose what remains in view.',
       'Without it': 'Without a clear sense of context windows, teams keep shoving more text into prompts and are surprised when quality drops or important evidence disappears. The agent ends up seeing either too little or too much in the wrong order.',
       'With it': 'With this topic understood, the system designer starts treating context as a scarce resource. That leads naturally to better retrieval, chunking, summarization, and stepwise workflows.'
     },
@@ -140,7 +142,7 @@
       'What it is': 'Embeddings turn text, images, or other inputs into vectors where distance roughly captures semantic similarity. They let systems compare meaning geometrically rather than relying only on exact wording.',
       'Where it is used': 'They are used in retrieval, clustering, deduplication, recommendation, memory lookup, and routing. In practice, embeddings are one of the main ways agent systems gain a searchable semantic memory.',
       'What it unlocks': 'They unlock similarity search across messy language variation. A system can find related content even when the surface phrasing does not match the query directly.',
-      'Human analogy': 'The human analogy is a concept-indexed card catalog where related ideas are stored near each other even when they use different words.',
+      'Human analogy': 'The human analogy is a research librarian organizing material by topic neighborhoods instead of exact keywords. Related ideas end up filed near each other even when they use different wording.',
       'Without it': 'Without embeddings, a knowledge system leans much harder on keyword overlap and brittle lexical matching. That often means missing useful evidence just because the wording changed.',
       'With it': 'With embeddings, the agent can search for meaning rather than literal phrasing. That is one of the core moves that makes modern retrieval systems feel less mechanical and more context-aware.'
     },
@@ -380,7 +382,7 @@
       'What it is': 'Agent runtime environments are the execution contexts where the agent loop actually runs, including the process model, permissions, connectivity, and surrounding services. They determine how the agent behaves as software, not just as a prompt.',
       'Where it is used': 'They are used in hosted agents, background workers, local assistants, browser-integrated tools, and enterprise platforms. This topic becomes important once the system has to run reliably outside a notebook or demo shell.',
       'What it unlocks': 'It unlocks operational clarity. Teams can choose where the agent lives, what it can access, how it is isolated, and how it interacts with the rest of the platform.',
-      'Human analogy': 'The human analogy is the workplace setup around a skilled worker. Talent matters, but so do the room, tools, constraints, and operating conditions where the work actually happens.',
+      'Human analogy': 'The human analogy is assigning a worker to a specific operating environment such as a call center, field truck, or secure back office. The same person behaves differently depending on the permissions, systems, and support around the role.',
       'Without it': 'Without deliberate runtime design, the agent may work conceptually but remain brittle as software. Permissions, state, failures, and integrations end up handled in ad hoc ways.',
       'With it': 'With a clear runtime environment, the system gains a stable place to live. That makes autonomy easier to control, observe, and operate at scale.'
     },
