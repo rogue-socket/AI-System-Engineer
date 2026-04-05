@@ -1490,7 +1490,11 @@
   function getRenderableTopic(topic) {
     if (typeof topic === 'string') {
       return {
+        kind: 'default',
         text: topic,
+        description: '',
+        prompt: '',
+        actionLabel: '',
         isNew: false,
         href: null,
         anchorId: null,
@@ -1505,7 +1509,11 @@
     const topicId = topic.id || topic.topicId || null;
     const prerequisites = getRenderablePrerequisites(topic.prerequisites || []);
     return {
+      kind: topic.kind || 'default',
       text: topic.text,
+      description: topic.description || '',
+      prompt: topic.prompt || '',
+      actionLabel: topic.actionLabel || '',
       isNew: !!topic.isNew,
       href: topic.href || (topic.id ? getTopicHref(topic.id) : null),
       anchorId: topic.anchorId || (topic.id ? `topic-${topic.id}` : null),
@@ -1518,7 +1526,7 @@
   }
 
   function getRenderableMetaPair(renderable) {
-    if (!renderable || renderable.href || renderable.prerequisites.length || renderable.prerequisiteNote) {
+    if (!renderable || renderable.kind !== 'default' || renderable.href || renderable.prerequisites.length || renderable.prerequisiteNote) {
       return null;
     }
 
@@ -1533,10 +1541,44 @@
     };
   }
 
+  function fallbackCopyTextToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    textarea.style.opacity = '0';
+    textarea.style.pointerEvents = 'none';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    let copied = false;
+    try {
+      copied = document.execCommand('copy');
+    } catch (error) {
+      copied = false;
+    }
+
+    document.body.removeChild(textarea);
+    return copied;
+  }
+
+  function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text)
+        .then(() => true)
+        .catch(() => fallbackCopyTextToClipboard(text));
+    }
+
+    return Promise.resolve(fallbackCopyTextToClipboard(text));
+  }
+
   function renderTopicToken(renderable, options = {}) {
     const wrapper = document.createElement('div');
     wrapper.className = 'topic-token';
-    wrapper.dataset.text = renderable.text.toLowerCase();
+    wrapper.dataset.text = [renderable.text, renderable.description, renderable.prompt].filter(Boolean).join(' ').toLowerCase();
     wrapper.dataset.prereqs = renderable.prerequisites.map(item => item.text.toLowerCase()).join(' ');
     wrapper.dataset.status = renderable.status;
     if (renderable.topicId) {
@@ -1544,6 +1586,58 @@
     }
     if (options.anchorIds && renderable.anchorId) {
       wrapper.id = renderable.anchorId;
+    }
+
+    if (renderable.kind === 'prompt') {
+      wrapper.classList.add('prompt-token');
+
+      const head = document.createElement('div');
+      head.className = 'prompt-head';
+
+      const info = document.createElement('div');
+      info.className = 'prompt-info';
+
+      const label = document.createElement('div');
+      label.className = 'prompt-label';
+      label.textContent = renderable.text;
+      info.appendChild(label);
+
+      if (renderable.description) {
+        const description = document.createElement('div');
+        description.className = 'prompt-description';
+        description.textContent = renderable.description;
+        info.appendChild(description);
+      }
+
+      const copyButton = document.createElement('button');
+      copyButton.type = 'button';
+      copyButton.className = 'prompt-copy-button';
+      copyButton.textContent = renderable.actionLabel || 'Copy prompt';
+      const defaultLabel = copyButton.textContent;
+      let resetTimer = null;
+
+      copyButton.addEventListener('click', () => {
+        copyTextToClipboard(renderable.prompt).then(copied => {
+          window.clearTimeout(resetTimer);
+          copyButton.dataset.state = copied ? 'copied' : 'error';
+          copyButton.textContent = copied ? 'Copied' : 'Copy failed';
+          resetTimer = window.setTimeout(() => {
+            copyButton.dataset.state = '';
+            copyButton.textContent = defaultLabel;
+          }, 1600);
+        });
+      });
+
+      head.appendChild(info);
+      head.appendChild(copyButton);
+      wrapper.appendChild(head);
+
+      const body = document.createElement('pre');
+      body.className = 'prompt-body';
+      body.textContent = renderable.prompt;
+      wrapper.appendChild(body);
+
+      return wrapper;
     }
 
     const head = document.createElement('div');
@@ -1876,6 +1970,17 @@
         }
         section.topics.forEach(topic => {
           const renderable = getRenderableTopic(topic);
+          if (renderable.kind === 'prompt') {
+            md += `${renderable.text}\n\n`;
+            if (renderable.description) {
+              md += `> ${renderable.description}\n\n`;
+            }
+            md += '```text\n';
+            md += `${renderable.prompt.replace(/\n+$/g, '')}\n`;
+            md += '```\n\n';
+            return;
+          }
+
           md += renderable.href
             ? `- [${renderable.text}](${renderable.href})${renderable.isNew ? ' *(new)*' : ''}\n`
             : `- ${renderable.text}${renderable.isNew ? ' *(new)*' : ''}\n`;
@@ -1938,7 +2043,7 @@
 
     const label = document.createElement('div');
     label.className = 'status-picker-label';
-    label.textContent = 'Current topic status';
+    label.textContent = 'Mark this topic';
     container.appendChild(label);
 
     const picker = document.createElement('div');
@@ -2878,6 +2983,168 @@
     return applyTopicBriefOverrides(entry, buildGeneratedTopicBrief(entry, guide, briefKind, partnerText, relatedLayerText));
   }
 
+  const topicPromptOverrides = window.TopicPromptOverrides || Object.freeze({});
+
+  function getTopicPromptFocusAreas(entry, guide, briefKind, comparisonParts) {
+    const focusAreas = [];
+    const isPromptConcept = /prompt/i.test(entry.text) && !/prompt injection/i.test(entry.text);
+
+    switch (briefKind) {
+      case 'comparison':
+        focusAreas.push(`Build an explicit compare-and-contrast explanation of ${joinNaturalLanguage(comparisonParts.length ? comparisonParts : [entry.text])}, including decision criteria, trade-offs, and common mix-ups.`);
+        break;
+      case 'decision-lens':
+        focusAreas.push('Give explicit decision rules, boundary conditions, and examples of when this topic is the right lever versus a distraction.');
+        break;
+      case 'training-method':
+        focusAreas.push('Cover the training objective, data requirements, compute or cost implications, evaluation strategy, and how this differs from inference-time or orchestration changes.');
+        break;
+      case 'memory-operations':
+        focusAreas.push('Cover write policy, read policy, freshness, retention, provenance, conflict resolution, and how engineers measure memory quality in practice.');
+        break;
+      case 'policy-control':
+        focusAreas.push('Cover approval points, policy boundaries, least-privilege decisions, auditability, escalation rules, and what a controlled rollout looks like.');
+        break;
+      case 'detection-measurement':
+        focusAreas.push('Cover what signals matter, how to measure them, what false positives and false negatives look like, and how to validate claims with evidence.');
+        break;
+      case 'identity-trust':
+        focusAreas.push('Cover authentication, authorization, delegation, provenance, trust boundaries, and failure containment.');
+        break;
+      case 'protocol-standards':
+        focusAreas.push('Cover message semantics, transport and session choices, capability discovery, interoperability trade-offs, and how handoffs actually work.');
+        break;
+      case 'runtime-durability':
+        focusAreas.push('Cover state, retries, idempotency, recovery, deployment topology, observability, and rollback under production constraints.');
+        break;
+      case 'threat-failure':
+        focusAreas.push('Cover the threat model, exploit path, blast radius, mitigations, monitoring signals, and realistic red-team scenarios.');
+        break;
+      case 'system-decomposition':
+        focusAreas.push('Explain the system boundary this topic draws, how the parts interact, and what breaks when teams blur those boundaries.');
+        break;
+      default:
+        break;
+    }
+
+    if (guide === mentalModelTopicBriefGuide) {
+      focusAreas.push('Explain the architectural framing this topic gives the learner and the design mistakes that happen when teams classify the problem incorrectly.');
+    }
+    if (guide === modelTopicBriefGuide) {
+      focusAreas.push('Explain the model-side mechanics, limits, and downstream implications for agent behavior, latency, or quality.');
+    }
+    if (guide === promptTopicBriefGuide || isPromptConcept) {
+      focusAreas.push('Include concrete prompt examples, prompt failure cases, and how the wording interacts with the broader context assembled around the model.');
+    }
+    if (guide === retrievalTopicBriefGuide) {
+      focusAreas.push('Explain the retrieval or storage flow, grounding implications, freshness issues, and how quality is evaluated.');
+    }
+    if (guide === toolUseTopicBriefGuide && !isPromptConcept) {
+      focusAreas.push('Explain schemas, orchestration, permissions, side effects, retries, and validation of tool results.');
+    }
+    if (guide === multiAgentTopicBriefGuide) {
+      focusAreas.push('Explain role separation, delegation, handoffs, coordination cost, and failure propagation across agents.');
+    }
+    if (guide === runtimeTopicBriefGuide || guide === runtimeDurabilityTopicBriefGuide) {
+      focusAreas.push('Explain deployment shape, scale, latency, statefulness, cost, reliability, and the operational trade-offs engineers have to make.');
+    }
+    if (guide === evaluationTopicBriefGuide || guide === detectionMeasurementTopicBriefGuide) {
+      focusAreas.push('Explain instrumentation, baselines, success criteria, and how to test or observe this topic in a real system.');
+    }
+    if (guide === safetyTopicBriefGuide || guide === threatFailureTopicBriefGuide || guide === policyControlTopicBriefGuide || guide === identityTrustTopicBriefGuide) {
+      focusAreas.push('Explain the threat surface or control surface, the defensive layers that matter, and what a review checklist should look like.');
+    }
+    if (guide === protocolStandardsTopicBriefGuide) {
+      focusAreas.push('Explain how interoperability changes architecture decisions, vendor lock-in, and the operational semantics of coordination.');
+    }
+    if (/\s\/\s|\(|,/.test(entry.text)) {
+      focusAreas.push('If the topic names multiple variants, products, or frameworks, explain each one briefly, then extract the shared pattern and trade-offs that connect them.');
+    }
+
+    return uniqueStrings(focusAreas).slice(0, 4);
+  }
+
+  function buildTopicStudyPrompt(entry, context = {}) {
+    const override = topicPromptOverrides[entry.id] || topicPromptOverrides[entry.text];
+    if (typeof override === 'string') {
+      return override;
+    }
+    if (override && typeof override.prompt === 'string') {
+      return override.prompt;
+    }
+
+    const guide = getTopicBriefGuide(entry);
+    const briefKind = getTopicBriefKind(entry);
+    const comparisonParts = getTopicBriefComparisonParts(entry.text);
+    const summary = context.summary || buildTopicSummary(entry, context.siblings || [], context.relatedLayerTitles || []);
+    const brief = context.brief || buildTopicBrief(entry, context);
+    const prerequisites = dedupeStrings(entry.topic.prerequisites || []).slice(0, 5);
+    const siblingNames = uniqueStrings((context.siblings || []).map(item => item.text).filter(text => text && text !== entry.text)).slice(0, 4);
+    const crossLayerPaths = uniqueStrings((context.crossLayerConnections || []).map(formatEntryPath)).slice(0, 5);
+    const operationalPaths = uniqueStrings((context.operationalLinks || []).map(formatEntryPath)).slice(0, 4);
+    const practicePaths = uniqueStrings((context.practiceLinks || []).map(formatEntryPath)).slice(0, 4);
+    const focusAreas = getTopicPromptFocusAreas(entry, guide, briefKind, comparisonParts);
+
+    return [
+      'You are an expert tutor in AI agent systems, LLM engineering, and production AI architecture.',
+      '',
+      `Teach me the topic "${entry.text}" in the specific context of AI agent systems.`,
+      '',
+      'Keep the lesson centered on this exact topic page, not on the entire syllabus in the abstract.',
+      '',
+      'Page context:',
+      `- Primary syllabus path: ${entry.layer.title} > ${entry.section.title}`,
+      `- Topic summary: ${summary}`,
+      ...brief.map(line => `- ${line.label}: ${line.text}`),
+      '',
+      'Connect back to these prerequisite concepts when useful:',
+      ...(prerequisites.length
+        ? prerequisites.map(text => `- ${text}`)
+        : ['- Treat this topic as a local entry point and explain important prerequisites inline when they become necessary.']),
+      '',
+      'Use these nearby topics for contrast or boundary-setting:',
+      ...(siblingNames.length
+        ? siblingNames.map(text => `- ${text}`)
+        : ['- There are no strong same-section contrasts here, so create useful contrasts from adjacent concepts when needed.']),
+      '',
+      'Weave in these cross-layer connections where relevant:',
+      ...(crossLayerPaths.length
+        ? crossLayerPaths.map(text => `- ${text}`)
+        : ['- No high-confidence cross-layer links were mapped for this page, so add broader system links only when they genuinely clarify the topic.']),
+      '',
+      'Reference these operational or application angles when giving examples:',
+      ...(operationalPaths.length
+        ? operationalPaths.map(text => `- ${text}`)
+        : ['- Use realistic agent-system examples instead of generic chatbot examples.']),
+      '',
+      'Mention these practice, evaluation, or validation angles when discussing quality or correctness:',
+      ...(practicePaths.length
+        ? practicePaths.map(text => `- ${text}`)
+        : ['- Include at least one concrete way to test, validate, or observe this topic in practice.']),
+      '',
+      'When teaching, do all of the following:',
+      '- Start with a precise definition of the topic in AI-agent terms, not a generic encyclopedia definition.',
+      `- Explain why it matters specifically in ${entry.layer.title} and in the ${entry.section.title} part of the stack.`,
+      '- Break the topic into its key mechanics, internal pieces, workflow role, and design decisions.',
+      ...(comparisonParts.length
+        ? [`- Build an explicit comparison of ${joinNaturalLanguage(comparisonParts)} and explain when each side is the better choice.`]
+        : []),
+      ...focusAreas.map(item => `- ${item}`),
+      '- Call out common misconceptions, anti-patterns, and failure modes.',
+      '- Explain how an engineer would decide when to use this topic, when not to use it, and what adjacent concepts they should learn next.',
+      '- End with a concise mental model, 5 review questions, and 3 hands-on exercises.',
+      '',
+      'Output requirements:',
+      '- Use clear headings and short subsections.',
+      '- Include at least one comparison table or decision matrix.',
+      '- Include one practical end-to-end example grounded in real agent systems.',
+      '- Separate fundamentals, trade-offs, failure modes, and implementation guidance.',
+      '- If a prerequisite matters, explain it inline briefly instead of assuming I already know it.',
+      '',
+      'Start the lesson now.'
+    ].join('\n');
+  }
+
   const officialResourceMatchers = [
     { pattern: /\bMCP\b|\bModel Context Protocol\b/i, label: 'Model Context Protocol docs', url: 'https://modelcontextprotocol.io/introduction' },
     { pattern: /\bA2A\b|\bAgent2Agent\b/i, label: 'A2A protocol docs', url: 'https://google.github.io/A2A/' },
@@ -2985,9 +3252,20 @@
     ]).filter(item => item.id !== entry.id).slice(0, 10);
 
     const relatedLayerTitles = uniqueStrings(crossLayerConnections.map(item => item.layer.title)).slice(0, 3);
+    const summary = buildTopicSummary(entry, siblings, relatedLayerTitles);
+    const brief = buildTopicBrief(entry, { siblings, relatedLayerTitles });
+    const studyPrompt = buildTopicStudyPrompt(entry, {
+      brief,
+      summary,
+      siblings,
+      relatedLayerTitles,
+      crossLayerConnections,
+      practiceLinks,
+      operationalLinks
+    });
 
     const taxonomyLayer = {
-      id: 1,
+      id: 4,
       kind: 'Taxonomy',
       scope: 'Where this topic lives in the syllabus',
       title: 'Taxonomy',
@@ -3024,7 +3302,7 @@
     };
 
     const syllabusLayer = {
-      id: 2,
+      id: 1,
       kind: 'Syllabus',
       scope: 'How to study this topic in context',
       title: 'Syllabus',
@@ -3065,7 +3343,7 @@
     };
 
     const structureLayer = {
-      id: 3,
+      id: 2,
       kind: 'Structure',
       scope: 'How this topic connects across the overall system',
       title: 'Structure',
@@ -3094,9 +3372,31 @@
         }
       ]
     };
+    const promptLayer = {
+      id: 3,
+      kind: 'Prompt',
+      scope: 'Copy-paste study prompt for an external LLM',
+      title: 'Prompt',
+      color: '#111111',
+      bg: '#F3F4F6',
+      sections: [
+        {
+          title: 'Copy and use',
+          topics: [
+            {
+              kind: 'prompt',
+              text: 'Tailored study prompt',
+              description: `Use this with ChatGPT or another LLM to learn ${entry.text} in the exact context of this page.`,
+              prompt: studyPrompt,
+              actionLabel: 'Copy prompt'
+            }
+          ]
+        }
+      ]
+    };
 
     const resourcesLayer = {
-      id: 4,
+      id: 5,
       kind: 'Resources',
       scope: 'Where to learn more and keep personal references for this topic',
       title: 'Resources',
@@ -3118,20 +3418,20 @@
       ]
     };
 
-    const layers = [taxonomyLayer, syllabusLayer, structureLayer, resourcesLayer];
+    const layers = [syllabusLayer, structureLayer, promptLayer, taxonomyLayer, resourcesLayer];
     const detailStats = getStats(layers);
 
     return {
       entry,
       layers,
-      brief: buildTopicBrief(entry, { siblings, relatedLayerTitles }),
+      brief,
       stats: detailStats,
       theme: {
         color: entry.layer.color,
         bg: entry.layer.bg,
         label: entry.layer.title
       },
-      summary: buildTopicSummary(entry, siblings, relatedLayerTitles),
+      summary,
       breadcrumbs: [
         { label: 'Syllabus', href: 'index.html' },
         { label: entry.layer.title, href: `index.html#${entry.layer.anchorId}` },
