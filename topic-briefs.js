@@ -18,6 +18,70 @@
       'Without it': 'Without this mental model, teams keep reaching for prompt edits even when the true problem sits in tool contracts, stale memory, or weak control logic. The system stays hard to explain and harder to improve.',
       'With it': 'With this decomposition, the agent becomes inspectable. A team can improve one component at a time and know whether it is strengthening intelligence, grounding, action, or reliability.'
     },
+    'Pretraining and next-token prediction': {
+      'What it is': 'This topic covers the base training stage where a model learns from very large corpora by repeatedly predicting the next token. That process does not teach product-specific behavior directly, but it builds the broad pattern knowledge that later tuning stages depend on.',
+      'Where it is used': 'It matters whenever teams discuss why a base model knows language at all, what capabilities came from scale, and why later alignment or task tuning can only refine what pretraining already made possible.',
+      'What it unlocks': 'It unlocks a realistic mental model of the foundation layer. Once this is clear, teams can separate general capability formation from later work like instruction tuning, preference tuning, and runtime prompting.',
+      'Human analogy': 'The human analogy is a trainee spending months immersed in a huge archive of past cases, reports, and emails until patterns of language and problem structure become familiar before anyone asks for polished client-facing work.',
+      'Without it': 'Without understanding pretraining, teams often expect prompt tricks or lightweight tuning to create abilities that were never built into the model base. That leads to bad bets about what adaptation can and cannot fix.',
+      'With it': 'With this stage understood, it becomes easier to judge whether a gap is missing base capability, missing supervision, or just weak runtime scaffolding.'
+    },
+    'Instruction tuning': {
+      'What it is': 'Instruction tuning is the stage where a pretrained model is shown example requests and preferred responses so it learns to behave like an assistant instead of a raw text completer.',
+      'Where it is used': 'It shows up in chat assistants, task-oriented copilots, extraction systems, and any product where the model must follow user intent, respect formatting expectations, and answer in a directly useful way.',
+      'What it unlocks': 'It unlocks usable instruction-following behavior. The model becomes much better at turning raw capability into responses that match the requested job.',
+      'Human analogy': 'The human analogy is onboarding a new hire with worked examples of how the team answers requests, writes deliverables, and follows house style before they start handling tickets on their own.',
+      'Without it': 'Without instruction tuning, a model may continue text fluently but still miss the practical contract of helping, formatting, and staying on the task the user actually asked for.',
+      'With it': 'With instruction tuning in place, the same underlying model becomes much easier to deploy as an assistant because it better understands how to respond to real requests.'
+    },
+    'Preference tuning and alignment tuning': {
+      'What it is': 'This topic covers the stage where outputs are steered using ranked preferences, policy signals, or reward models so the model learns not just to answer, but to answer in the more helpful, safe, and acceptable way.',
+      'Where it is used': 'It matters in assistant alignment, refusal behavior, tone control, brand-sensitive products, and any system where several plausible answers exist but only some of them fit the product or policy bar.',
+      'What it unlocks': 'It unlocks behavior shaping beyond simple imitation. Teams can express which response style is preferable when raw supervised examples alone are not enough.',
+      'Human analogy': 'The human analogy is a review panel comparing several draft replies from staff and explaining which one best matches the organization\'s standards for judgment, tone, and risk handling.',
+      'Without it': 'Without preference or alignment tuning, a model can be capable yet poorly calibrated. It may answer too bluntly, over-refuse, under-refuse, or drift toward outputs that technically work but do not meet the bar.',
+      'With it': 'With this layer in place, the model\'s behavior becomes better matched to policy, product expectations, and the kind of tradeoffs the team actually wants.'
+    },
+    'Fine-tuning strategies (full, PEFT, LoRA, QLoRA)': {
+      'What it is': 'This topic compares the main ways to adapt a model after pretraining, from updating all weights to attaching lightweight adapters such as LoRA or QLoRA. The core question is how much of the model should change, and at what cost.',
+      'Where it is used': 'It comes up in domain adaptation, enterprise customization, private deployments, and repeated experimentation where teams need to balance quality gains against GPU budget, storage, training time, and serving complexity.',
+      'What it unlocks': 'It unlocks a practical adaptation strategy. Teams can choose whether the job really needs a full retrain or whether a lighter parameter-efficient method gets most of the value.',
+      'Human analogy': 'The human analogy is a training director deciding whether to retrain the whole staff from scratch, issue a role-specific handbook supplement, or attach a lightweight field guide to the existing process. Each option changes behavior, but with very different cost and disruption.',
+      'Without it': 'Without this strategy lens, teams either overspend on heavyweight retraining or avoid adaptation entirely because the full-tune path looks too expensive. Both mistakes leave performance on the table.',
+      'With it': 'With the tradeoffs understood, adaptation becomes a design choice rather than a guess. The team can match the depth of change to the budget, hardware, and operational constraints of the system.'
+    },
+    'Inference-time adaptation vs weight updates': {
+      'What it is': 'This topic separates changes made at runtime, such as prompt shaping, retrieval, or tool context, from changes baked into the model weights through tuning or retraining. It is about deciding where a behavior change should actually live.',
+      'Where it is used': 'It matters in debugging, product iteration, model customization, and platform design whenever a team must choose between a fast reversible runtime fix and a slower but more durable training change.',
+      'What it unlocks': 'It unlocks cleaner intervention choices. Teams can decide whether to change the model\'s environment for this call or change the model itself for all future calls.',
+      'Human analogy': 'The human analogy is the difference between giving today\'s team a sharper briefing packet for the current job and rewriting the official training manual that every future hire will learn from.',
+      'Without it': 'Without this distinction, teams retrain for problems that could have been solved with better retrieval or prompting, or they keep layering brittle runtime patches onto issues that really belong in the model.',
+      'With it': 'With the boundary clear, fixes land in the right place. Temporary, contextual, and product-specific changes stay at runtime, while durable behavior shifts move into the training pipeline.'
+    },
+    'Distillation as capability transfer': {
+      'What it is': 'Distillation is the process of using a stronger or larger teacher model to train a smaller student so useful behavior survives in a cheaper, faster form.',
+      'Where it is used': 'It is used when teams want lower latency, lower serving cost, on-device deployment, or smaller specialized models without giving up all of the capability of a much larger system.',
+      'What it unlocks': 'It unlocks capability compression. A team can keep more of the teacher\'s behavior while moving to infrastructure that would be impractical for the original model.',
+      'Human analogy': 'The human analogy is a senior specialist turning their judgment into worked examples, rubrics, and shadowing material so junior staff can handle most cases well without escalating every decision upward.',
+      'Without it': 'Without distillation, teams often face a harsh choice between paying for the big model everywhere or accepting a much weaker small model. That usually makes cost and quality harder to balance.',
+      'With it': 'With distillation, smaller models become far more viable. The system can keep more competence per dollar, per device, or per request.'
+    },
+    'Quantization (GPTQ, AWQ, GGUF)': {
+      'What it is': 'This topic covers the practical compression methods and packaging formats that make open-weight models runnable on smaller hardware. GPTQ and AWQ are post-training quantization approaches for squeezing large models into tighter memory budgets, while GGUF is a portable model format commonly used to ship those compressed models into local runtimes such as llama.cpp.',
+      'Where it is used': 'It matters in local inference, edge deployment, GPU-constrained serving, and open-weight distribution. Teams reach for GPTQ when they want aggressive offline compression for GPU use, AWQ when they want activation-aware accuracy retention, and GGUF when they need a practical format for running models on laptops, desktops, or CPU-heavy environments.',
+      'What it unlocks': 'It unlocks model portability, not just smaller footprints. These methods and formats determine which machines can host the model, which runtimes can load it, and whether a strong model stays trapped in the data center or becomes usable at the edge.',
+      'Human analogy': 'The human analogy is an operations team turning a bulky office reference kit into a compact field pack so the same job can be done from a van, a laptop cart, or a smaller branch office. Some fidelity is sacrificed, but portability improves dramatically.',
+      'Without it': 'Without quantization, many useful models stay trapped behind high memory and hardware requirements. That narrows where they can run and who can afford to use them.',
+      'With it': 'With quantization, deployment options widen. Teams can fit stronger models onto cheaper machines, closer to the edge, or into environments that were previously out of reach.'
+    },
+    'Data quality, contamination, and benchmark integrity': {
+      'What it is': 'This topic covers whether training and evaluation data are clean, representative, and honestly separated. It also covers contamination, where benchmark or test material leaks into training and makes the system look better than it really is.',
+      'Where it is used': 'It matters in dataset curation, synthetic data pipelines, benchmarking, leaderboard claims, and any retraining or eval workflow where teams need to trust that measured gains are real.',
+      'What it unlocks': 'It unlocks credible measurement. Once data quality and split discipline are taken seriously, teams can believe their experiments instead of chasing inflated numbers.',
+      'Human analogy': 'The human analogy is a certification program that keeps practice material, mock exams, and final tests strictly separate while also auditing bad questions and cheating. The whole point is to know whether someone actually learned the skill.',
+      'Without it': 'Without data hygiene and benchmark integrity, teams end up training on polluted inputs, congratulating themselves with contaminated evals, and shipping models whose reported gains do not hold up in real use.',
+      'With it': 'With clean data discipline, model improvement becomes more trustworthy. Wins are more likely to be real, regressions are easier to spot, and evaluation results mean something.'
+    },
     'The observe -> think -> act -> verify -> update loop': {
       'What it is': 'This is the core closed loop behind serious agents. The system gathers evidence, reasons over it, takes a step, checks whether the step worked, and updates state before continuing.',
       'Where it is used': 'You see this pattern in browser agents, coding agents, research systems, and long-running workflows where the model cannot safely answer in one shot. It is especially important once tools or side effects enter the picture.',
