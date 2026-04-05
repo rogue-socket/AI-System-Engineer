@@ -42,6 +42,14 @@
       'Without it': 'Without preference or alignment tuning, a model can be capable yet poorly calibrated. It may answer too bluntly, over-refuse, under-refuse, or drift toward outputs that technically work but do not meet the bar.',
       'With it': 'With this layer in place, the model\'s behavior becomes better matched to policy, product expectations, and the kind of tradeoffs the team actually wants.'
     },
+    'Reward modeling for preference tuning': {
+      'What it is': 'Reward modeling for preference tuning turns comparisons or rankings of model outputs into a reusable scoring signal. It gives post-training systems a more explicit notion of what good behavior looks like before an optimizer tries to push the model toward it.',
+      'Where it is used': 'It is used in RLHF-style pipelines, preference-data programs, alignment work, and domain adaptation efforts where teams need more than raw supervised examples. It matters when the quality bar depends on nuanced judgments such as helpfulness, safety, tone, or task success.',
+      'What it unlocks': 'It unlocks a cleaner preference signal. Teams can separate the job of defining desirable behavior from the job of choosing the optimization method that will reinforce it.',
+      'Human analogy': 'The human analogy is a review committee turning examples of strong and weak work into a scoring rubric that supervisors can apply more consistently across many cases.',
+      'Without it': 'Without a clear preference signal, post-training often becomes muddy. Teams know they want better behavior, but the optimization loop has a weaker handle on which tradeoffs should actually be rewarded.',
+      'With it': 'With reward modeling in place, preference tuning becomes more disciplined. The team can compare optimization approaches against a clearer target instead of treating all alignment work as one undifferentiated step.'
+    },
     'Fine-tuning strategies (full, PEFT, LoRA, QLoRA)': {
       'What it is': 'This topic compares the main ways to adapt a model after pretraining, from updating all weights to attaching lightweight adapters such as LoRA or QLoRA. The core question is how much of the model should change, and at what cost.',
       'Where it is used': 'It comes up in domain adaptation, enterprise customization, private deployments, and repeated experimentation where teams need to balance quality gains against GPU budget, storage, training time, and serving complexity.',
@@ -66,7 +74,7 @@
       'Without it': 'Without distillation, teams often face a harsh choice between paying for the big model everywhere or accepting a much weaker small model. That usually makes cost and quality harder to balance.',
       'With it': 'With distillation, smaller models become far more viable. The system can keep more competence per dollar, per device, or per request.'
     },
-    'Quantization (GPTQ, AWQ, GGUF)': {
+    'Quantization and packaging (GPTQ, AWQ, GGUF)': {
       'What it is': 'This topic covers the practical compression methods and packaging formats that make open-weight models runnable on smaller hardware. GPTQ and AWQ are post-training quantization approaches for squeezing large models into tighter memory budgets, while GGUF is a portable model format commonly used to ship those compressed models into local runtimes such as llama.cpp.',
       'Where it is used': 'It matters in local inference, edge deployment, GPU-constrained serving, and open-weight distribution. Teams reach for GPTQ when they want aggressive offline compression for GPU use, AWQ when they want activation-aware accuracy retention, and GGUF when they need a practical format for running models on laptops, desktops, or CPU-heavy environments.',
       'What it unlocks': 'It unlocks model portability, not just smaller footprints. These methods and formats determine which machines can host the model, which runtimes can load it, and whether a strong model stays trapped in the data center or becomes usable at the edge.',
@@ -89,6 +97,102 @@
       'Human analogy': 'The human analogy is a mechanic inspecting a machine, trying a fix, testing the result, and then updating the plan before the next step.',
       'Without it': 'Without a closed loop, the agent behaves like an open-loop guesser. It may confidently claim success after one bad action because nothing in the system forces it to verify what actually happened.',
       'With it': 'With the loop in place, the agent starts behaving more like an operator than a chatbot. It can recover from partial failure, notice bad tool results, and tighten the gap between plan and reality.'
+    },
+    'Inputs, state, outputs, and side effects': {
+      'What it is': 'This topic separates four things that are easy to blur together in agent design: what comes into the system, what state it reads or changes, what it emits as output, and which actions actually change the outside world. In production systems, those are not interchangeable.',
+      'Where it is used': 'It is used in architecture reviews, tool and approval design, incident analysis, and debugging. It matters most when the same agent can both answer with text and trigger writes, messages, purchases, or workflow updates.',
+      'What it unlocks': 'It unlocks cleaner reasoning about risk and control. Once these categories are separated, teams can decide what needs validation, what must be logged, what can be replayed, and which steps are safe to retry.',
+      'Human analogy': 'The human analogy is an operations workflow that distinguishes the intake request, the case file being updated, the report sent back to the requester, and the real-world action such as approving a refund or changing a record.',
+      'Without it': 'Without this separation, teams treat all outputs as if they were harmless text. They miss the difference between a draft answer and a side effect that changes money, data, permissions, or downstream operations.',
+      'With it': 'With the boundary clear, the system becomes easier to govern. The team can place approvals before irreversible actions, trace which state changed, and debug failures without hand-waving about what the agent actually did.'
+    },
+    'Deterministic workflow steps vs probabilistic model steps': {
+      'What it is': 'This topic marks the boundary between parts of the system that should behave the same way every time and parts that rely on model judgment under uncertainty. Code, validators, and fixed orchestration are deterministic; model generations and many routing decisions are probabilistic.',
+      'Where it is used': 'It is used whenever a team decides whether logic belongs in code, schema validation, routing policy, or the model itself. This distinction sits underneath prompt design, tool use, guardrails, and evaluation.',
+      'What it unlocks': 'It unlocks a healthier system split. Teams can keep contracts, permissions, and repeatable transformations deterministic while reserving model flexibility for interpretation, synthesis, and ambiguous choices.',
+      'Human analogy': 'The human analogy is the difference between a clerk following a required checklist and a specialist making judgment calls on an unusual case. Both are useful, but they should not be mistaken for the same kind of work.',
+      'Without it': 'Without this distinction, teams bury rigid business rules inside prompts or over-engineer code for tasks that need judgment. The result is a system that is both less predictable and less capable.',
+      'With it': 'With the split in place, architecture choices get sharper. Deterministic components handle what must be stable, and model-driven components handle what benefits from flexible reasoning.'
+    },
+    'Compound AI systems': {
+      'What it is': 'Compound AI systems combine models with retrieval, tools, memory, validation, and control logic instead of assuming one model call is the entire product. By 2026, that composition is the norm for serious agent systems rather than a niche pattern.',
+      'Where it is used': 'It is used in enterprise assistants, coding agents, research tools, workflow automation, and customer-facing AI services. Most production systems that need reliability or real action end up compound even if the user only sees one simple interface.',
+      'What it unlocks': 'It unlocks a more realistic engineering target. Teams stop asking only which model to buy and start asking how components should be composed, observed, and constrained to produce dependable behavior.',
+      'Human analogy': 'The human analogy is a service operation that relies on a front desk, reference material, specialists, approval steps, and transaction systems rather than one person improvising every part of the job alone.',
+      'Without it': 'Without this model, teams expect a bigger or newer model to solve problems that actually come from missing retrieval, weak tool contracts, no validation layer, or poor workflow design.',
+      'With it': 'With compound-system thinking in place, the stack becomes easier to improve. A team can upgrade retrieval, add validation, or simplify orchestration without pretending every gain must come from the model weights alone.'
+    },
+    'Why an agent is usually a system, not a single model': {
+      'What it is': 'This topic explains that an agent is usually the full operating loop around a model: instructions, memory, tools, policies, state handling, validators, and runtime control. The model is central, but it is only one part of what makes the agent behave as an agent.',
+      'Where it is used': 'It is used in procurement discussions, architecture planning, platform design, and postmortems. It matters whenever someone tries to explain system behavior as if the model alone owned every decision and failure.',
+      'What it unlocks': 'It unlocks clearer ownership boundaries. Teams can assign responsibility to the tool layer, orchestration logic, policy layer, or memory design instead of attributing every outcome to the model as a black box.',
+      'Human analogy': 'The human analogy is a field operation that depends on a worker, their playbook, the equipment available, the records they can access, and the approvals attached to the job. The worker matters, but the operation is still a system.',
+      'Without it': 'Without this framing, teams evaluate agents as if model selection alone determines quality. That causes underinvestment in the surrounding parts that actually govern reliability, safety, and grounded action.',
+      'With it': 'With the system view in place, the architecture becomes easier to reason about and improve. The team can strengthen the right layer instead of asking the model to compensate for missing system design.'
+    },
+    'The difference between chat UX and agent architecture': {
+      'What it is': 'This topic separates the interface the user sees from the machinery that does the work. A chat window is one possible user experience, while agent architecture is the underlying control loop, memory, tool use, and execution model. One does not guarantee the other.',
+      'Where it is used': 'It is used in product scoping, demos, stakeholder alignment, and requirements discussions. It becomes especially important when a team is deciding whether a job should run in conversation, in the background, or behind a non-chat interface entirely.',
+      'What it unlocks': 'It unlocks cleaner product decisions. Teams can choose the right interface for the user and the right execution model for the work instead of forcing both into the same shape.',
+      'Human analogy': 'The human analogy is the difference between the conversation at a service counter and the actual back-office workflow that fulfills the request. A polished front desk does not tell you how the operation behind it really works.',
+      'Without it': 'Without this distinction, teams mistake a conversational demo for real agency or assume every agent must surface as a chat assistant. That leads to confused requirements and mismatched architecture.',
+      'With it': 'With the boundary clear, interface and execution can be designed separately. A background worker can stay non-chat, and a chat interface can be kept simple without pretending it is an autonomous agent.'
+    },
+    'Input tokens vs output tokens vs reasoning budget': {
+      'What it is': 'This topic separates three different cost and latency drivers: the tokens sent into the model, the tokens returned to the caller, and the extra internal deliberation budget that some reasoning-oriented models consume even when that work is not fully exposed as visible text. Different providers surface that third bucket differently, so the underlying concept matters more than one vendor label.',
+      'Where it is used': 'It is used in cost estimation, latency tuning, model selection, context planning, and production capacity management. It matters most once a team starts comparing fast chat-style calls with slower reasoning-heavy calls.',
+      'What it unlocks': 'It unlocks a more accurate performance model. Teams can explain why two responses of similar visible length may have very different cost and latency because the internal reasoning budget was not the same.',
+      'Human analogy': 'The human analogy is separating the size of the case packet handed to a specialist, the length of the final report sent back, and the internal review time spent working through the problem before anything is delivered.',
+      'Without it': 'Without this distinction, teams budget only for prompt size and visible answer length. They are then surprised when reasoning-heavy flows cost more or take longer than the surface output would suggest.',
+      'With it': 'With the mental model in place, routing and budgeting improve. The team can reserve heavier reasoning budgets for the steps that truly need them and use lighter paths elsewhere.'
+    },
+    'Training cutoff vs retrieved freshness vs live tool data': {
+      'What it is': 'This topic separates three sources of knowledge that often get blurred together: what the base model learned before its training cutoff, what the system retrieves from external content at runtime, and what live tools or APIs report right now from operational systems. Those sources differ in freshness, authority, and failure mode.',
+      'Where it is used': 'It is used in support agents, research systems, enterprise search, coding assistants, and any workflow where users expect both broad knowledge and current facts. It is one of the clearest ways to decide when the model should answer from prior knowledge and when it should look something up or query a live system.',
+      'What it unlocks': 'It unlocks better evidence selection. Teams can match the question to the right source of truth instead of over-trusting model memory for information that should come from retrieval or live reads.',
+      'Human analogy': 'The human analogy is the difference between what a staff member remembers from prior training, what they can pull from the current policy binder, and what they must check in the live operations dashboard before acting.',
+      'Without it': 'Without this distinction, agents answer current-state questions from stale prior knowledge or quote retrieved material when the real source of truth should have been a live system read.',
+      'With it': 'With the source boundaries clear, the system becomes more trustworthy. The team can explain which answers are general knowledge, which are grounded in retrieved documents, and which come from live operational data.'
+    },
+    'Context vs memory vs knowledge base': {
+      'What it is': 'This topic separates the material currently placed in front of the model from information stored for later reuse and from the broader repository of documents or facts the system can search. Context is what the model is actively working with now, memory is what the system persists across turns or tasks, and the knowledge base is the larger external source it can retrieve from.',
+      'Where it is used': 'It is used in assistant design, RAG architecture, memory policy, personalization, and long-running workflows. It is one of the core vocabulary distinctions that keeps state design from turning into one undifferentiated pile.',
+      'What it unlocks': 'It unlocks better placement decisions. Teams can decide what must stay in active context, what deserves durable storage, and what should remain in the searchable repository until needed.',
+      'Human analogy': 'The human analogy is the difference between what stays open on the desk right now, what goes into the case notes for future work, and what remains in the central archive or reference library until someone needs to pull it.',
+      'Without it': 'Without this distinction, teams stuff too much into the prompt, treat every past interaction as memory worth keeping, or confuse the document store with the agent\'s active working state.',
+      'With it': 'With the categories separated, memory and retrieval design become much cleaner. The system can keep active context small, durable memory selective, and the knowledge base broad without mixing their jobs.'
+    },
+    'Prompt engineering vs context engineering': {
+      'What it is': 'This topic separates changing the wording of instructions from changing the full information environment around the model. Prompt engineering focuses on the request and task framing, while context engineering includes retrieval, memory injection, tool availability, schemas, state summaries, and other inputs that shape what the model can do on this step.',
+      'Where it is used': 'It is used in agent platforms, retrieval-heavy systems, tool-using workflows, and debugging sessions where a simple wording change is not enough. By 2026, this distinction is useful because many agent failures come from poor context assembly rather than poor instruction phrasing.',
+      'What it unlocks': 'It unlocks better interventions. Teams stop treating prompt wording as the only lever and start improving the broader case packet, state handoff, and capability surface the model actually sees.',
+      'Human analogy': 'The human analogy is the difference between rewriting a task memo and assembling the full work packet, references, forms, and tools a worker needs before they begin.',
+      'Without it': 'Without this distinction, teams over-focus on clever phrasing while leaving retrieval, memory, tool contracts, and state packaging weak. The system feels stuck because the wrong layer is being tuned.',
+      'With it': 'With context engineering in view, the design space opens up. The team can improve the evidence, tool surface, and state handoff around the model instead of repeatedly wordsmithing the same prompt.'
+    },
+    'Grounding vs hallucination vs verification': {
+      'What it is': 'This topic separates three related but different ideas. Grounding is connecting an answer or action to external evidence, hallucination is producing unsupported content as if it were true, and verification is the explicit act of checking whether a claim, extraction, or action is actually correct before trusting it.',
+      'Where it is used': 'It is used in retrieval systems, tool-using agents, evaluation design, and high-stakes workflows. The distinction matters because grounded generation and verification are design patterns, not just hopeful wishes about model behavior.',
+      'What it unlocks': 'It unlocks a better response to error. Instead of merely asking the model not to hallucinate, teams can add evidence paths and checking steps that make unsupported behavior easier to catch.',
+      'Human analogy': 'The human analogy is the difference between answering from current source documents, making an unsupported claim from memory, and having a reviewer or checklist confirm that the claim is actually backed by the record.',
+      'Without it': 'Without this distinction, hallucination gets treated like a mysterious personality flaw of the model. Teams spend less time on evidence and checking than the system actually needs.',
+      'With it': 'With the concepts separated, reliability work becomes more concrete. The team can improve evidence quality, add verification where it matters, and reduce unsupported outputs through system design rather than wishful prompting.'
+    },
+    'One big prompt vs explicit workflow decomposition': {
+      'What it is': 'This topic compares two common ways to structure AI work: asking one large prompt to do everything in one pass or breaking the job into explicit stages with their own inputs, checks, and outputs. The distinction is usually about control and reliability more than raw capability.',
+      'Where it is used': 'It is used in extraction, summarization, research, coding, and tool-using workflows. Teams run into it whenever a task starts failing because too many instructions, edge cases, or validation needs are being squeezed into one prompt.',
+      'What it unlocks': 'It unlocks better decomposition. Once the workflow is split into steps, teams can test each stage, retry selectively, insert validation, and see where failures really occur.',
+      'Human analogy': 'The human analogy is the difference between giving one giant all-in-one brief to a team member and breaking the job into intake, analysis, draft, review, and approval steps with explicit handoffs.',
+      'Without it': 'Without this distinction, prompts become oversized and brittle. One failure can force the whole task to restart, and it becomes hard to tell whether the problem was instruction overload, bad evidence, or missing validation.',
+      'With it': 'With explicit decomposition, the system becomes easier to reason about. Each step has a narrower job, and the overall workflow can be observed, tested, and improved more systematically.'
+    },
+    'Toy demos vs durable systems': {
+      'What it is': 'This topic separates a happy-path demo that proves a concept from a durable system that can survive real users, noisy inputs, retries, permissions, failures, and ongoing change. Both have value, but they answer different questions.',
+      'Where it is used': 'It is used in roadmap planning, stakeholder management, architecture reviews, and production-readiness decisions. It becomes important as soon as a promising prototype is about to become a service people depend on.',
+      'What it unlocks': 'It unlocks better engineering standards. Teams can preserve the speed of prototyping while being honest about the extra layers needed for observability, policy, durability, and operational support.',
+      'Human analogy': 'The human analogy is the difference between a staged rehearsal that works once under ideal conditions and a day-to-day operation that has to keep running when staffing, timing, and inputs are messy.',
+      'Without it': 'Without this distinction, stakeholders assume a strong demo is nearly production-ready. The hidden work around retries, permissions, traceability, and failure handling then arrives late and looks like unexpected delay.',
+      'With it': 'With the distinction in place, teams can plan the transition more honestly. A demo proves there is value, while the durable-system lens defines what still has to be engineered before trust is justified.'
     },
     'System vs user prompts': {
       'What it is': 'This topic separates enduring operating instructions from the current task request. The system prompt defines role, boundaries, and persistent behavior, while the user prompt expresses the immediate job to be done.',
@@ -113,6 +217,22 @@
       'Human analogy': 'The human analogy is filling out a precise request form instead of giving a vague spoken instruction. The structure makes downstream execution more reliable and less open to interpretation.',
       'Without it': 'Without function calling, teams often parse tool intent out of plain text after generation. That works in demos, but it breaks easily once the output must be exact, validated, and safely connected to real systems.',
       'With it': 'With function calling, tool use becomes explicit and inspectable. An agent can choose a tool, provide arguments in a schema, and let the runtime decide whether the call is valid, safe, and worth executing.'
+    },
+    'Read-only vs side-effecting tool boundaries': {
+      'What it is': 'This topic separates tools that only inspect or retrieve information from tools that actually change state in the outside world. That boundary is one of the most important control lines in agent design because not every tool call carries the same operational risk.',
+      'Where it is used': 'It is used in approval design, tool permission policies, dry-run modes, and incident analysis. It matters anywhere the same agent can both gather evidence and trigger writes, messages, purchases, or workflow updates.',
+      'What it unlocks': 'It unlocks sharper safety and orchestration decisions. Teams can allow broad read access while placing tighter checks, scopes, and approvals around state-changing calls.',
+      'Human analogy': 'The human analogy is the difference between reading a case file and signing the form that actually changes the record. Both are part of the job, but only one creates an immediate external consequence.',
+      'Without it': 'Without this boundary, systems treat inspection and action as if they were equivalent. That makes approval logic fuzzy and raises the chance that an exploratory step turns into an unintended side effect.',
+      'With it': 'With the boundary clear, tool policies become much easier to govern. The agent can inspect widely, then cross a stricter threshold before anything irreversible or externally visible happens.'
+    },
+    'Idempotent tool design and retry safety': {
+      'What it is': 'This topic covers designing tool calls so that retries do not accidentally duplicate the underlying action. Idempotency matters because agent runtimes, queues, and approval flows all create situations where a call may be retried after timeout, partial failure, or uncertainty about whether it already succeeded.',
+      'Where it is used': 'It is used in payments, tickets, workflow updates, provisioning, background jobs, and any state-changing API that an agent may call under imperfect conditions. It becomes especially important once long-running or asynchronous execution enters the system.',
+      'What it unlocks': 'It unlocks safer recovery. The runtime can retry or resume work without quietly creating duplicate purchases, duplicate messages, duplicate records, or conflicting updates.',
+      'Human analogy': 'The human analogy is a clerk using a transaction number before resubmitting a request, so the office can tell whether this is a legitimate retry or a second real action.',
+      'Without it': 'Without retry safety, failure handling becomes dangerous. A timeout or crash can leave the team unsure whether they should try again, and a second attempt may create exactly the duplicate action they feared.',
+      'With it': 'With idempotent design in place, retries become much less scary. Recovery logic can be more automated because repeating the request is no longer assumed to mean repeating the side effect.'
     },
     'Tool-calling loops': {
       'What it is': 'A tool-calling loop is the repeated cycle of deciding what external capability to use, calling it, reading the result, and deciding what to do next. It turns tools into an active feedback channel rather than a one-off extension.',
@@ -154,6 +274,14 @@
       'Without it': 'Without routing, one model has to do everything. That usually means either overspending on easy tasks or forcing difficult tasks through a weaker model that cannot reliably handle them.',
       'With it': 'With routing, the stack becomes more strategic. The agent platform can trade cost against quality explicitly and adapt model choice to the task rather than pretending all requests are the same.'
     },
+    'LLM gateway patterns (LiteLLM, Portkey, Kong AI Gateway)': {
+      'What it is': 'LLM gateway patterns place a common proxy or control layer in front of one or more model providers. That layer centralizes auth, routing, retries, budgets, observability, and policy enforcement so applications do not each have to solve those concerns alone.',
+      'Where it is used': 'It is used in internal AI platforms, multi-model products, enterprise deployments, and any stack where several teams or services need consistent access to many model endpoints. It becomes especially important once provider sprawl and spend attribution start to hurt.',
+      'What it unlocks': 'It unlocks a cleaner control boundary for model access. Teams can swap providers, apply guardrails, attribute spend, and standardize logging without hard-wiring those decisions into every application.',
+      'Human analogy': 'The human analogy is a central procurement and dispatch desk that manages vendor access, approvals, usage records, and escalation paths for many business units instead of letting every team negotiate and track vendors on its own.',
+      'Without it': 'Without a gateway layer, provider-specific logic spreads through the stack. Keys, rate limits, routing rules, and telemetry end up fragmented across services, which makes governance and failover much harder.',
+      'With it': 'With a gateway in place, model access becomes more governable and more portable. Application teams can focus on product behavior while the platform layer handles shared delivery concerns.'
+    },
     'Orchestrator-subagent pattern': {
       'What it is': 'The orchestrator-subagent pattern uses a supervisory agent or controller to delegate specific parts of the job to narrower workers. The orchestrator holds the bigger objective while subagents focus on specialized slices of the task.',
       'Where it is used': 'It is used in research, coding, analysis, and document workflows where planning, retrieval, execution, and review benefit from separate contexts. It is one of the most practical multi-agent patterns because it stays understandable.',
@@ -162,6 +290,62 @@
       'Without it': 'Without this pattern, one large agent often becomes overloaded. Planning, tool use, checking, and synthesis all compete inside one context window, and the quality of each role degrades.',
       'With it': 'With the pattern in place, each worker can be simpler and more focused. The overall system becomes easier to debug because delegation boundaries, responsibilities, and handoffs are visible.'
     },
+    'Single-agent system vs multi-agent system': {
+      'What it is': 'This topic compares one bounded agent loop with several collaborating agents that have separate roles, contexts, or authority boundaries. The question is not whether more agents sound impressive, but whether the work truly benefits from explicit delegation and handoff.',
+      'Where it is used': 'It is used in architecture reviews, platform design, and product scoping whenever a team is deciding whether one capable agent with tools is enough or whether the task needs multiple specialist workers.',
+      'What it unlocks': 'It unlocks a cleaner systems boundary. Teams can decide when extra coordination is worth the cost and when a single agent is the more reliable shape.',
+      'Human analogy': 'The human analogy is the difference between one capable case worker handling a request end to end and a coordinator splitting the same case across intake, research, review, and approval roles.',
+      'Without it': 'Without this distinction, teams either overload one agent with too many conflicting responsibilities or create unnecessary multi-agent ceremony around a job that one well-designed agent could have handled better.',
+      'With it': 'With the distinction in place, architecture becomes more disciplined. The team can justify role separation only where specialization, isolation, or parallelism clearly pays for the extra coordination overhead.'
+    },
+    'Single-agent vs multi-agent design choice': {
+      'What it is': 'This topic frames the design choice as a trade-off rather than an identity label. Single-agent systems are usually simpler to reason about, while multi-agent systems can improve specialization, fault isolation, and parallel work when the task is genuinely decomposable.',
+      'Where it is used': 'It is used when planning research agents, coding agents, approval workflows, and orchestration platforms. It matters most when a team is deciding whether complexity is solving a real problem or just adding a fashionable wrapper.',
+      'What it unlocks': 'It unlocks better trade-off thinking. Teams can compare context pressure, observability, latency, failure isolation, and authority boundaries before they commit to a shape.',
+      'Human analogy': 'The human analogy is deciding whether one strong operator should run the case or whether the work is large enough to justify a small team with explicit handoffs and role ownership.',
+      'Without it': 'Without this design lens, multi-agent systems are often chosen for aesthetic reasons instead of operational reasons. The result is extra latency, more failure points, and harder debugging without a matching gain in capability.',
+      'With it': 'With this lens in place, multi-agent orchestration becomes a targeted tool rather than a default. The team can keep the simple shape where it works and split the job only where separation clearly improves outcomes.'
+    },
+    'Centralized orchestrator vs peer-to-peer coordination': {
+      'What it is': 'This topic compares two common ways to coordinate several agents. A centralized orchestrator routes work, tracks state, and owns the global plan, while peer-to-peer coordination lets agents hand work directly to one another with less central control.',
+      'Where it is used': 'It is used in workflow engines, agent teams, distributed task systems, and protocol-based ecosystems. It matters whenever a team is deciding where authority, observability, and routing logic should live.',
+      'What it unlocks': 'It unlocks clearer governance choices. Teams can trade centralized auditability and easier debugging against looser coupling and potentially more resilient distributed coordination.',
+      'Human analogy': 'The human analogy is the difference between a dispatcher assigning work across a team and specialists coordinating directly with each other once the job is underway.',
+      'Without it': 'Without this comparison, systems drift into awkward hybrids where authority is unclear. Agents may bypass the coordinator when they should not, or a central controller becomes a bottleneck for work that could have been delegated more directly.',
+      'With it': 'With the trade-off understood, the coordination model can match the operating need. High-control environments can stay centralized, while more distributed ecosystems can adopt peer coordination deliberately instead of by accident.'
+    },
+    'Build one good single-agent workflow before multi-agent orchestration': {
+      'What it is': 'This topic is practical sequencing advice: prove the task with one well-bounded agent and a clear workflow before splitting the job across multiple agents. It treats multi-agent design as an optimization step, not the starting point.',
+      'Where it is used': 'It is used in prototyping, platform teams, and production rollouts where the task shape is still being discovered. It is especially important in new agent projects where the baseline failure modes are not yet understood.',
+      'What it unlocks': 'It unlocks a stable baseline. Teams can learn the task, prompts, tools, validators, and observability needs first, then decide which parts genuinely deserve specialization.',
+      'Human analogy': 'The human analogy is making one dependable operator and playbook work before reorganizing the job into multiple departments with new handoffs and management layers.',
+      'Without it': 'Without this sequencing, teams multiply uncertainty too early. They end up debugging decomposition, handoffs, prompts, tool contracts, and coordination all at once, which makes root causes much harder to see.',
+      'With it': 'With a strong single-agent baseline first, the reasons for splitting work become concrete. Multi-agent orchestration then grows from real bottlenecks instead of from hype.'
+    },
+    'Agents as tools': {
+      'What it is': 'Agents as tools is the pattern where a specialist agent is wrapped behind a tool-like interface and invoked only for a narrow job. The calling agent does not need a free-form conversation every time; it can delegate through a bounded contract.',
+      'Where it is used': 'It is used in OpenAI Agents SDK handoffs, Google ADK compositions, coding workflows, and research systems where a coordinator benefits from specialist reasoning without giving up control of the main loop.',
+      'What it unlocks': 'It unlocks bounded specialization. A team can reuse agentic skill in a narrower, more inspectable form than unrestricted peer-to-peer agent conversation.',
+      'Human analogy': 'The human analogy is requesting work from a specialist department through a standard intake form instead of turning every task into an open-ended committee meeting.',
+      'Without it': 'Without this pattern, coordinators often have to manage too many free-form agent interactions directly. That makes delegation harder to constrain, log, and test.',
+      'With it': 'With agents wrapped as tools, orchestration becomes cleaner. Specialist capability stays available, but the main controller keeps clearer contracts around when and how delegation happens.'
+    },
+    'Externalized scratchpad / working-state pattern': {
+      'What it is': 'This pattern keeps plans, partial results, and current working state in an explicit artifact such as a task board, structured state object, or shared scratchpad rather than relying on a hidden inner monologue. It turns intermediate reasoning state into something the system can inspect and hand off.',
+      'Where it is used': 'It is used in long-running agents, multi-agent workflows, human review systems, and any task that needs resumability or clear coordination across steps. It is especially useful where several agents or humans must work from the same current state.',
+      'What it unlocks': 'It unlocks inspectability and safer handoffs. Working state can survive turns, be validated, and be shared without pretending the model\'s private reasoning trace is a reliable system primitive.',
+      'Human analogy': 'The human analogy is a shared case file or operations board that records current hypotheses, pending actions, and status updates so the next person can continue the work from the same visible state.',
+      'Without it': 'Without explicit working state, plans and partial progress stay trapped in ephemeral model text. Handoffs become brittle, recovery gets harder, and teams are tempted to rely on internal reasoning they cannot govern directly.',
+      'With it': 'With externalized state, the workflow becomes easier to coordinate. Agents and reviewers can inspect the same work surface, resume from checkpoints, and validate progress more directly.'
+    },
+    'Termination conditions & handoff criteria': {
+      'What it is': 'This topic defines the rules for when an agent should stop, declare completion, escalate, or hand work to another agent. It is the coordination logic that prevents endless loops, premature closure, and ambiguous ownership.',
+      'Where it is used': 'It is used in orchestrated agent teams, approval flows, protocol-driven systems, and long-running jobs where several workers may touch the same task over time. It becomes critical as soon as delegation is more than a one-off convenience.',
+      'What it unlocks': 'It unlocks cleaner coordination boundaries. Teams can make stopping, escalation, and reassignment explicit instead of hoping agents infer the same rules implicitly.',
+      'Human analogy': 'The human analogy is a service desk defining exactly when a case can be closed, when it must be escalated, and what information has to be attached before handing it to the next team.',
+      'Without it': 'Without explicit handoff and stopping criteria, tasks bounce between agents, finish too early, or sit unresolved because nobody is clearly responsible for the next move.',
+      'With it': 'With the criteria in place, multi-agent workflows become more stable. Handoffs carry the right context, completion is easier to verify, and deference loops become less likely.'
+    },
     'Human-in-the-loop (HITL)': {
       'What it is': 'Human-in-the-loop means the system is designed to pause, escalate, or request approval at specific points rather than acting fully on its own. The human is part of the workflow, not just a spectator after the fact.',
       'Where it is used': 'It is used in legal review, finance, support escalation, medical settings, sensitive enterprise workflows, and any task where the cost of a wrong action is higher than the cost of a short review step.',
@@ -169,6 +353,14 @@
       'Human analogy': 'The analogy is supervisor sign-off. A skilled junior operator can do substantial work alone, but a more senior person reviews the critical moment before something binding happens.',
       'Without it': 'Without HITL, teams are pushed toward either reckless automation or constant manual babysitting. The system either acts too freely or never earns enough trust to be useful.',
       'With it': 'With HITL in the right places, autonomy becomes more practical. The agent handles the repetitive and preparatory work, while the human provides judgment at the moments that truly warrant it.'
+    },
+    'Objective -> execution -> validation loops': {
+      'What it is': 'This topic describes the operating loop where the agent works from an explicit objective, attempts execution, then checks whether the result actually satisfied the objective before moving on. It is a workflow discipline for closing the gap between intention and verified outcome.',
+      'Where it is used': 'It is used in browser agents, coding agents, back-office automation, and long-running workflows where success cannot be trusted from the first attempt or the model\'s own narration alone.',
+      'What it unlocks': 'It unlocks more dependable completion logic. The system stops treating execution as proof of success and starts requiring evidence that the task state truly changed in the intended way.',
+      'Human analogy': 'The human analogy is an operations team working from a job ticket, carrying out the task, then checking the record, receipt, or downstream confirmation before closing the case.',
+      'Without it': 'Without this loop, the agent can confuse attempted action with completed work. It may declare success after a partial change, a silent failure, or a tool response that sounded plausible but did not actually verify the outcome.',
+      'With it': 'With the loop in place, the workflow becomes more trustworthy. Execution is followed by explicit confirmation, which makes retries, escalation, and case closure more defensible.'
     },
     'Distributed tracing (LangSmith, Langfuse)': {
       'What it is': 'Distributed tracing gives a time-ordered view of what the agent did across prompts, tool calls, model responses, retries, and downstream actions. It is the execution story of the system, not just the final answer on the screen.',
@@ -210,6 +402,14 @@
       'Without it': 'Without embeddings, a knowledge system leans much harder on keyword overlap and brittle lexical matching. That often means missing useful evidence just because the wording changed.',
       'With it': 'With embeddings, the agent can search for meaning rather than literal phrasing. That is one of the core moves that makes modern retrieval systems feel less mechanical and more context-aware.'
     },
+    'Dense retrieval embeddings': {
+      'What it is': 'Dense retrieval embeddings are embedding representations tuned or selected specifically for search and recall. The goal is not just to represent meaning in the abstract, but to place queries and documents in a shared space where relevant matches land near each other for retrieval.',
+      'Where it is used': 'They are used in vector search, memory recall, RAG pipelines, and first-pass semantic retrieval. They matter most when the system needs broad recall before reranking or answer synthesis begins.',
+      'What it unlocks': 'They unlock a stronger retrieval starting point. The system can surface semantically related candidates earlier, which gives rerankers and generation stages better raw material to work with.',
+      'Human analogy': 'The human analogy is a records team using one consistent filing taxonomy for both incoming requests and stored case files so the right records land in the same neighborhood when someone searches later.',
+      'Without it': 'Without retrieval-oriented embeddings, vector search may still run, but the nearest neighbors are often noisier than they should be. That forces downstream reranking to work much harder and can still leave key evidence buried.',
+      'With it': 'With dense retrieval embeddings in place, first-pass recall becomes more dependable. The agent starts the retrieval pipeline with a more relevant candidate set instead of trying to recover from a weak initial search.'
+    },
     'Memory taxonomy': {
       'What it is': 'Memory taxonomy separates different kinds of memory instead of treating all stored information as one blob. Working, episodic, semantic, and procedural memory each play different roles in a capable agent system.',
       'Where it is used': 'It is used when designing assistants with history, research agents with durable state, and systems that need to distinguish short-term context from reusable long-term knowledge. It is a conceptual tool for keeping memory architecture honest.',
@@ -226,6 +426,38 @@
       'Without it': 'Without context management, prompts bloat quickly and the important details lose salience. Or the opposite happens: the prompt is trimmed aggressively and the model never sees the evidence it truly needed.',
       'With it': 'With context window management, the agent uses its limited working space deliberately. That usually leads to better grounding, lower cost, and fewer failures caused by prompt clutter.'
     },
+    'Read / write memory policies': {
+      'What it is': 'Read and write memory policies define when the system is allowed to store something durably, when it should only keep it in temporary context, and what conditions must be met before previously stored material is recalled again. They turn memory from a passive dump into a governed subsystem.',
+      'Where it is used': 'They are used in personalized assistants, long-running workflows, multi-step copilots, and any agent that accumulates history across sessions. They matter most once memory volume starts growing faster than the prompt can safely carry.',
+      'What it unlocks': 'It unlocks disciplined memory growth. The system can keep what is genuinely useful, avoid persisting noise, and decide more deliberately when recalled memory deserves to influence the current turn.',
+      'Human analogy': 'The human analogy is a records policy that decides what becomes part of the official case file, what stays as temporary working notes, and what must be reviewed before it is reused in a later decision.',
+      'Without it': 'Without read and write policies, the agent tends to save too much, recall too broadly, or treat every past interaction as equally reusable. The memory store becomes cluttered long before it becomes helpful.',
+      'With it': 'With good policies in place, durable memory becomes more selective and trustworthy. The agent carries forward the right history without dragging every past detail into future work.'
+    },
+    'Personalized vs shared memory': {
+      'What it is': 'This topic separates memory that belongs to one user, task owner, or agent instance from memory that is intentionally shared across a team, tenant, or workflow. The key question is not only what is remembered, but who that memory is for.',
+      'Where it is used': 'It is used in enterprise assistants, team copilots, multi-agent systems, and any product serving more than one user or role. It becomes critical when personalization value and privacy boundaries both matter at the same time.',
+      'What it unlocks': 'It unlocks cleaner scope control. Teams can decide which facts should remain private to one user or case and which deserve to become reusable organizational memory.',
+      'Human analogy': 'The human analogy is separating an employee\'s personal working notes, a shared project folder, and the official team handbook. All three hold useful information, but they are not meant for the same audience.',
+      'Without it': 'Without this distinction, memory systems either overshare and leak context across users or over-isolate and duplicate everything that should have been reusable. Both paths raise quality and governance problems.',
+      'With it': 'With the boundary clear, memory can be scoped deliberately. Personal context stays personal, shared knowledge stays reusable, and the system is easier to trust in multi-user settings.'
+    },
+    'Memory provenance & source lineage': {
+      'What it is': 'Memory provenance and source lineage track where a stored memory came from, when it was captured, which source document, tool result, or user interaction produced it, and how it may have been transformed over time.',
+      'Where it is used': 'It is used in enterprise memory systems, regulated workflows, RAG pipelines, and multi-agent collaboration where stored facts may later need to be justified, corrected, or deleted.',
+      'What it unlocks': 'It unlocks auditability and safer reuse. The team can inspect whether a memory came from a trusted source, whether it is stale, and which downstream behavior may be relying on it.',
+      'Human analogy': 'The human analogy is document control that records the original source file, revision history, approver, and downstream references for each important record in a case-management system.',
+      'Without it': 'Without provenance, memory becomes hard to trust. A stale or poisoned record can keep influencing the system even when nobody can explain where it came from or which source should correct it.',
+      'With it': 'With provenance and lineage in place, stored knowledge becomes easier to govern. Teams can trace, review, repair, and retire memories with much less guesswork.'
+    },
+    'Memory permissions & access control': {
+      'What it is': 'Memory permissions and access control define which users, agents, tools, or workflows are allowed to read, write, update, or delete specific memory stores or fields. This is the authorization layer for durable context.',
+      'Where it is used': 'It is used in enterprise copilots, multi-tenant systems, privacy-sensitive assistants, and multi-agent architectures where not every participant should see the same history or knowledge.',
+      'What it unlocks': 'It unlocks least-privilege memory design. The system can share useful context where appropriate without turning the memory layer into a universal source of accidental data exposure.',
+      'Human analogy': 'The human analogy is role-based access on case files, shared drives, and records systems where some teams can only read a summary, some can edit the file, and some should not see the record at all.',
+      'Without it': 'Without access control, the memory layer becomes an easy place for cross-user leakage, overbroad agent visibility, and silent policy violations. The richer the memory system gets, the worse that risk becomes.',
+      'With it': 'With explicit permissions in place, durable memory becomes much more governable. Agents and users get the context they need without inheriting broad visibility they never should have had.'
+    },
     'Vector search (ANN / HNSW)': {
       'What it is': 'Vector search retrieves nearby embeddings rather than exact keyword matches, and ANN structures such as HNSW make that fast enough to use at production scale. It is the core engine behind most modern semantic search systems.',
       'Where it is used': 'You see it in RAG, memory recall, enterprise search, recommendation, and document routing. Anytime a system needs to find semantically related items across a large corpus, vector search is usually in the loop.',
@@ -233,6 +465,14 @@
       'Human analogy': 'The human analogy is using an indexed reference shelf or concept dictionary where nearby entries cover similar ideas, so you can find the right material even if you do not know the exact wording.',
       'Without it': 'Without vector search, semantic retrieval either becomes too slow or collapses back into brittle keyword logic. That tends to hurt recall as soon as the corpus gets large and language becomes varied.',
       'With it': 'With vector search in place, semantic memory becomes practical at scale. The agent can reach for related evidence quickly enough that retrieval can stay inside real user-facing systems.'
+    },
+    'Hybrid search': {
+      'What it is': 'Hybrid search combines lexical retrieval such as BM25 with semantic retrieval such as dense vectors, then merges or reranks the result set. It is the practical answer to the fact that exact terminology and semantic similarity each catch failures the other misses.',
+      'Where it is used': 'It is used in enterprise search, support copilots, document QA, and knowledge systems that must handle both exact identifiers and loosely phrased natural-language questions. It is especially useful when one corpus mixes policy language, IDs, names, and broad descriptive text.',
+      'What it unlocks': 'It unlocks better recall across mixed query types. The system can stay strong on exact part numbers, legal phrases, or product names without giving up the semantic flexibility that dense retrieval provides.',
+      'Human analogy': 'The human analogy is a records specialist checking both the exact term index and the subject catalog before deciding which files belong in the shortlist for review.',
+      'Without it': 'Without hybrid search, systems often overfit to one retrieval style. Keyword search misses paraphrases, while vector-only retrieval can underweight exact identifiers, citations, or specialist terms that matter a great deal operationally.',
+      'With it': 'With hybrid search, retrieval becomes more balanced. The agent can pull from both exact-match and meaning-based signals before spending prompt budget on the final evidence set.'
     },
     'Metadata enrichment & filtering': {
       'What it is': 'Metadata enrichment adds structured fields such as source, date, tenant, access class, document type, or region to chunks and documents. Filtering then uses those fields to narrow retrieval before or after similarity search.',
@@ -250,13 +490,21 @@
       'Without it': 'Without multi-hop behavior, a retrieval system tends to answer only what is directly stated in one place. Questions that require bridging evidence across sources get simplified, guessed, or missed entirely.',
       'With it': 'With multi-hop RAG, the agent can do more than fetch. It can traverse an evidence chain, which makes document-grounded reasoning much closer to the way careful humans actually investigate.'
     },
-    'Tool schema design (OpenAI / Anthropic style)': {
-      'What it is': 'Tool schema design defines the names, descriptions, arguments, and types that a model sees when deciding how to call a tool. It is the contract between model reasoning and executable capability.',
+    'GraphRAG': {
+      'What it is': 'GraphRAG uses graph structure, explicit entity relationships, or graph-enriched retrieval paths to gather context instead of relying only on flat similarity over isolated chunks. The graph can come from a knowledge graph, extracted entity graph, or document-link graph built during ingestion.',
+      'Where it is used': 'It is used in due diligence, root-cause analysis, research, policy interpretation, and enterprise knowledge systems where relationships between people, systems, events, and documents matter as much as the documents themselves.',
+      'What it unlocks': 'It unlocks relation-aware retrieval. The agent can follow links, neighborhoods, and structured paths that would be hard to recover from chunk similarity alone, especially on multi-entity or multi-step questions.',
+      'Human analogy': 'The human analogy is an investigator moving through a case-management graph of people, accounts, incidents, and source files instead of reading one stack of documents in isolation.',
+      'Without it': 'Without graph-aware retrieval, relation-heavy questions often degrade into flat search. The system may find relevant documents but still miss the connecting path that explains why those documents belong together.',
+      'With it': 'With GraphRAG, the evidence set becomes more structured and connected. The agent can retrieve along meaningful links instead of hoping those links were already obvious inside one chunk.'
+    },
+    'Tool schema design (JSON Schema / provider adapters)': {
+      'What it is': 'Tool schema design defines the names, descriptions, arguments, and types that a model sees when deciding how to call a tool. In practice, teams usually express that contract through JSON Schema-like structures and then adapt it to whichever provider or runtime they are using.',
       'Where it is used': 'It is used in every serious function-calling or tool-use system, from internal agent platforms to end-user assistants. The quality of the schema often matters as much as the quality of the tool implementation itself.',
       'What it unlocks': 'It unlocks clearer tool selection and safer argument generation. A well-designed schema helps the model understand what a tool is for, what inputs are valid, and when it should not call it.',
-      'Human analogy': 'The human analogy is designing a good form, API, or checklist. Clear field names and crisp descriptions help people make fewer mistakes, and the same principle applies to models.',
+      'Human analogy': 'The human analogy is designing a good form, API, or checklist, then making sure each department can still consume the same request even if their internal software differs slightly.',
       'Without it': 'Without good schema design, the tool layer becomes ambiguous. The model picks the wrong tool, invents invalid arguments, or treats similar actions as interchangeable when they are not.',
-      'With it': 'With strong schemas, tool use becomes more legible and reliable. The model is still reasoning, but it is reasoning against a much better interface.'
+      'With it': 'With strong schemas and thin provider adapters, tool use becomes more legible and portable. The model is still reasoning, but it is reasoning against a much better interface.'
     },
     'Parallel tool calls': {
       'What it is': 'Parallel tool calls let an agent invoke multiple independent tools or queries at the same time instead of serializing every step. It is a latency and coverage optimization when the calls do not depend on each other.',
@@ -274,6 +522,14 @@
       'Without it': 'Without a protocol layer like MCP, integration work tends to fragment into one-off adapters. That slows down reuse and makes the ecosystem harder to compose safely and predictably.',
       'With it': 'With MCP, the agent world gets a cleaner systems boundary. Tools become more portable across clients, and the capability surface can evolve with more consistency.'
     },
+    'Capability descriptors and manifests': {
+      'What it is': 'Capability descriptors and manifests are machine-readable descriptions of what a tool, server, or agent can do, how it should be invoked, and what boundaries or metadata travel with that capability. They are the inventory layer that sits above the raw implementation.',
+      'Where it is used': 'They are used in tool registries, dynamic agent runtimes, MCP-style ecosystems, interoperability layers, and enterprise platforms that need to decide which capabilities are available before invocation time.',
+      'What it unlocks': 'It unlocks cleaner discovery and portability. Systems can reason about available capabilities without hard-coding every assumption into one runtime or prompt.',
+      'Human analogy': 'The human analogy is a service catalog that lists what each team handles, which forms they accept, what approvals they require, and where requests should be routed.',
+      'Without it': 'Without descriptors and manifests, tool ecosystems stay opaque. Discovery becomes ad hoc, adapters multiply, and teams struggle to tell which capability exists or how it should safely be used.',
+      'With it': 'With a manifest layer in place, the capability surface becomes easier to search, register, and govern. That is what makes larger tool ecosystems composable rather than improvised.'
+    },
     'Agent sandboxing (E2B, Modal, Daytona)': {
       'What it is': 'Agent sandboxing provides isolated execution environments where code, file operations, or other risky actions can happen with controlled permissions. It is a containment layer for agent action, not just a convenience feature.',
       'Where it is used': 'It is used in coding agents, data-processing agents, notebook-style workflows, and any system that executes code or manipulates artifacts on behalf of a user. The moment an agent can run code, sandboxing becomes strategic.',
@@ -289,6 +545,22 @@
       'Human analogy': 'The human analogy is project work that spans days rather than a single conversation. People keep notes, resume from checkpoints, and come back to partially finished work later.',
       'Without it': 'Without support for long-running processes, agents either time out, lose state, or force users to micromanage every continuation. Complex workflows stay awkward because the system is trapped in short-lived interaction patterns.',
       'With it': 'With durable long-running behavior, the agent becomes more like a worker and less like a one-turn assistant. It can make progress in the background and return with accumulated results.'
+    },
+    'Single-tenant vs multi-tenant agent platforms': {
+      'What it is': 'This topic compares two deployment models. In a single-tenant platform, one customer or workload gets dedicated runtime boundaries and often dedicated control surfaces; in a multi-tenant platform, many customers share common platform components with isolation controls layered on top.',
+      'Where it is used': 'It is used in enterprise agent platforms, SaaS copilots, regulated deployments, BYOC patterns, and any product that serves multiple customers with different risk tolerances. The choice affects cost, customization, and the shape of your operational controls.',
+      'What it unlocks': 'It unlocks an explicit isolation trade-off. Teams can choose when stronger separation is worth the extra operational overhead and when shared infrastructure is the better economic design.',
+      'Human analogy': 'The human analogy is the difference between assigning a dedicated service team to one client and running a shared service center that supports many clients through strong process boundaries and access controls.',
+      'Without it': 'Without a tenancy model chosen on purpose, platform design drifts. Teams either overspend by isolating everything or under-protect sensitive workloads by sharing more than the risk profile really allows.',
+      'With it': 'With the tenancy choice made explicitly, deployment patterns line up better with compliance needs, customization demands, and platform economics. The system is easier to explain to both operators and buyers.'
+    },
+    'Control plane vs execution plane': {
+      'What it is': 'This topic separates the systems that configure, schedule, route, and observe work from the systems that actually run the work. The control plane manages intent and policy; the execution plane carries out prompts, tool calls, jobs, and sandboxed tasks.',
+      'Where it is used': 'It is used in hosted agent platforms, workflow engines, sandbox fleets, MCP infrastructure, and multi-region operations. The distinction matters once the platform has to manage many workers, customers, or deployment targets at once.',
+      'What it unlocks': 'It unlocks cleaner scaling and safer operations. Teams can harden the management layer separately from the worker layer and reason about failures without treating the whole platform as one lump.',
+      'Human analogy': 'The human analogy is a dispatch office coordinating jobs, rules, and status updates while field crews actually perform the work at customer sites. The office and the crews are tightly linked, but they are not the same function.',
+      'Without it': 'Without this separation, configuration, scheduling, and runtime execution get tangled together. That makes outages harder to isolate and makes platform changes riskier than they need to be.',
+      'With it': 'With a clear control-plane and execution-plane split, the system becomes easier to scale, secure, and troubleshoot. Operators can change governance or routing logic without treating every worker as if it were also the management system.'
     },
     'Model performance monitoring and drift detection': {
       'What it is': 'This topic covers watching model quality, latency, cost, and behavioral stability over time so that quiet regressions can be detected. Drift is not only about data distributions; it is also about how the system behaves after model, prompt, or traffic changes.',
@@ -370,6 +642,14 @@
       'Without it': 'Without reranking, the model often sees plausible but mediocre evidence near the top of the list. That can be enough to send the whole answer in the wrong direction even when better evidence was also retrieved.',
       'With it': 'With reranking, the evidence frontier gets sharper. The agent works from a cleaner top set, which usually improves groundedness and reduces wasted prompt space.'
     },
+    'Reranker APIs / cross-encoders': {
+      'What it is': 'This topic covers the concrete reranker models used in second-pass retrieval, especially cross-encoders and hosted reranker APIs that score a query against each candidate document more directly than a first-pass retriever can afford to do.',
+      'Where it is used': 'It is used in production RAG, enterprise search, support systems, and memory lookup pipelines where fast initial recall needs a stronger precision layer before context is sent to the model.',
+      'What it unlocks': 'It unlocks a cleaner top-of-list. Teams can keep a broad and efficient first retrieval pass while still using a more expensive relevance check on the shortlist that really matters.',
+      'Human analogy': 'The human analogy is a senior reviewer taking a rough intake queue from the front desk and deciding which few case files are actually the strongest fit for immediate review.',
+      'Without it': 'Without explicit reranker models, the retrieval stack often stops one step too early. The system retrieves enough candidates to be hopeful, but still wastes prompt space on items that should have been screened out.',
+      'With it': 'With cross-encoders or hosted reranker APIs in place, the final evidence set gets sharper. That usually improves groundedness, lowers prompt clutter, and makes downstream generation easier to trust.'
+    },
     'Query rewriting': {
       'What it is': 'Query rewriting transforms the original user request into a retrieval-friendly query that better matches how the corpus is organized. It is a bridge between messy natural questions and the shape of the search system.',
       'Where it is used': 'It is used in enterprise search, document QA, multilingual corpora, and agentic retrieval systems that need to recover from vague or underspecified requests. Often the answer is not missing; the query is simply weak.',
@@ -393,6 +673,14 @@
       'Human analogy': 'The human analogy is checking both whether someone consulted the right sources and whether they represented those sources honestly in the final writeup.',
       'Without it': 'Without RAG evaluation, teams tend to look only at the final answer and guess which stage broke. That makes iteration slower because the system hides the real source of the failure.',
       'With it': 'With explicit context-relevance and faithfulness checks, RAG becomes much more tunable. Retrieval and generation can be improved with clearer signals instead of intuition alone.'
+    },
+    'Calibrated confidence & abstention': {
+      'What it is': 'Calibrated confidence and abstention are about teaching the system to express uncertainty in ways that match reality and to decline or escalate when the evidence is too weak. This is more useful than raw confidence numbers that often sound precise without being well calibrated.',
+      'Where it is used': 'It is used in support assistants, retrieval-heavy systems, regulated workflows, and any agent that should sometimes say there is not enough evidence rather than bluffing through the gap.',
+      'What it unlocks': 'It unlocks safer low-confidence behavior. The system can route uncertain cases to humans, request more evidence, or explicitly abstain instead of overcommitting to a shaky answer.',
+      'Human analogy': 'The human analogy is a staff member marking a case as needs review or insufficient evidence rather than inventing certainty just to keep the queue moving.',
+      'Without it': 'Without calibration and abstention, systems often attach misleading certainty to weak evidence or use confidence scores that look numeric but are not trustworthy enough to govern decisions.',
+      'With it': 'With calibrated uncertainty handling, the agent becomes easier to trust operationally. Teams can separate strong evidence from weak evidence and design better review paths around that distinction.'
     },
     'Human evaluation': {
       'What it is': 'Human evaluation is structured judgment by people using a rubric, review protocol, or task outcome standard rather than relying purely on automated metrics. It remains essential because many agent behaviors are too nuanced for simple scalar scores.',
@@ -546,13 +834,29 @@
       'Without it': 'Without a vector database, semantic retrieval tends to stay small, slow, or improvised. Teams either scan documents manually, fall back to keywords, or struggle to keep semantic search responsive as the corpus grows.',
       'With it': 'With a vector database in place, the agent can search a much larger memory by concept and pull back relevant material quickly enough to stay useful in production settings.'
     },
-    'Vector databases (Pinecone, Weaviate, Qdrant)': {
+    'Vector databases (Pinecone, Weaviate, Qdrant, Milvus)': {
       'What it is': 'Vector databases store embeddings and support fast nearest-neighbor search, filtering, and retrieval across large collections of semantically indexed content.',
       'Where it is used': 'They are used in RAG systems, long-term memory stores, semantic search, recommendation, and any agent workflow that needs to retrieve related material by meaning instead of exact keyword match.',
       'What it unlocks': 'It unlocks persistent semantic lookup at scale. The agent can keep a large knowledge base in a form that is searchable by concept fast enough for real workflows.',
       'Human analogy': 'The human analogy is an indexed reference library or dictionary organized by meaning, so a person can search for related ideas even when they do not know the exact wording used in the source.',
       'Without it': 'Without a vector database, semantic retrieval tends to stay small, slow, or improvised. Teams either scan documents manually, fall back to keywords, or struggle to keep semantic search responsive as the corpus grows.',
       'With it': 'With a vector database in place, the agent can search a much larger memory by concept and pull back relevant material quickly enough to stay useful in production settings.'
+    },
+    'Operational vector stores (Postgres + pgvector, Elasticsearch / OpenSearch)': {
+      'What it is': 'Operational vector stores are general-purpose databases or search systems that also support vector retrieval. They let teams keep semantic search closer to the rest of the application data model instead of always introducing a separate dedicated vector database.',
+      'Where it is used': 'They are used in production systems that already rely on Postgres, Elasticsearch, or OpenSearch and want vector search, metadata filters, and application data to live in a more unified operational stack.',
+      'What it unlocks': 'It unlocks architectural simplicity and tighter integration with the rest of the product data. Teams can combine semantic retrieval with ordinary records, filters, permissions, and operational workflows more directly.',
+      'Human analogy': 'The human analogy is extending the main records system so it can also support meaning-based search, instead of forcing staff to jump between a separate specialist archive and the system where the rest of the case already lives.',
+      'Without it': 'Without this option, teams may over-separate the retrieval layer from the operational system even when their scale and constraints would have benefited from a simpler deployment shape.',
+      'With it': 'With operational vector stores, retrieval can sit closer to business data and existing ops practices. That often makes permissions, joins, freshness, and operational ownership easier to manage.'
+    },
+    'Knowledge graphs': {
+      'What it is': 'Knowledge graphs represent entities and the explicit relationships between them, such as who reports to whom, which system depends on which service, or which policy governs which workflow. They make relational structure first-class instead of leaving it buried inside documents.',
+      'Where it is used': 'They are used in enterprise search, investigations, compliance, root-cause analysis, recommendation, and graph-based retrieval systems where relationship structure matters as much as the raw text itself.',
+      'What it unlocks': 'It unlocks explicit relational reasoning. The system can traverse named entities and links, which is often much stronger for relation-heavy questions than hoping those links emerge implicitly from unstructured text retrieval.',
+      'Human analogy': 'The human analogy is a case-management board that links people, accounts, incidents, approvals, and documents so an investigator can follow relationships directly rather than inferring everything from separate narrative files.',
+      'Without it': 'Without a knowledge graph, the system may still have the right documents but no explicit way to organize how entities connect. Relation-heavy questions then become slower and more error-prone to answer.',
+      'With it': 'With a knowledge graph in place, connected evidence becomes much easier to query and traverse. That gives the agent a stronger backbone for multi-hop, entity-centric, and graph-aware retrieval workflows.'
     }
   });
 }());

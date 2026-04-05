@@ -4,10 +4,10 @@
       id:1, title:"Foundation Models", color:"#7F77DD", bg:"#EEEDFE",
       sections:[
         {title:"Core transformer architecture", topics:[
-          "Attention mechanisms","Multi-head attention","Positional encoding","Feed-forward layers","Layer normalization","Residual connections","Tokenization","Byte-pair encoding (BPE)","Context windows","KV cache"
+          "Attention mechanisms","Multi-head attention","Positional encoding","Feed-forward layers","Layer normalization","Residual connections","Tokenization","Byte-pair encoding (BPE)","SentencePiece / Unigram tokenization","Context windows","KV cache"
         ]},
         {title:"Architecture extensions", topics:[
-          "Mixture of Experts (MoE)","Speculative decoding","Structured output / JSON mode","Prompt caching","Quantization (GPTQ, AWQ, GGUF)","State-space models (Mamba, RWKV)","Grouped Query Attention (GQA)","Multi-Head Latent Attention (MLA)","Sliding window attention","Rotary Position Embedding (RoPE)","Ring attention / infinite context","Retrieval-augmented generation at architecture level"
+          "Mixture of Experts (MoE)","Speculative decoding","Structured output / JSON mode","Prompt caching","Quantization and packaging (GPTQ, AWQ, GGUF)","State-space models (Mamba, RWKV)","Grouped Query Attention (GQA)","Multi-Head Latent Attention (MLA)","Sliding window attention","Rotary Position Embedding (RoPE)","Ring attention / infinite context","Retrieval-conditioned architectures (advanced / research)"
         ]},
         {title:"Model families", topics:[
           "GPT-style (decoder-only)","BERT-style (encoder-only)","T5-style (encoder-decoder)","Multimodal models (LMM/VLM)","Small language models (SLM)","Open-source vs proprietary","Model cards & documentation"
@@ -45,10 +45,10 @@
       id:2, title:"Reasoning & Intelligence", color:"#1D9E75", bg:"#E1F5EE",
       sections:[
         {title:"Reasoning paradigms", topics:[
-          "Chain-of-Thought (CoT)","ReAct (Reason+Act)","Tree-of-Thought (ToT)","Graph-of-Thought (GoT)","Program-of-Thought (PoT)","Self-consistency","Debate reasoning","Skeleton-of-Thought","Chain-of-Emotion","Test-time compute scaling","Process reward models (PRM)","Outcome reward models (ORM)","Verification & self-verification"
+          "Chain-of-Thought (CoT)","Least-to-Most prompting","ReAct (Reason+Act)","Tree-of-Thought (ToT)","Graph-of-Thought (GoT)","Program-of-Thought (PoT)","Self-consistency","Debate reasoning","Skeleton-of-Thought","Tool-assisted reasoning","Test-time compute scaling","Verifier-guided reasoning","Verification & self-verification"
         ]},
-        {title:"Reflection & self-improvement", topics:[
-          "Reflection loops","Self-critique","Self-evaluation","Iterative refinement","Constitutional AI","Self-play","Online learning from feedback","Reward modeling","Critique agents"
+        {title:"Reflection, critique & repair", topics:[
+          "Reflection loops","Self-critique","Self-evaluation","Iterative refinement","Reflexion","Critique agents","Trajectory critique and repair","Plan repair after failure","Post-action review loops"
         ]},
         {title:"Training paradigms for agents", topics:[
           "Reinforcement Learning from Human Feedback (RLHF)","Reinforcement Learning from AI Feedback (RLAIF)","Direct Preference Optimization (DPO)","Proximal Policy Optimization (PPO)","Group Relative Policy Optimization (GRPO)","Tool-use fine-tuning","Agent trajectory fine-tuning","Curriculum learning for agents","Bootstrapped self-improvement","Multi-task agent training"
@@ -57,13 +57,13 @@
           "ReAct agents","Plan-and-Execute agents","Reflection agents","Autonomous agents (AutoGPT-style)","Tool-using agents","Generalist agents","Subagent patterns","Mixture-of-Agents (MoA)","World models","Skeleton planner","Compound AI systems","Cognitive architectures (ACT-R, SOAR)"
         ]},
         {title:"Planning & control", topics:[
-          "Task decomposition","Hierarchical planning","Agent loop design","Rule-based controllers","LLM-based controllers","Execution engines","Retry & backoff strategies","Failure handling","Goal prioritization","Constraint satisfaction","Monte Carlo Tree Search planning","Budget-aware planning"
+          "Task decomposition","Hierarchical planning","Agent loop design","Finite-state / rule-based controllers","LLM-based controllers","Planner-executor separation","Replanning / plan repair","Execution monitoring and watchdogs","Goal prioritization","Constraint satisfaction","Stop conditions and escalation criteria","Budget-aware planning"
         ]},
-        {title:"Neuro-symbolic AI (advanced / research)", topics:[
-          "Logic-neural hybrid architectures","System 1 / System 2 dual-process models","Symbolic grounding for LLM reasoning","Knowledge graph-grounded reasoning","Constraint-guided neural generation"
+        {title:"Neuro-symbolic & constraint-guided reasoning (advanced / research)", topics:[
+          "Logic-neural hybrid architectures","Solver-backed reasoning (SAT/SMT/planners)","Symbolic grounding for LLM reasoning","Knowledge graph-grounded reasoning","Constraint-guided neural generation"
         ]},
         {title:"Meta-cognition", topics:[
-          "Confidence monitoring & calibration","Out-of-distribution (OOD) detection","Epistemic vs aleatoric uncertainty","Knowing-when-to-stop (task completion detection)","Selective prediction / abstention when unsure","Hallucination self-detection","Confidence-gated action execution","Resource-bounded reasoning","Planning horizon awareness","Model-internal uncertainty signals (logprob analysis)","Metacognitive prompting strategies","Introspective tool-use decisions"
+          "Confidence monitoring & calibration","Out-of-distribution (OOD) detection","Epistemic vs aleatoric uncertainty","Knowing-when-to-stop (task completion detection)","Selective prediction / abstention when unsure","Self-checking with external verification","Confidence-gated action execution","Resource-bounded reasoning","Planning horizon awareness","Confidence signals and calibration proxies","Metacognitive prompting strategies","Introspective tool-use decisions"
         ]}
       ]
     },
@@ -74,7 +74,7 @@
           "In-context (working) memory","External / long-term memory","Episodic memory","Semantic memory","Procedural memory","Memory compression","Memory versioning","Memory pruning","MemGPT / Letta patterns","Context window management"
         ]},
         {title:"Retrieval techniques", topics:[
-          "Vector search (ANN / HNSW)","Hybrid search","Keyword search (BM25)","Embeddings","Reranking","Cohere Rerank / cross-encoders","Query rewriting","Query expansion","ColBERT / late interaction retrieval","HyDE (Hypothetical Document Embeddings)","Contextual retrieval","Reciprocal Rank Fusion (RRF)","Learned sparse retrieval (SPLADE)"
+          "Vector search (ANN / HNSW)","Hybrid search","Keyword search (BM25)",newTopic("Dense retrieval embeddings", { idSlug: "Embeddings" }),"Reranking",newTopic("Reranker APIs / cross-encoders", { idSlug: "Cohere Rerank / cross-encoders" }),"Query rewriting","Query expansion","ColBERT / late interaction retrieval","HyDE (Hypothetical Document Embeddings)","Contextual retrieval","Reciprocal Rank Fusion (RRF)","Learned sparse retrieval (SPLADE)"
         ]},
         {title:"Chunking & indexing", topics:[
           "Chunking strategies","Sliding window chunking","Document hierarchies","Late chunking","Parent-child retrieval","Recursive / semantic chunking","Agentic chunking","Metadata enrichment & filtering","Multi-index strategies","Indexing pipelines & automation"
@@ -83,10 +83,10 @@
           "Multi-hop RAG","Agentic RAG","Corrective RAG (CRAG)","Self-RAG","GraphRAG","Multimodal RAG","RAPTOR (tree-structured RAG)","Modular RAG pipelines","Adaptive RAG (route by query complexity)","RAG vs fine-tuning vs long context (trade-offs)","RAG evaluation (context relevance, faithfulness)","Cache-augmented generation"
         ]},
         {title:"Knowledge stores", topics:[
-          "Vector databases (Pinecone, Weaviate, Qdrant)","Knowledge graphs","Relational DBs","Document stores","Conversation history","Episodic logs","Graph databases (Neo4j, Neptune)","Chroma / LanceDB (embedded vector DBs)","Hybrid stores (Milvus, pgvector)","Multi-tenant knowledge isolation"
+          newTopic("Vector databases (Pinecone, Weaviate, Qdrant, Milvus)", { idSlug: "Vector databases (Pinecone, Weaviate, Qdrant)" }),"Knowledge graphs","Relational DBs","Document stores","Conversation history","Episodic logs","Graph databases (Neo4j, Neptune)","Chroma / LanceDB (embedded vector DBs)",newTopic("Operational vector stores (Postgres + pgvector, Elasticsearch / OpenSearch)", { idSlug: "Hybrid stores (Milvus, pgvector)" }),"Multi-tenant knowledge isolation"
         ]},
         {title:"Knowledge quality", topics:[
-          "Hallucination detection","Grounding techniques","Freshness & staleness","Data pipelines & ingestion","Source attribution","Confidence scoring","Fact-checking agents"
+          "Hallucination detection","Grounding techniques","Freshness & staleness","Data pipelines & ingestion","Source attribution",newTopic("Calibrated confidence & abstention", { idSlug: "Confidence scoring" }),"Fact-checking agents"
         ]}
       ]
     },
@@ -94,7 +94,7 @@
       id:4, title:"Agency & Tool Use", color:"#EF9F27", bg:"#FAEEDA",
       sections:[
         {title:"Tool interfaces", topics:[
-          "Function calling","Tool schema design (OpenAI / Anthropic style)","Tool selection logic","Tool chaining","Tool error handling","Parallel tool calls","Tool result handling","Structured output for tool calls","Tool-use benchmarks (BFCL)"
+          "Function calling","Tool schema design (JSON Schema / provider adapters)","Tool selection logic","Read-only vs side-effecting tool boundaries","Idempotent tool design and retry safety","Tool chaining","Tool error handling","Parallel tool calls","Tool result handling","Structured output for tool calls","Tool-use benchmarks and eval suites"
         ]},
         {title:"Information tools", topics:[
           "Web search","Web scraping","APIs & REST","File ingestion (PDF, CSV, DOCX)","Code interpreters","Database queries","Knowledge base Q&A","Screenshot / screen capture tools","OCR & document AI"
@@ -103,19 +103,19 @@
           "Code execution (sandboxed)","File system operations","Shell / CLI automation","Browser automation","Computer use / GUI agents","Email & calendar APIs","Form filling","Voice & telephony agents","Image / video generation tools"
         ]},
         {title:"Meta tooling", topics:[
-          "Tool discovery","Dynamic tool registration","Tool ranking & selection","Tool learning from feedback","OpenAI tool schema","Cost-aware tool selection policies"
+          "Tool discovery","Dynamic tool registration","Tool ranking & selection","Capability descriptors and manifests","Provider-specific tool adapters","Tool health checks & fallback policies","Tool learning from feedback","Cost-aware tool selection policies"
         ]},
         {title:"Protocol convergence & standards", topics:[
-          "MCP (Model Context Protocol)","A2A protocol","ACP (Agent Communication Protocol)","Interoperability standards","MCP server ecosystem","Agent Network Protocol (ANP)","Agentic AI Foundation (Linux Foundation)","IEEE P3394 — Agent Interoperability Standard","Protocol bridging / interop layers (MCP↔A2A)","Agent capability discovery & registry standards","Standardized agent card / manifest formats","OpenAPI / AsyncAPI for agent tool interfaces","Cross-vendor agent orchestration standards","FIPA-legacy concepts in modern protocols"
+          "MCP (Model Context Protocol)","A2A protocol","Interoperability standards","MCP server ecosystem","Capability discovery and agent directories","Task handoff and status semantics","Agent cards / manifest formats","OpenAPI / AsyncAPI for agent tool interfaces","Protocol bridging / interop layers (MCP↔A2A)","Transport & session patterns for agent protocols","Cross-vendor agent orchestration standards","Emerging formal interoperability standards (IEEE and others)","Legacy FIPA concepts in modern protocols"
         ]},
         {title:"Agentic browsers", topics:[
-          "Browser-as-runtime for AI agents","Browser Company Dia","Perplexity Comet","Google Project Mariner","Operator / Computer Use paradigms (Anthropic, OpenAI)","DOM interaction models for agent navigation","Browser sandboxing for agent safety","Vision-based web agents (screenshot understanding)","Headless vs visual browser agents","Credential & session isolation for browser agents","Browser Skills (user-defined agentic shortcuts)","Web agent benchmarks (WebArena, Mind2Web)"
+          "Browser-as-runtime for AI agents","Browser-native agent products","Operator / computer-use paradigms","DOM interaction models for agent navigation","Accessibility tree interaction for agent navigation","Vision-based web agents (screenshot understanding)","Browser sandboxing for agent safety","Headless vs visual browser agents","Credential & session isolation for browser agents","Reusable browser skills / macros","Web agent benchmarks (WebArena, Mind2Web)"
         ]},
         {title:"Interaction patterns", topics:[
-          "Tool-calling loops","Human-in-the-loop (HITL)","Conversational agents","Task-oriented agents","Event-driven agents","Streaming agents","Sync vs async","Voice / multimodal I/O","Webhooks & event triggers","Approval workflows","Objective-Validation Protocol (OVP) paradigm","Validation checkpoint architecture","Goal decomposition with validation gates","Rollback-on-failure / compensating actions","Human-in-the-loop vs human-on-the-loop vs full autonomy","Adaptive autonomy levels (dynamic delegation)"
+          "Tool-calling loops","Human-in-the-loop (HITL)","Conversational agents","Task-oriented agents","Event-driven agents","Streaming agents","Synchronous vs asynchronous execution","Voice / multimodal I/O","Webhooks & event triggers","Approval workflows","Objective -> execution -> validation loops","Validation checkpoint architecture","Goal decomposition with validation gates","Rollback-on-failure / compensating actions","Human-in-the-loop vs human-on-the-loop vs full autonomy","Adaptive autonomy levels (dynamic delegation)"
         ]},
         {title:"Agent identity & authentication", topics:[
-          "OAuth & authentication for agents","Agent credential management","Machine identity certificates (mTLS)","Delegated authorization (agent acts on behalf of user)","Scoped permission tokens per task","Agent identity cards / manifests","Multi-agent trust chains","Agent signing & provenance verification","Credential rotation for long-running agents","Cross-organizational agent federation"
+          "OAuth & authentication for agents","Agent credential management","Machine / workload identity for agents (mTLS, service identities)","Delegated authorization (agent acts on behalf of user)","Scoped permission tokens per task","Agent identity cards / manifests","Multi-agent trust chains","Agent signing & provenance verification","Credential rotation for long-running agents","Cross-organizational agent federation"
         ]}
       ]
     },
@@ -123,16 +123,16 @@
       id:5, title:"Multi-Agent Systems", color:"#D4537E", bg:"#FBEAF0",
       sections:[
         {title:"Multi-agent architectures", topics:[
-          "Orchestrator-subagent pattern","Role-based agent teams","Peer-to-peer agents","Hierarchical agent networks","Debate agents","Mixture-of-Agents (MoA)","Puppeteer + specialist pattern","Governance agents","Agent marketplaces","Competitive agent systems"
+          "Orchestrator-subagent pattern","Role-based agent teams","Peer-to-peer agents","Hierarchical agent networks","Debate agents","Mixture-of-Agents (MoA)","Puppeteer + specialist pattern","Governance agents","Agents as tools",newTopic("Adversarial / self-play agent systems", { idSlug: "Competitive agent systems" })
         ]},
         {title:"Agent design patterns", topics:[
-          "Router pattern (classify & dispatch)","Map-reduce pattern (parallel fan-out)","Supervisor pattern (manage + route)","Critic / verifier pattern","Planner-executor pattern","Retriever-reader pattern","Generator-evaluator loop","Escalation pattern (agent → human)","Watchdog pattern (monitoring agent)","Assembly line pattern (sequential specialization)","Blackboard pattern (shared workspace)","Inner monologue pattern"
+          "Router pattern (classify & dispatch)","Map-reduce pattern (parallel fan-out)","Supervisor pattern (manage + route)","Critic / verifier pattern","Planner-executor pattern","Retriever-reader pattern","Generator-evaluator loop","Escalation pattern (agent → human)","Watchdog pattern (monitoring agent)","Assembly line pattern (sequential specialization)","Blackboard pattern (shared workspace)",newTopic("Externalized scratchpad / working-state pattern", { idSlug: "Inner monologue pattern" })
         ]},
         {title:"Coordination & communication", topics:[
-          "Message passing","Shared state management","Context handoff","Conflict resolution","Task delegation","Emergent behavior","Swarm intelligence","Agent discovery","Agent protocol standardization","Trust & reputation systems"
+          "Message passing","Shared state management","Context handoff","Conflict resolution","Task delegation","Emergent behavior","Termination conditions & handoff criteria","Agent discovery","Agent protocol standardization","Trust & reputation systems"
         ]},
         {title:"Frameworks", topics:[
-          "LangChain / LangGraph","LlamaIndex","AutoGen","CrewAI","OpenAI Agents SDK","Google ADK","PydanticAI","Haystack","Microsoft AutoGen","Dify","Smolagents (HuggingFace)","Mastra","Vercel AI SDK","Agno (formerly Phidata)","Agency Swarm"
+          "LangChain / LangGraph","LlamaIndex",newTopic("AutoGen (Microsoft)", { idSlug: "AutoGen" }),"CrewAI","OpenAI Agents SDK","Google ADK","PydanticAI","Haystack","Semantic Kernel","Dify","Smolagents (HuggingFace)","Mastra","Vercel AI SDK","Agno (formerly Phidata)","Agency Swarm"
         ]},
         {title:"Workflow systems", topics:[
           "DAG pipelines","State machines","Event-driven orchestration","Async orchestration","Parallel execution","Fan-out / fan-in","Workflow recovery & checkpointing","Long-running agent processes","Durable execution (Temporal, Inngest)"
@@ -149,7 +149,7 @@
           "API providers (OpenAI, Anthropic, Google)","Local inference (Ollama, vLLM, llama.cpp)","Model routing","Model switching","Multi-model ensembles","Token streaming","Inference providers (Groq, Together, Fireworks)","GPU orchestration","Model distillation"
         ]},
         {title:"Data infrastructure", topics:[
-          "Vector databases","SQL / NoSQL systems","Object storage","Data lakes","Stream processing (Kafka)","Data versioning","Feature stores for agents","Time-series databases for agent metrics"
+          "Vector databases","SQL / NoSQL systems","Object storage",newTopic("Lakehouse / data lake platforms", { idSlug: "Data lakes" }),"Stream processing (Kafka)","Data versioning","Feature stores for agents","Time-series databases for agent metrics"
         ]},
         {title:"Scaling & operations", topics:[
           "Horizontal scaling of agent fleets","Agent lifecycle management","Auto-scaling based on queue depth","Multi-region agent deployment","Agent health checks & heartbeats","Graceful degradation strategies","Version management for agent configs","Canary deployments for agents","Configuration management (prompts, tools, models)","Agent dependency management"
@@ -170,7 +170,7 @@
           "Token budgeting per task","Cost-per-task modeling & metering","Model routing for cost (cheap-model-first cascades)","Multi-step pipeline budget allocation","Inference cost vs accuracy trade-off curves","Agent ROI frameworks","Token-level cost attribution & chargebacks","Prompt caching economics (KV reuse savings)","Reasoning-token cost accounting","Cost-aware tool selection policies","Agent spend observability dashboards","FinOps governance for autonomous agent pipelines"
         ]},
         {title:"MLOps & LLMOps", topics:[
-          "Model versioning and registries","Experiment tracking (Weights & Biases, MLflow, Comet)","Model-serving lifecycle (staging, production, retired)","A/B testing infrastructure for models","Feature flags for model routing","Prompt-model co-versioning","Artifact management (models, adapters, prompts)","LLM gateway patterns (LiteLLM, Portkey, Martian)","Model performance monitoring and drift detection","Automated retraining and fine-tuning pipelines","Reproducibility and deterministic inference","Environment parity (dev, staging, prod)"
+          "Model versioning and registries","Experiment tracking (Weights & Biases, MLflow, Comet)","Model-serving lifecycle (staging, production, retired)","A/B testing infrastructure for models","Feature flags for model routing","Prompt-model co-versioning","Artifact management (models, adapters, prompts)",newTopic("LLM gateway patterns (LiteLLM, Portkey, Kong AI Gateway)", { idSlug: "LLM gateway patterns (LiteLLM, Portkey, Martian)" }),"Model performance monitoring and drift detection","Automated retraining and fine-tuning pipelines","Reproducibility and deterministic inference","Environment parity (dev, staging, prod)"
         ]},
         {title:"API design for AI services", topics:[
           "Streaming response design (SSE, WebSockets, chunked transfer)","Rate limiting strategies for LLM-backed APIs","Token-based rate limiting vs request-based","Webhook patterns for async agent execution","Long-running task APIs (polling, callbacks, WebSockets)","API versioning for prompt and model changes","Request and response schemas for structured LLM output","Error handling and retry contracts for AI endpoints","Idempotency keys for agent actions","Authentication and authorization for AI APIs","Multi-tenant API isolation","API gateway patterns for model routing","Backpressure and queue-based request handling","Timeout design for variable-latency LLM calls","Health check and readiness probes for AI services"
@@ -324,7 +324,7 @@
   const validationTopics = [
     'Human-in-the-loop (HITL)',
     'Approval workflows',
-    'Objective-Validation Protocol (OVP) paradigm',
+    'Objective -> execution -> validation loops',
     'Validation checkpoint architecture',
     'Goal decomposition with validation gates',
     'Rollback-on-failure / compensating actions',
@@ -375,7 +375,8 @@
             newTopic('Tokens vs embeddings vs generated text'),
             newTopic('Pretraining vs fine-tuning vs inference'),
             newTopic('Inference vs serving vs deployment'),
-            newTopic('Prompt tokens vs completion tokens vs reasoning tokens'),
+            newTopic('Input tokens vs output tokens vs reasoning budget'),
+            newTopic('Training cutoff vs retrieved freshness vs live tool data'),
             newTopic('Context window vs working context vs max output length'),
             newTopic('Decoding vs sampling vs generation'),
             newTopic('Greedy decoding vs temperature vs top-p sampling'),
@@ -401,6 +402,7 @@
             newTopic('Objectives vs tasks vs subtasks'),
             newTopic('Prompts vs policies vs plans'),
             newTopic('Context vs memory vs knowledge base'),
+            newTopic('Prompt engineering vs context engineering'),
             newTopic('Reasoning vs planning vs acting'),
             newTopic('Reasoning models vs chat models vs tool-using agents'),
             newTopic('Retrieval vs search vs reranking'),
@@ -431,7 +433,7 @@
             newTopic('Closed-weight vs open-weight deployment'),
             newTopic('Hosted APIs vs self-hosted inference'),
             newTopic('General-purpose model vs specialist model stack'),
-            newTopic('Reasoning-first model vs low-latency model routing'),
+            newTopic('Reasoning-first default vs routed model mix'),
             newTopic('One big prompt vs explicit workflow decomposition'),
             newTopic('Prompt logic vs code logic vs symbolic logic'),
             newTopic('Structured outputs vs natural-language post-processing'),
@@ -483,7 +485,7 @@
             newTopic('Build one good single-agent workflow before multi-agent orchestration'),
             newTopic('Add validation and observability before increasing autonomy'),
             newTopic('Do evaluation alongside implementation, not only at the end'),
-            newTopic('Study governance after you understand real system failure modes'),
+            newTopic('Study governance basics early, then deepen it after real failure modes'),
             newTopic('Use production constraints early: latency, cost, permissions, retries'),
             newTopic('Use cases as synthesis, not the starting point')
           ], {
@@ -510,6 +512,7 @@
           syntheticSection('Representation primitives', [
             'Tokenization',
             'Byte-pair encoding (BPE)',
+            newTopic('SentencePiece / Unigram tokenization'),
             'Context windows',
             'Positional encoding',
             newTopic('Embeddings as semantic coordinates'),
@@ -529,18 +532,35 @@
             topics: copyTopics('Foundation Models', 'Core transformer architecture', topic => ![
               'Tokenization',
               'Byte-pair encoding (BPE)',
+              'SentencePiece / Unigram tokenization',
               'Context windows',
               'Positional encoding'
             ].includes(topicText(topic)))
           }),
+          syntheticSection('Architecture patterns & extensions', copyTopics('Foundation Models', 'Architecture extensions', topic => [
+            'Rotary Position Embedding (RoPE)',
+            'Grouped Query Attention (GQA)',
+            'Sliding window attention',
+            'Mixture of Experts (MoE)',
+            'State-space models (Mamba, RWKV)',
+            'Multi-Head Latent Attention (MLA)',
+            'Ring attention / infinite context'
+          ].includes(topicText(topic))), {
+            prerequisites: ['Core transformer architecture'],
+            sourceRefs: [
+              { layerTitle: 'Foundation Models', sectionTitle: 'Architecture extensions' },
+              { layerTitle: 'Foundation Models', sectionTitle: 'Core transformer architecture' }
+            ]
+          }),
           syntheticSection('Model lifecycle & training fundamentals', [
             newTopic('Pretraining and next-token prediction'),
+            newTopic('Supervised fine-tuning (SFT)'),
             'Instruction tuning',
             newTopic('Preference tuning and alignment tuning'),
             newTopic('Fine-tuning strategies (full, PEFT, LoRA, QLoRA)'),
             newTopic('Inference-time adaptation vs weight updates'),
             newTopic('Distillation as capability transfer'),
-            newTopic('Quantization (GPTQ, AWQ, GGUF)'),
+            newTopic('Quantization and packaging (GPTQ, AWQ, GGUF)'),
             newTopic('Data quality, contamination, and benchmark integrity')
           ], {
             prerequisites: ['Core transformer architecture'],
@@ -595,7 +615,7 @@
             prerequisites: ['Model families', 'Model lifecycle & training fundamentals']
           }),
           copySection('Foundation Models', 'Inference optimization', {
-            prerequisites: ['Core transformer architecture', 'Model lifecycle & training fundamentals']
+            prerequisites: ['Core transformer architecture', 'Architecture patterns & extensions', 'Model lifecycle & training fundamentals']
           }),
           copySection('Foundation Models', 'Production prompt management', {
             prerequisites: ['Model interaction fundamentals']
@@ -617,13 +637,13 @@
             title: 'Decision-making & planning',
             prerequisites: ['Reasoning paradigms']
           }),
-          copySection('Reasoning & Intelligence', 'Reflection & self-improvement', {
+          copySection('Reasoning & Intelligence', 'Reflection, critique & repair', {
             prerequisites: ['Decision-making & planning']
           }),
           copySection('Reasoning & Intelligence', 'Meta-cognition', {
-            prerequisites: ['Reasoning paradigms', 'Reflection & self-improvement']
+            prerequisites: ['Reasoning paradigms', 'Reflection, critique & repair']
           }),
-          copySection('Reasoning & Intelligence', 'Neuro-symbolic AI (advanced / research)', {
+          copySection('Reasoning & Intelligence', 'Neuro-symbolic & constraint-guided reasoning (advanced / research)', {
             prerequisites: ['Reasoning paradigms', 'Decision-making & planning']
           })
         ]
@@ -834,11 +854,27 @@
             prerequisites: ['System infrastructure', 'Agent runtime & execution']
           }),
           copySection('Infrastructure & Deployment', 'Deployment patterns', {
-            prerequisites: ['Scaling & operations']
+            prerequisites: ['Scaling & operations'],
+            topics: [
+              'Docker containers',
+              'Kubernetes',
+              'Serverless agents',
+              'Persistent agent processes',
+              'Edge vs cloud',
+              'Blue-green deployments',
+              'Single-tenant vs multi-tenant agent platforms',
+              'Control plane vs execution plane',
+              'Agent-as-a-service',
+              'Hybrid local / cloud agents'
+            ]
           }),
           syntheticSection('Training & adaptation', dedupeTopics([
             ...copyTopics('Reasoning & Intelligence', 'Training paradigms for agents'),
-            ...copyTopics('Infrastructure & Deployment', 'Learning & adaptation')
+            ...copyTopics('Infrastructure & Deployment', 'Learning & adaptation').map(topic =>
+              topicText(topic) === 'RLHF'
+                ? newTopic('Reward modeling for preference tuning', { idSlug: 'RLHF' })
+                : topic
+            )
           ]), {
             prerequisites: ['Model lifecycle & training fundamentals', 'Agent runtime & execution'],
             sourceRefs: [
@@ -999,11 +1035,14 @@
   }
 
   function createTopicId(layer, section, topic, layerIndex, sectionIndex, topicIndex) {
+    // Allow visible topic labels to evolve without breaking stored progress or deep links.
+    const idSource = topic.idSlug || topic.text;
+
     return [
       String(layer.id).padStart(2, '0'),
       slugify(layer.title),
       slugify(section.title),
-      slugify(topic.text),
+      slugify(idSource),
       layerIndex,
       sectionIndex,
       topicIndex
@@ -2409,8 +2448,8 @@
     { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|compliance|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, kind: 'policy-control' },
     { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, kind: 'detection-measurement' },
     { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, kind: 'threat-failure' },
-    { pattern: /oauth|authentication|credential|mTLS|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, kind: 'identity-trust' },
-    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|registry standards|interop layers|agent card|a2a|acp|anp|mcp/i, kind: 'protocol-standards' },
+    { pattern: /oauth|authentication|credential|mTLS|workload identity|service identities|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, kind: 'identity-trust' },
+    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|agent directories|task handoff|status semantics|transport|session patterns|interop layers|agent card|manifest|a2a|mcp|fipa/i, kind: 'protocol-standards' },
     { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, kind: 'runtime-durability' }
   ];
 
@@ -2421,8 +2460,8 @@
     { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|compliance|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, guide: policyControlTopicBriefGuide },
     { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, guide: detectionMeasurementTopicBriefGuide },
     { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, guide: threatFailureTopicBriefGuide },
-    { pattern: /oauth|authentication|credential|mTLS|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, guide: identityTrustTopicBriefGuide },
-    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|registry standards|interop layers|agent card|a2a|acp|anp|mcp/i, guide: protocolStandardsTopicBriefGuide },
+    { pattern: /oauth|authentication|credential|mTLS|workload identity|service identities|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, guide: identityTrustTopicBriefGuide },
+    { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|agent directories|task handoff|status semantics|transport|session patterns|interop layers|agent card|manifest|a2a|mcp|fipa/i, guide: protocolStandardsTopicBriefGuide },
     { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, guide: runtimeDurabilityTopicBriefGuide },
     { pattern: /\bvs\b|trade-offs?|choice|beats|difference between|^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, guide: distinctionTopicBriefGuide }
   ];
@@ -2840,12 +2879,17 @@
   }
 
   const officialResourceMatchers = [
+    { pattern: /\bMCP\b|\bModel Context Protocol\b/i, label: 'Model Context Protocol docs', url: 'https://modelcontextprotocol.io/introduction' },
+    { pattern: /\bA2A\b|\bAgent2Agent\b/i, label: 'A2A protocol docs', url: 'https://google.github.io/A2A/' },
+    { pattern: /\bOpenAI Agents SDK\b/i, label: 'OpenAI Agents SDK docs', url: 'https://openai.github.io/openai-agents-python/' },
     { pattern: /\bOpenAI\b|\bGPT-4o\b|\bGPT-4V\b|\bCodex\b|\bRealtime API\b/i, label: 'OpenAI docs', url: 'https://platform.openai.com/docs/overview' },
     { pattern: /\bAnthropic\b|\bClaude\b/i, label: 'Anthropic docs', url: 'https://docs.anthropic.com/' },
+    { pattern: /\bGoogle ADK\b|\bAgent Development Kit\b/i, label: 'Google ADK docs', url: 'https://adk.dev/' },
     { pattern: /\bGemini\b|\bGoogle ADK\b|\bProject Mariner\b/i, label: 'Google AI docs', url: 'https://ai.google.dev/' },
     { pattern: /\bLangChain\b|\bLangGraph\b/i, label: 'LangChain docs', url: 'https://docs.langchain.com/' },
     { pattern: /\bLlamaIndex\b/i, label: 'LlamaIndex docs', url: 'https://docs.llamaindex.ai/' },
     { pattern: /\bAutoGen\b/i, label: 'Microsoft AutoGen docs', url: 'https://microsoft.github.io/autogen/' },
+    { pattern: /\bSemantic Kernel\b/i, label: 'Semantic Kernel docs', url: 'https://learn.microsoft.com/en-us/semantic-kernel/overview/' },
     { pattern: /\bCrewAI\b/i, label: 'CrewAI docs', url: 'https://docs.crewai.com/' },
     { pattern: /\bPydanticAI\b/i, label: 'PydanticAI docs', url: 'https://ai.pydantic.dev/' },
     { pattern: /\bHaystack\b/i, label: 'Haystack docs', url: 'https://docs.haystack.deepset.ai/' },
