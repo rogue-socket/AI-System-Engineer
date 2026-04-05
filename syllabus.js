@@ -1603,7 +1603,7 @@
 
     layers.forEach((layer, layerIndex) => {
       const totalTopics = layer.sections.reduce((count, section) => count + section.topics.length, 0);
-      const shouldDefaultOpenLayer = options.openAll || layerIndex === 0;
+      const shouldDefaultOpenLayer = options.openAll || (options.openFirstLayer !== false && layerIndex === 0);
       const layerEl = document.createElement('div');
       layerEl.className = 'l';
       layerEl.id = layer.anchorId || `l-${layer.id}`;
@@ -1645,7 +1645,7 @@
       layerInner.className = 'l-inner';
 
       layer.sections.forEach((section, sectionIndex) => {
-        const shouldDefaultOpenSection = options.openAll || layerIndex === 0;
+        const shouldDefaultOpenSection = options.openAll || (options.openFirstLayer !== false && layerIndex === 0);
         const sectionEl = document.createElement('div');
         sectionEl.className = 'sec';
         sectionEl.id = section.anchorId;

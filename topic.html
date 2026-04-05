@@ -32,8 +32,8 @@
 
   <div class="status-legend" id="status-legend"></div>
   <input class="s-search" id="search" type="search" aria-label="Search this topic breakdown" placeholder="Search this topic breakdown...">
-  <div class="resource-tools" id="resource-tools">
-    <div class="resource-tools-label">Personal resources</div>
+  <div class="resource-tools" id="resource-tools" hidden>
+    <div class="resource-tools-label">Add your own links</div>
     <form class="resource-form" id="resource-form">
       <label class="resource-field">
         <span class="resource-field-label">Label</span>
@@ -136,7 +136,7 @@ function renderNotFound() {
   heroGrid.innerHTML = '';
   metaBar.style.display = 'none';
   searchInput.style.display = 'none';
-  resourceTools.style.display = 'none';
+  resourceTools.hidden = true;
   root.innerHTML = '<div class="not-found"><h1>Invalid topic link</h1><p>This usually means the route was edited manually or the topic identifier no longer exists in the current shared syllabus data.</p></div>';
 }
 
@@ -200,10 +200,27 @@ function renderSavedResources() {
   });
 }
 
+function mountResourceTools() {
+  if (!detail) {
+    resourceTools.hidden = true;
+    return;
+  }
+
+  const resourcesLayer = root.querySelector('.l[data-layer-title="resources"] .l-inner');
+  if (!resourcesLayer) {
+    resourceTools.hidden = true;
+    return;
+  }
+
+  resourceTools.hidden = false;
+  resourcesLayer.appendChild(resourceTools);
+}
+
 function renderDetailTree() {
   detail = buildTopicDetailData(topicId);
   renderHeroCards(detail.heroCards);
-  renderLayerTree(root, detail.layers, { openAll: false });
+  renderLayerTree(root, detail.layers, { openAll: false, openFirstLayer: false });
+  mountResourceTools();
   updateMeta(detail.stats);
 
   if (searchInput.value) {
