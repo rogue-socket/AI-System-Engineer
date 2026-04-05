@@ -2437,6 +2437,150 @@
       'Human analogy': 'The human analogy is a formal competency check before someone is allowed to use a new procedure unsupervised. The point is not bureaucracy; the point is proving that the change still meets the bar.',
       'Without it': 'Without eval gates, behavior changes ship on gut feel. A prompt tweak can quietly break retrieval quality, tool behavior, or refusal boundaries, and the regression only becomes visible after users suffer it.',
       'With it': 'With eval-gated deployment, release decisions become evidence-based. The team can say what passed, what failed, and why a change was safe enough to promote.'
+    },
+    'Context windows': {
+      'What it is': 'A context window is the amount of information a model can actively attend to during a single call. It defines the size of the model\'s short-term working space, not the total knowledge the system could possibly access.',
+      'Where it is used': 'It matters in long-document analysis, chat memory, coding sessions, multimodal tasks, and any workflow where too much relevant material competes for space. Many higher-level design choices are really responses to this one limit.',
+      'What it unlocks': 'It unlocks broader local reasoning over more tokens at once, but it also forces teams to think about prioritization, compression, and external memory instead of assuming everything can fit.',
+      'Human analogy': 'The human analogy is working memory or the size of the desk you can actively work on right now. A bigger desk helps, but it does not remove the need to organize what stays in front of you.',
+      'Without it': 'Without a clear sense of context windows, teams keep shoving more text into prompts and are surprised when quality drops or important evidence disappears. The agent ends up seeing either too little or too much in the wrong order.',
+      'With it': 'With this topic understood, the system designer starts treating context as a scarce resource. That leads naturally to better retrieval, chunking, summarization, and stepwise workflows.'
+    },
+    'Embeddings as semantic coordinates': {
+      'What it is': 'Embeddings turn text, images, or other inputs into vectors where distance roughly captures semantic similarity. They let systems compare meaning geometrically rather than relying only on exact wording.',
+      'Where it is used': 'They are used in retrieval, clustering, deduplication, recommendation, memory lookup, and routing. In practice, embeddings are one of the main ways agent systems gain a searchable semantic memory.',
+      'What it unlocks': 'They unlock similarity search across messy language variation. A system can find related content even when the surface phrasing does not match the query directly.',
+      'Human analogy': 'The human analogy is the way people mentally place related ideas near each other even when the exact words differ. You can recognize that two formulations point at the same concept without them being identical strings.',
+      'Without it': 'Without embeddings, a knowledge system leans much harder on keyword overlap and brittle lexical matching. That often means missing useful evidence just because the wording changed.',
+      'With it': 'With embeddings, the agent can search for meaning rather than literal phrasing. That is one of the core moves that makes modern retrieval systems feel less mechanical and more context-aware.'
+    },
+    'Memory taxonomy': {
+      'What it is': 'Memory taxonomy separates different kinds of memory instead of treating all stored information as one blob. Working, episodic, semantic, and procedural memory each play different roles in a capable agent system.',
+      'Where it is used': 'It is used when designing assistants with history, research agents with durable state, and systems that need to distinguish short-term context from reusable long-term knowledge. It is a conceptual tool for keeping memory architecture honest.',
+      'What it unlocks': 'It unlocks better storage and retrieval choices. Once the team knows whether information is a skill, an event, a fact, or temporary working state, the right persistence pattern becomes much clearer.',
+      'Human analogy': 'The brain analogy is direct: humans remember what happened, what is true, and how to do something in different ways. Good agent memory design mirrors that separation instead of flattening everything into chat history.',
+      'Without it': 'Without a taxonomy, teams often dump all history into one giant log and hope the model sorts it out. The result is noisy recall, poor prioritization, and memory that grows without becoming smarter.',
+      'With it': 'With a memory taxonomy, the agent can treat facts, episodes, and instructions differently. That makes memory more composable, more efficient, and easier to govern over time.'
+    },
+    'Context window management': {
+      'What it is': 'Context window management is the discipline of deciding what deserves to be in active context right now and what should stay external. It sits between raw model limits and the larger memory system.',
+      'Where it is used': 'It is used in long-running agents, document-heavy workflows, coding tools, and any system that must balance relevance against token budget. In practice, it is one of the quiet determinants of answer quality.',
+      'What it unlocks': 'It unlocks focus. Instead of treating every retrieved or remembered item as equally important, the system can compress, rank, prune, or stage information based on the current step.',
+      'Human analogy': 'The human version is choosing what stays on your desk and what stays in the cabinet. Skilled people keep only the most relevant materials in active attention while still knowing where the rest lives.',
+      'Without it': 'Without context management, prompts bloat quickly and the important details lose salience. Or the opposite happens: the prompt is trimmed aggressively and the model never sees the evidence it truly needed.',
+      'With it': 'With context window management, the agent uses its limited working space deliberately. That usually leads to better grounding, lower cost, and fewer failures caused by prompt clutter.'
+    },
+    'Vector search (ANN / HNSW)': {
+      'What it is': 'Vector search retrieves nearby embeddings rather than exact keyword matches, and ANN structures such as HNSW make that fast enough to use at production scale. It is the core engine behind most modern semantic search systems.',
+      'Where it is used': 'You see it in RAG, memory recall, enterprise search, recommendation, and document routing. Anytime a system needs to find semantically related items across a large corpus, vector search is usually in the loop.',
+      'What it unlocks': 'It unlocks scalable semantic retrieval. The system can search meaningfully across millions of items without exhaustively comparing every vector at query time.',
+      'Human analogy': 'The human analogy is scanning the neighborhood of an idea rather than flipping through an alphabetized index. You are looking for conceptual neighbors, not only exact string matches.',
+      'Without it': 'Without vector search, semantic retrieval either becomes too slow or collapses back into brittle keyword logic. That tends to hurt recall as soon as the corpus gets large and language becomes varied.',
+      'With it': 'With vector search in place, semantic memory becomes practical at scale. The agent can reach for related evidence quickly enough that retrieval can stay inside real user-facing systems.'
+    },
+    'Metadata enrichment & filtering': {
+      'What it is': 'Metadata enrichment adds structured fields such as source, date, tenant, access class, document type, or region to chunks and documents. Filtering then uses those fields to narrow retrieval before or after similarity search.',
+      'Where it is used': 'It is used in enterprise RAG, regulated systems, multi-tenant search, and any workflow where not every semantically similar document should be eligible. It is often the difference between an impressive demo and a usable production system.',
+      'What it unlocks': 'It unlocks retrieval precision and governance. The system can combine meaning with hard boundaries such as customer scope, freshness window, department, or permissions.',
+      'Human analogy': 'The human analogy is labeling folders by project, date, and sensitivity instead of throwing everything into one pile. Semantic relevance matters, but good filing rules keep the search safe and precise.',
+      'Without it': 'Without metadata enrichment, the agent may retrieve text that is semantically related but operationally wrong, outdated, or not allowed for the current user. That creates both quality problems and governance risk.',
+      'With it': 'With metadata-aware retrieval, the agent searches more like a responsible system and less like a naive search box. It can stay relevant while also respecting scope, freshness, and control boundaries.'
+    },
+    'Multi-hop RAG': {
+      'What it is': 'Multi-hop RAG handles questions whose answer is spread across several pieces of evidence rather than one chunk. The system has to retrieve, connect, and reason across multiple hops instead of pretending one search pass is enough.',
+      'Where it is used': 'It is used in research, investigations, policy interpretation, technical troubleshooting, and other domains where the answer depends on combining facts from separate places. These are exactly the cases where simple retrieval often feels disappointingly shallow.',
+      'What it unlocks': 'It unlocks cross-document synthesis. The agent can gather partial clues, bridge them, and produce an answer that depends on composition rather than a single quote.',
+      'Human analogy': 'The human analogy is following references through multiple notes or documents to resolve a question. Serious inquiry often requires stitching together fragments rather than finding one perfect paragraph.',
+      'Without it': 'Without multi-hop behavior, a retrieval system tends to answer only what is directly stated in one place. Questions that require bridging evidence across sources get simplified, guessed, or missed entirely.',
+      'With it': 'With multi-hop RAG, the agent can do more than fetch. It can traverse an evidence chain, which makes document-grounded reasoning much closer to the way careful humans actually investigate.'
+    },
+    'Tool schema design (OpenAI / Anthropic style)': {
+      'What it is': 'Tool schema design defines the names, descriptions, arguments, and types that a model sees when deciding how to call a tool. It is the contract between model reasoning and executable capability.',
+      'Where it is used': 'It is used in every serious function-calling or tool-use system, from internal agent platforms to end-user assistants. The quality of the schema often matters as much as the quality of the tool implementation itself.',
+      'What it unlocks': 'It unlocks clearer tool selection and safer argument generation. A well-designed schema helps the model understand what a tool is for, what inputs are valid, and when it should not call it.',
+      'Human analogy': 'The human analogy is designing a good form, API, or checklist. Clear field names and crisp descriptions help people make fewer mistakes, and the same principle applies to models.',
+      'Without it': 'Without good schema design, the tool layer becomes ambiguous. The model picks the wrong tool, invents invalid arguments, or treats similar actions as interchangeable when they are not.',
+      'With it': 'With strong schemas, tool use becomes more legible and reliable. The model is still reasoning, but it is reasoning against a much better interface.'
+    },
+    'Parallel tool calls': {
+      'What it is': 'Parallel tool calls let an agent invoke multiple independent tools or queries at the same time instead of serializing every step. It is a latency and coverage optimization when the calls do not depend on each other.',
+      'Where it is used': 'It is used in search fan-out, multi-source retrieval, dashboard inspection, aggregation workflows, and evaluators that need several checks at once. It matters most when one slow step would otherwise dominate total runtime.',
+      'What it unlocks': 'It unlocks lower latency and broader evidence gathering per turn. The agent can compare several signals in the time it would otherwise spend waiting on one after another.',
+      'Human analogy': 'The human analogy is sending several people to gather information in parallel instead of having one person visit every source sequentially. The result arrives faster and often paints a fuller picture.',
+      'Without it': 'Without parallelism, agent workflows can feel slower than they need to be and may underuse available tools. The system waits on serial calls even when there is no real dependency chain requiring that delay.',
+      'With it': 'With parallel tool calls, the agent becomes more operationally efficient. It can widen its information surface without paying the full cumulative latency cost of each source in sequence.'
+    },
+    'MCP (Model Context Protocol)': {
+      'What it is': 'MCP is a protocol for exposing tools, resources, and prompts to model-driven clients through a more standardized interface. It helps separate the agent client from the capability providers it can connect to.',
+      'Where it is used': 'It is used in IDE agents, local tool ecosystems, enterprise integrations, and environments where capabilities should be reusable across multiple clients. It matters most when bespoke glue code starts to become the real bottleneck.',
+      'What it unlocks': 'It unlocks interoperability. Instead of rewriting each integration for every client, teams can present capabilities through a shared protocol surface.',
+      'Human analogy': 'The human analogy is a standard port or shared language between tools. Once everyone agrees on the interface, combining components becomes much easier than negotiating each pairing from scratch.',
+      'Without it': 'Without a protocol layer like MCP, integration work tends to fragment into one-off adapters. That slows down reuse and makes the ecosystem harder to compose safely and predictably.',
+      'With it': 'With MCP, the agent world gets a cleaner systems boundary. Tools become more portable across clients, and the capability surface can evolve with more consistency.'
+    },
+    'Agent sandboxing (E2B, Modal, Daytona)': {
+      'What it is': 'Agent sandboxing provides isolated execution environments where code, file operations, or other risky actions can happen with controlled permissions. It is a containment layer for agent action, not just a convenience feature.',
+      'Where it is used': 'It is used in coding agents, data-processing agents, notebook-style workflows, and any system that executes code or manipulates artifacts on behalf of a user. The moment an agent can run code, sandboxing becomes strategic.',
+      'What it unlocks': 'It unlocks safer action. The system can do meaningful work while reducing blast radius, separating environments, and making execution more disposable and inspectable.',
+      'Human analogy': 'The human analogy is doing hazardous work in a lab hood or a protected workshop area instead of in the middle of the office. The task still gets done, but the surrounding environment stays safer.',
+      'Without it': 'Without sandboxing, agent execution happens too close to the crown jewels. A bad tool call, prompt injection, or buggy script can affect the primary environment much more directly than it should.',
+      'With it': 'With sandboxing, action becomes more governable. The agent can still execute useful tasks, but in a boundary that is easier to reset, audit, and constrain.'
+    },
+    'Long-running agent processes': {
+      'What it is': 'Long-running agent processes are workflows that continue over minutes, hours, or days rather than ending with one request-response cycle. They require persistence, checkpoints, and a notion of durable progress.',
+      'Where it is used': 'They are used in research jobs, batch analysis, asynchronous enterprise workflows, approval chains, and background tasks that cannot be completed while a user waits. As soon as agents leave the chat box, this topic becomes central.',
+      'What it unlocks': 'It unlocks endurance. The system can tackle larger tasks, survive interruptions, and carry state across time instead of collapsing into a single fragile turn.',
+      'Human analogy': 'The human analogy is project work that spans days rather than a single conversation. People keep notes, resume from checkpoints, and come back to partially finished work later.',
+      'Without it': 'Without support for long-running processes, agents either time out, lose state, or force users to micromanage every continuation. Complex workflows stay awkward because the system is trapped in short-lived interaction patterns.',
+      'With it': 'With durable long-running behavior, the agent becomes more like a worker and less like a one-turn assistant. It can make progress in the background and return with accumulated results.'
+    },
+    'Model performance monitoring and drift detection': {
+      'What it is': 'This topic covers watching model quality, latency, cost, and behavioral stability over time so that quiet regressions can be detected. Drift is not only about data distributions; it is also about how the system behaves after model, prompt, or traffic changes.',
+      'Where it is used': 'It is used in production LLM platforms, gateways, eval systems, and any environment where models evolve while users keep relying on them. Once an AI system is live, monitoring becomes part of the product, not just an ops add-on.',
+      'What it unlocks': 'It unlocks early warning. Teams can spot degradation before users fully absorb the cost, whether the drift shows up as weaker accuracy, slower responses, rising spend, or changing refusal patterns.',
+      'Human analogy': 'The human analogy is noticing when a skilled worker starts slipping after a process change or after taking on the wrong workload. Small changes in behavior often matter before anyone says there is a crisis.',
+      'Without it': 'Without monitoring and drift detection, the system can get worse slowly and invisibly. By the time people complain, the team has little historical context for when the behavior changed and why.',
+      'With it': 'With performance monitoring in place, the AI stack becomes a measurable system. That turns maintenance from reactive guesswork into something closer to disciplined operations.'
+    },
+    'Contract testing for LLM outputs': {
+      'What it is': 'Contract testing checks whether model outputs continue to satisfy the structural or behavioral expectations of downstream consumers. It is less about whether the answer sounds good and more about whether other parts of the system can safely rely on it.',
+      'Where it is used': 'It is used in extraction pipelines, function-calling systems, structured APIs, UI generation, and any integration where a model output is parsed, validated, or fed into another component. The more automated the chain, the more important contracts become.',
+      'What it unlocks': 'It unlocks safer change management. Teams can modify prompts, models, or routing logic without blindly hoping the output shape still satisfies the systems around it.',
+      'Human analogy': 'The human analogy is checking that a handoff still uses the required format before another team starts processing it. Good intentions are not enough if the receiving system expects a specific contract.',
+      'Without it': 'Without contract testing, one small model change can quietly break parsers, workflows, and downstream tools even while the output still looks plausible in a casual manual spot check.',
+      'With it': 'With contract tests, LLM outputs become more manageable as software interfaces. The team gains a concrete way to enforce stability across iterative changes.'
+    },
+    'Deterministic replay': {
+      'What it is': 'Deterministic replay is the ability to re-run a workflow with the same captured inputs, configuration, and tool interactions so that a failure can be inspected consistently. It is a debugging aid for systems that otherwise feel slippery and non-repeatable.',
+      'Where it is used': 'It is used in incident analysis, regression investigation, eval debugging, and root-cause analysis for complex agent traces. It becomes especially valuable when multiple models and tools are involved in one failure.',
+      'What it unlocks': 'It unlocks reproducibility. Instead of chasing a ghost behavior that only happened once in production, the team can reconstruct the sequence closely enough to learn from it.',
+      'Human analogy': 'The human analogy is replaying surveillance footage or game tape. Seeing the sequence again under controlled conditions is often what finally makes the real mistake obvious.',
+      'Without it': 'Without deterministic replay, debugging relies on incomplete logs and memory. The team can describe what probably happened, but it is much harder to test fixes against the same failure path.',
+      'With it': 'With replay, agent failures become far easier to analyze systematically. That reduces the mystique around non-deterministic systems and brings debugging closer to normal engineering practice.'
+    },
+    'Capability gating': {
+      'What it is': 'Capability gating means an agent is only allowed to use certain tools or actions when explicit conditions are met. It is a permission boundary for autonomy, not just a UI toggle.',
+      'Where it is used': 'It is used in enterprise agents, sensitive workflows, financial or operational systems, and any setting where the model should not freely exercise every available capability. It often sits beside identity, approval, and policy enforcement.',
+      'What it unlocks': 'It unlocks bounded power. The agent can still be useful, but its action space is narrowed to what the task, role, and trust level actually justify.',
+      'Human analogy': 'The human analogy is role-based access with keycards or approvals. A person may be trusted to do some things on their own while other actions remain restricted unless a higher gate is cleared.',
+      'Without it': 'Without capability gates, agent systems tend to be overpowered relative to the trustworthiness of the model and the maturity of the controls around it. That is a recipe for expensive mistakes.',
+      'With it': 'With capability gating, autonomy becomes more precise. Teams can expand what the agent is allowed to do gradually instead of exposing the full tool surface from day one.'
+    },
+    'Zero-trust for agents': {
+      'What it is': 'Zero-trust for agents applies the idea that no request, component, or connected system should be trusted implicitly. Every access, action, and handoff has to earn trust through verification and policy.',
+      'Where it is used': 'It is used in enterprise deployments, multi-agent systems, cross-organizational workflows, and any environment where an agent touches sensitive data or external services. It is increasingly relevant as agent ecosystems become more connected.',
+      'What it unlocks': 'It unlocks safer composition at scale. The system can assume less, verify more, and survive a world where prompts, tools, services, and identities may all be imperfect or compromised.',
+      'Human analogy': 'The human analogy is checking identity, authority, and intent at every important handoff rather than assuming a person is trustworthy just because they are already inside the building.',
+      'Without it': 'Without zero-trust thinking, teams smuggle hidden assumptions into the architecture. Those assumptions often fail exactly where agents are most dangerous: at tool boundaries, identity boundaries, and cross-system integrations.',
+      'With it': 'With zero-trust principles in place, the agent stack gains stronger authentication, scoping, and audit patterns. That makes higher-autonomy systems easier to defend and reason about.'
+    },
+    'Data minimization for agent context': {
+      'What it is': 'Data minimization means giving the agent only the data needed for the current task rather than the maximum data available. It is both a privacy principle and a prompt-quality principle.',
+      'Where it is used': 'It is used in enterprise copilots, regulated domains, privacy-sensitive assistants, and any system where context assembly pulls from rich internal data sources. It matters whenever oversharing could create either risk or noise.',
+      'What it unlocks': 'It unlocks tighter privacy control and cleaner reasoning. The model sees less irrelevant material, and the organization exposes less sensitive data than necessary for the job.',
+      'Human analogy': 'The human analogy is briefing a colleague with only the facts they need to complete a task. You do not improve judgment by dumping the whole filing cabinet onto their desk.',
+      'Without it': 'Without data minimization, agent prompts become bloated and privacy exposure expands by default. The system may see sensitive details it never needed, which raises both governance risk and cognitive clutter.',
+      'With it': 'With data minimization, the agent gets a sharper working set and a safer operating posture. That usually improves both trustworthiness and focus at the same time.'
     }
   });
 
