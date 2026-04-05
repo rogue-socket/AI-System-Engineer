@@ -1032,6 +1032,7 @@
 
   const data = hydrateStructuredData(buildStructuredData());
   const TOPIC_STATUS_STORAGE_KEY = 'ai-agent-syllabus-topic-status-v1';
+  const TOPIC_RESOURCE_STORAGE_KEY = 'ai-agent-syllabus-topic-resources-v1';
   const TOPIC_STATUS_ORDER = ['default', 'need-visit', 'learning', 'done'];
   const TOPIC_STATUS_DEFS = [
     { key: 'default', label: 'Default', shortLabel: 'Default', description: 'Not yet classified' },
@@ -1154,6 +1155,159 @@
   function subscribeToTopicStatusChanges(listener) {
     topicStatusListeners.add(listener);
     return () => topicStatusListeners.delete(listener);
+  }
+
+  function normalizeResourceUrl(url) {
+    const value = String(url || '').trim();
+    if (!value) {
+      return null;
+    }
+
+    const normalized = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+
+    try {
+      const parsed = new URL(normalized);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        return null;
+      }
+      return parsed.toString();
+    } catch {
+      return null;
+    }
+  }
+
+  function sanitizeTopicResource(resource) {
+    if (!resource || typeof resource !== 'object') {
+      return null;
+    }
+
+    const url = normalizeResourceUrl(resource.url);
+    const label = String(resource.label || '').trim();
+    if (!url || !label) {
+      return null;
+    }
+
+    return {
+      id: String(resource.id || `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`),
+      label,
+      url
+    };
+  }
+
+  function cloneTopicResources(resources = []) {
+    return resources.map(resource => ({ ...resource }));
+  }
+
+  function readStoredTopicResources() {
+    try {
+      const stored = window.localStorage.getItem(TOPIC_RESOURCE_STORAGE_KEY);
+      if (!stored) {
+        return {};
+      }
+
+      const parsed = JSON.parse(stored);
+      if (!parsed || typeof parsed !== 'object') {
+        return {};
+      }
+
+      return Object.fromEntries(
+        Object.entries(parsed)
+          .map(([topicId, resources]) => [
+            topicId,
+            Array.isArray(resources)
+              ? resources.map(sanitizeTopicResource).filter(Boolean)
+              : []
+          ])
+          .filter(([, resources]) => resources.length)
+      );
+    } catch {
+      return {};
+    }
+  }
+
+  let topicResources = readStoredTopicResources();
+  const topicResourceListeners = new Set();
+
+  function writeStoredTopicResources() {
+    try {
+      window.localStorage.setItem(TOPIC_RESOURCE_STORAGE_KEY, JSON.stringify(topicResources));
+    } catch {
+      // Ignore storage write failures and continue with in-memory state.
+    }
+  }
+
+  function getTopicResources(topicId) {
+    return cloneTopicResources(topicResources[topicId] || []);
+  }
+
+  function notifyTopicResourceListeners(changedTopicId) {
+    const snapshot = Object.fromEntries(
+      Object.entries(topicResources).map(([topicId, resources]) => [topicId, cloneTopicResources(resources)])
+    );
+
+    topicResourceListeners.forEach(listener => {
+      listener({
+        changedTopicId,
+        resources: getTopicResources(changedTopicId),
+        allResources: snapshot
+      });
+    });
+  }
+
+  function addTopicResource(topicId, label, url) {
+    if (!topicId) {
+      return null;
+    }
+
+    const normalizedUrl = normalizeResourceUrl(url);
+    const normalizedLabel = String(label || '').trim();
+    if (!normalizedUrl || !normalizedLabel) {
+      return null;
+    }
+
+    const existing = getTopicResources(topicId);
+    const duplicate = existing.find(resource => resource.url === normalizedUrl);
+    if (duplicate) {
+      return duplicate;
+    }
+
+    const nextResource = {
+      id: `resource_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+      label: normalizedLabel,
+      url: normalizedUrl
+    };
+
+    topicResources[topicId] = [...existing, nextResource];
+    writeStoredTopicResources();
+    notifyTopicResourceListeners(topicId);
+    return nextResource;
+  }
+
+  function removeTopicResource(topicId, resourceId) {
+    if (!topicId || !resourceId) {
+      return false;
+    }
+
+    const existing = getTopicResources(topicId);
+    const nextResources = existing.filter(resource => resource.id !== resourceId);
+    if (nextResources.length === existing.length) {
+      return false;
+    }
+
+    if (nextResources.length) {
+      topicResources[topicId] = nextResources;
+    } else {
+      delete topicResources[topicId];
+    }
+
+    writeStoredTopicResources();
+    notifyTopicResourceListeners(topicId);
+    return true;
+  }
+
+  function subscribeToTopicResourceChanges(listener) {
+    topicResourceListeners.add(listener);
+    return () => topicResourceListeners.delete(listener);
   }
 
   function hexToRgba(hex, alpha) {
@@ -1322,6 +1476,112 @@
     };
   }
 
+  function renderTopicToken(renderable, options = {}) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'topic-token';
+    wrapper.dataset.text = renderable.text.toLowerCase();
+    wrapper.dataset.prereqs = renderable.prerequisites.map(item => item.text.toLowerCase()).join(' ');
+    wrapper.dataset.status = renderable.status;
+    if (renderable.topicId) {
+      wrapper.dataset.topicId = renderable.topicId;
+    }
+    if (options.anchorIds && renderable.anchorId) {
+      wrapper.id = renderable.anchorId;
+    }
+
+    const head = document.createElement('div');
+    head.className = 'topic-head';
+    const node = renderable.href ? document.createElement('a') : document.createElement('span');
+    node.className = `${renderable.isNew ? 't-new' : 't'}${renderable.href ? ' t-link' : ''}${renderable.current ? ' t-current' : ''}`;
+    if (renderable.href) {
+      node.href = renderable.href;
+    }
+
+    if (renderable.isNew) {
+      const dot = document.createElement('span');
+      dot.className = 't-new-dot';
+      node.appendChild(dot);
+      node.appendChild(document.createTextNode(renderable.text));
+    } else {
+      node.textContent = renderable.text;
+    }
+
+    head.appendChild(node);
+
+    if (renderable.topicId && options.showStatusControls !== false) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'topic-status-control';
+      button.dataset.topicId = renderable.topicId;
+      button.dataset.status = renderable.status;
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        cycleTopicStatus(renderable.topicId);
+      });
+      head.appendChild(button);
+    }
+
+    wrapper.appendChild(head);
+
+    if (options.showPrerequisites !== false && (renderable.prerequisites.length || renderable.prerequisiteNote)) {
+      const prerequisites = document.createElement('div');
+      prerequisites.className = 'topic-prereqs';
+
+      const label = document.createElement('span');
+      label.className = 'topic-prereq-label';
+      label.textContent = 'Prereqs';
+      prerequisites.appendChild(label);
+
+      if (renderable.prerequisites.length) {
+        renderable.prerequisites.forEach(item => {
+          const prerequisiteNode = item.href ? document.createElement('a') : document.createElement('span');
+          prerequisiteNode.className = item.href ? 'topic-prereq topic-prereq-link' : 'topic-prereq';
+          prerequisiteNode.textContent = item.text;
+          if (item.href) {
+            prerequisiteNode.href = item.href;
+          }
+          prerequisites.appendChild(prerequisiteNode);
+        });
+      } else if (renderable.prerequisiteNote) {
+        const note = document.createElement('span');
+        note.className = 'topic-prereq-empty';
+        note.textContent = renderable.prerequisiteNote;
+        prerequisites.appendChild(note);
+      }
+
+      wrapper.appendChild(prerequisites);
+    }
+
+    return wrapper;
+  }
+
+  function renderMetaTable(metaRows) {
+    const table = document.createElement('table');
+    table.className = 'meta-table';
+
+    const body = document.createElement('tbody');
+    metaRows.forEach(rowItem => {
+      const row = document.createElement('tr');
+      row.className = 'meta-row';
+      row.dataset.text = `${rowItem.metaPair.label} ${rowItem.metaPair.value}`.toLowerCase();
+
+      const labelCell = document.createElement('th');
+      labelCell.scope = 'row';
+      labelCell.textContent = rowItem.metaPair.label;
+
+      const valueCell = document.createElement('td');
+      valueCell.textContent = rowItem.metaPair.value;
+
+      row.appendChild(labelCell);
+      row.appendChild(valueCell);
+      body.appendChild(row);
+    });
+
+    table.appendChild(body);
+    return table;
+  }
+
   function setLayerOpenState(layerEl, isOpen) {
     layerEl.classList.toggle('open', isOpen);
     const control = layerEl.querySelector('.l-h');
@@ -1415,110 +1675,31 @@
         sectionHeader.setAttribute('aria-controls', sectionBody.id);
         const sectionInner = document.createElement('div');
         sectionInner.className = 'sec-inner';
-        const topicsEl = document.createElement('div');
         const renderables = section.topics.map(getRenderableTopic);
-        const metaPairCount = renderables.reduce((count, renderable) => count + (getRenderableMetaPair(renderable) ? 1 : 0), 0);
-        topicsEl.className = metaPairCount >= 2 ? 'topics topics-meta' : 'topics';
+        const metaRows = renderables
+          .map(renderable => ({ renderable, metaPair: getRenderableMetaPair(renderable) }))
+          .filter(item => item.metaPair);
+        const useMetaTable = metaRows.length >= 2;
 
-        renderables.forEach(renderable => {
-          const metaPair = getRenderableMetaPair(renderable);
-          const wrapper = document.createElement('div');
-          wrapper.className = `topic-token${metaPair ? ' topic-token-meta' : ''}`;
-          wrapper.dataset.text = renderable.text.toLowerCase();
-          wrapper.dataset.prereqs = renderable.prerequisites.map(item => item.text.toLowerCase()).join(' ');
-          wrapper.dataset.status = renderable.status;
-          if (renderable.topicId) {
-            wrapper.dataset.topicId = renderable.topicId;
-          }
-          if (options.anchorIds && renderable.anchorId) {
-            wrapper.id = renderable.anchorId;
-          }
+        if (useMetaTable) {
+          sectionInner.appendChild(renderMetaTable(metaRows));
+        }
 
-          if (metaPair) {
-            const metaRow = document.createElement('div');
-            metaRow.className = 'topic-meta-row';
+        const topicRenderables = useMetaTable
+          ? renderables.filter(renderable => !getRenderableMetaPair(renderable))
+          : renderables;
 
-            const label = document.createElement('div');
-            label.className = 'topic-meta-label';
-            label.textContent = metaPair.label;
+        if (topicRenderables.length) {
+          const topicsEl = document.createElement('div');
+          topicsEl.className = 'topics';
 
-            const value = document.createElement('div');
-            value.className = 'topic-meta-value';
-            value.textContent = metaPair.value;
+          topicRenderables.forEach(renderable => {
+            topicsEl.appendChild(renderTopicToken(renderable, options));
+          });
 
-            metaRow.appendChild(label);
-            metaRow.appendChild(value);
-            wrapper.appendChild(metaRow);
-          } else {
-            const head = document.createElement('div');
-            head.className = 'topic-head';
-            const node = renderable.href ? document.createElement('a') : document.createElement('span');
-            node.className = `${renderable.isNew ? 't-new' : 't'}${renderable.href ? ' t-link' : ''}${renderable.current ? ' t-current' : ''}`;
-            if (renderable.href) {
-              node.href = renderable.href;
-            }
+          sectionInner.appendChild(topicsEl);
+        }
 
-            if (renderable.isNew) {
-              const dot = document.createElement('span');
-              dot.className = 't-new-dot';
-              node.appendChild(dot);
-              node.appendChild(document.createTextNode(renderable.text));
-            } else {
-              node.textContent = renderable.text;
-            }
-
-            head.appendChild(node);
-
-            if (renderable.topicId && options.showStatusControls !== false) {
-              const button = document.createElement('button');
-              button.type = 'button';
-              button.className = 'topic-status-control';
-              button.dataset.topicId = renderable.topicId;
-              button.dataset.status = renderable.status;
-              button.addEventListener('click', event => {
-                event.preventDefault();
-                event.stopPropagation();
-                cycleTopicStatus(renderable.topicId);
-              });
-              head.appendChild(button);
-            }
-
-            wrapper.appendChild(head);
-          }
-
-          if (options.showPrerequisites !== false && (renderable.prerequisites.length || renderable.prerequisiteNote)) {
-            const prerequisites = document.createElement('div');
-            prerequisites.className = 'topic-prereqs';
-
-            const label = document.createElement('span');
-            label.className = 'topic-prereq-label';
-            label.textContent = 'Prereqs';
-            prerequisites.appendChild(label);
-
-            if (renderable.prerequisites.length) {
-              renderable.prerequisites.forEach(item => {
-                const prerequisiteNode = item.href ? document.createElement('a') : document.createElement('span');
-                prerequisiteNode.className = item.href ? 'topic-prereq topic-prereq-link' : 'topic-prereq';
-                prerequisiteNode.textContent = item.text;
-                if (item.href) {
-                  prerequisiteNode.href = item.href;
-                }
-                prerequisites.appendChild(prerequisiteNode);
-              });
-            } else if (renderable.prerequisiteNote) {
-              const note = document.createElement('span');
-              note.className = 'topic-prereq-empty';
-              note.textContent = renderable.prerequisiteNote;
-              prerequisites.appendChild(note);
-            }
-
-            wrapper.appendChild(prerequisites);
-          }
-
-          topicsEl.appendChild(wrapper);
-        });
-
-        sectionInner.appendChild(topicsEl);
         sectionBody.appendChild(sectionInner);
         sectionEl.appendChild(sectionBody);
         layerInner.appendChild(sectionEl);
@@ -1546,11 +1727,11 @@
         const titleHit = !value || sectionTitle.includes(value) || layerTitle.includes(value) || layerScope.includes(value) || layerKind.includes(value);
         let sectionHit = false;
 
-        sectionEl.querySelectorAll('.topic-token').forEach(topicEl => {
-          const text = topicEl.dataset.text || '';
-          const prereqs = topicEl.dataset.prereqs || '';
+        sectionEl.querySelectorAll('.topic-token, .meta-row').forEach(itemEl => {
+          const text = itemEl.dataset.text || '';
+          const prereqs = itemEl.dataset.prereqs || '';
           const hit = !value || titleHit || text.includes(value) || prereqs.includes(value);
-          topicEl.classList.toggle('faded', !hit && !!value);
+          itemEl.classList.toggle('faded', !hit && !!value);
           if (hit) {
             sectionHit = true;
           }
@@ -1638,7 +1819,9 @@
         }
         section.topics.forEach(topic => {
           const renderable = getRenderableTopic(topic);
-          md += `- ${renderable.text}${renderable.isNew ? ' *(new)*' : ''}\n`;
+          md += renderable.href
+            ? `- [${renderable.text}](${renderable.href})${renderable.isNew ? ' *(new)*' : ''}\n`
+            : `- ${renderable.text}${renderable.isNew ? ' *(new)*' : ''}\n`;
           if (renderable.prerequisites.length) {
             md += `  - Prerequisites: ${renderable.prerequisites.map(item => item.text).join(' · ')}\n`;
           }
@@ -1931,6 +2114,68 @@
     return parts.join(' ');
   }
 
+  const officialResourceMatchers = [
+    { pattern: /\bOpenAI\b|\bGPT-4o\b|\bGPT-4V\b|\bCodex\b|\bRealtime API\b/i, label: 'OpenAI docs', url: 'https://platform.openai.com/docs/overview' },
+    { pattern: /\bAnthropic\b|\bClaude\b/i, label: 'Anthropic docs', url: 'https://docs.anthropic.com/' },
+    { pattern: /\bGemini\b|\bGoogle ADK\b|\bProject Mariner\b/i, label: 'Google AI docs', url: 'https://ai.google.dev/' },
+    { pattern: /\bLangChain\b|\bLangGraph\b/i, label: 'LangChain docs', url: 'https://docs.langchain.com/' },
+    { pattern: /\bLlamaIndex\b/i, label: 'LlamaIndex docs', url: 'https://docs.llamaindex.ai/' },
+    { pattern: /\bAutoGen\b/i, label: 'Microsoft AutoGen docs', url: 'https://microsoft.github.io/autogen/' },
+    { pattern: /\bCrewAI\b/i, label: 'CrewAI docs', url: 'https://docs.crewai.com/' },
+    { pattern: /\bPydanticAI\b/i, label: 'PydanticAI docs', url: 'https://ai.pydantic.dev/' },
+    { pattern: /\bHaystack\b/i, label: 'Haystack docs', url: 'https://docs.haystack.deepset.ai/' },
+    { pattern: /\bvLLM\b/i, label: 'vLLM docs', url: 'https://docs.vllm.ai/' },
+    { pattern: /\bOllama\b/i, label: 'Ollama docs', url: 'https://ollama.com/' },
+    { pattern: /\bllama\.cpp\b/i, label: 'llama.cpp project', url: 'https://github.com/ggerganov/llama.cpp' },
+    { pattern: /\bQdrant\b/i, label: 'Qdrant docs', url: 'https://qdrant.tech/documentation/' },
+    { pattern: /\bWeaviate\b/i, label: 'Weaviate docs', url: 'https://weaviate.io/developers/weaviate' },
+    { pattern: /\bPinecone\b/i, label: 'Pinecone docs', url: 'https://docs.pinecone.io/' },
+    { pattern: /\bNeo4j\b/i, label: 'Neo4j docs', url: 'https://neo4j.com/docs/' },
+    { pattern: /\bDocker\b/i, label: 'Docker docs', url: 'https://docs.docker.com/' },
+    { pattern: /\bKubernetes\b/i, label: 'Kubernetes docs', url: 'https://kubernetes.io/docs/home/' },
+    { pattern: /\bOpenTelemetry\b/i, label: 'OpenTelemetry docs', url: 'https://opentelemetry.io/docs/' },
+    { pattern: /\bNIST AI RMF\b/i, label: 'NIST AI RMF', url: 'https://www.nist.gov/itl/ai-risk-management-framework' },
+    { pattern: /\bEU AI Act\b/i, label: 'EU AI Act overview', url: 'https://artificialintelligenceact.eu/' },
+    { pattern: /\bOWASP Agentic AI Top 10\b/i, label: 'OWASP Agentic AI Top 10', url: 'https://genai.owasp.org/' }
+  ];
+
+  function dedupeResourceLinks(resources, limit) {
+    const seen = new Set();
+    const result = [];
+
+    resources.forEach(resource => {
+      if (!resource || !resource.url || seen.has(resource.url)) {
+        return;
+      }
+
+      seen.add(resource.url);
+      result.push({ label: resource.label, url: resource.url });
+    });
+
+    return typeof limit === 'number' ? result.slice(0, limit) : result;
+  }
+
+  function buildSuggestedTopicResources(entry) {
+    const query = encodeURIComponent(entry.text);
+    const scopedQuery = encodeURIComponent(`${entry.text} ${entry.section.title}`);
+    const matchText = `${entry.text} ${entry.section.title} ${entry.layer.title}`;
+
+    const officialLinks = officialResourceMatchers
+      .filter(resource => resource.pattern.test(matchText))
+      .slice(0, 2)
+      .map(resource => ({ label: resource.label, url: resource.url }));
+
+    return dedupeResourceLinks([
+      ...officialLinks,
+      { label: 'Wikipedia overview', url: `https://en.wikipedia.org/w/index.php?search=${query}` },
+      { label: 'Britannica overview', url: `https://www.britannica.com/search?query=${query}` },
+      { label: 'arXiv papers', url: `https://arxiv.org/search/?query=${query}&searchtype=all&abstracts=show&order=-announced_date_first&size=25` },
+      { label: 'Semantic Scholar', url: `https://www.semanticscholar.org/search?q=${scopedQuery}&sort=relevance` },
+      { label: 'Google Scholar', url: `https://scholar.google.com/scholar?q=${scopedQuery}` },
+      { label: 'Papers with Code', url: `https://paperswithcode.com/search?q=${query}` }
+    ]);
+  }
+
   function buildTopicDetailData(topicId) {
     const entry = getTopicEntryById(topicId);
     if (!entry) {
@@ -1947,6 +2192,8 @@
     const exactStructuredMatches = topicEntries.filter(item => item.text === entry.text && item.id !== entry.id);
     const rawMatches = findRawOccurrencesByText(entry.text);
     const crossLayerConnections = getRelatedEntries(entry, { limit: 12, minScore: 6 }).filter(item => item.layerIndex !== entry.layerIndex);
+    const suggestedResources = buildSuggestedTopicResources(entry);
+    const savedResources = getTopicResources(entry.id);
 
     const practiceLinks = uniqueEntries([
       ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Evaluation & Observability'] }),
@@ -2079,7 +2326,30 @@
       ]
     };
 
-    const layers = [taxonomyLayer, syllabusLayer, structureLayer];
+    const resourcesLayer = {
+      id: 4,
+      kind: 'Resources',
+      scope: 'Where to learn more and keep personal references for this topic',
+      title: 'Resources',
+      color: '#888780',
+      bg: '#F1EFE8',
+      sections: [
+        {
+          title: 'Recommended sources',
+          topics: suggestedResources.length
+            ? suggestedResources.map(resource => ({ text: resource.label, href: resource.url }))
+            : ['No generated resources were available for this topic']
+        },
+        {
+          title: 'Your saved links',
+          topics: savedResources.length
+            ? savedResources.map(resource => ({ text: resource.label, href: resource.url }))
+            : ['Use the add-resource form below to save personal links for this topic']
+        }
+      ]
+    };
+
+    const layers = [taxonomyLayer, syllabusLayer, structureLayer, resourcesLayer];
     const detailStats = getStats(layers);
 
     return {
@@ -2103,7 +2373,8 @@
         { label: 'Section position', value: `${entry.topicIndex + 1} of ${entry.section.topics.length}` },
         { label: 'Prerequisites', value: prerequisiteTopics.length ? `${prerequisiteTopics.length} mapped` : 'Section entry point' },
         { label: 'Occurrences', value: `${exactStructuredMatches.length + 1} structured · ${rawMatches.length} raw` },
-        { label: 'Connected topics', value: `${crossLayerConnections.length + siblings.length} mapped links` }
+        { label: 'Connected topics', value: `${crossLayerConnections.length + siblings.length} mapped links` },
+        { label: 'Resources', value: `${suggestedResources.length} suggested · ${savedResources.length} saved` }
       ]
     };
   }
@@ -2127,6 +2398,10 @@
     setTopicStatus,
     cycleTopicStatus,
     subscribeToTopicStatusChanges,
+    getTopicResources,
+    addTopicResource,
+    removeTopicResource,
+    subscribeToTopicResourceChanges,
     syncTopicStatusUI,
     renderStatusLegend,
     renderTopicStatusPicker,
