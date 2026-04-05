@@ -2132,6 +2132,358 @@
     return parts.join(' ');
   }
 
+  const defaultTopicBriefGuide = {
+    roleLabel: 'a core concept in the agent stack',
+    purpose: 'how an agent represents information, makes decisions, or stays dependable in a larger system',
+    used: 'real systems where models, memory, tools, and control logic have to work together',
+    unlock: 'a more precise system capability or design lever',
+    analogy: 'a mental tool a skilled person uses to frame work before acting',
+    withoutCase: 'the system stays more ad hoc and has to lean on broad, fragile defaults',
+    withCase: 'the system gains a clearer way to steer behavior, compose parts, and reuse the pattern elsewhere',
+    exampleScenario: 'a team turning a promising AI demo into a durable workflow'
+  };
+
+  const mentalModelTopicBriefGuide = {
+    roleLabel: 'a system-framing concept',
+    purpose: 'how the overall agent should be decomposed before you worry about frameworks or prompts',
+    used: 'architecture reviews, scoping conversations, and early design decisions about workflow versus autonomy',
+    unlock: 'a cleaner picture of what should stay deterministic, what should be model-driven, and where memory or tools belong',
+    analogy: 'the mental map a person builds before attempting a complex task',
+    withoutCase: 'teams blur together chatbot UX, workflow automation, and real agency',
+    withCase: 'teams can choose the right level of autonomy and keep the design simpler',
+    exampleScenario: 'a product team deciding whether a task needs a scripted workflow, a single agent, or a coordinated set of agents'
+  };
+
+  const modelTopicBriefGuide = {
+    roleLabel: 'a model, representation, or inference concept',
+    purpose: 'how information is encoded, how a model family behaves, or how generation is shaped at runtime',
+    used: 'model selection, structured generation, multimodal input, retrieval, and performance tuning',
+    unlock: 'better fit between task, model behavior, latency budget, and output shape',
+    analogy: 'the combination of human pattern recognition and the way people switch mental modes for different tasks',
+    withoutCase: 'the agent uses blunter model choices or weaker output control than the task really needs',
+    withCase: 'the system can match the job to the right modality, model behavior, or serving pattern',
+    exampleScenario: 'a team choosing how an agent should read documents, reason, and emit usable output'
+  };
+
+  const promptTopicBriefGuide = {
+    roleLabel: 'an instruction and interface-design topic',
+    purpose: 'how the agent is briefed, constrained, and told what shape of output or behavior is expected',
+    used: 'structured prompting, extraction, routing, tool calling, and multi-step workflows that depend on clear instructions',
+    unlock: 'more consistent behavior without changing model weights',
+    analogy: 'the way a human gives a crisp brief, examples, and constraints before delegating work',
+    withoutCase: 'the model improvises task boundaries, output shape, and tone from ambiguous wording',
+    withCase: 'the model receives a clearer contract, so the behavior is easier to predict, compare, and test',
+    exampleScenario: 'an extraction or routing agent that must return the same structure every time'
+  };
+
+  const reasoningTopicBriefGuide = {
+    roleLabel: 'a reasoning and control pattern',
+    purpose: 'how the agent plans, reflects, allocates effort, and chooses its next move under uncertainty',
+    used: 'multi-step tasks, planning loops, self-correction, and hard decisions that cannot be solved with one reply',
+    unlock: 'more deliberate behavior instead of purely reactive next-token behavior',
+    analogy: 'executive function: breaking a problem down, checking progress, and changing course when something looks off',
+    withoutCase: 'the agent reacts locally, loses the thread of the task, or stops too early',
+    withCase: 'the agent can decompose work, inspect its own progress, and take better next actions',
+    exampleScenario: 'a research or coding agent that has to plan, verify, and recover from partial failure'
+  };
+
+  const retrievalTopicBriefGuide = {
+    roleLabel: 'a grounding and retrieval topic',
+    purpose: 'how the agent finds, filters, stores, and injects external knowledge at the moment of need',
+    used: 'enterprise search, support copilots, research agents, memory systems, and document-grounded workflows',
+    unlock: 'access to fresher, narrower, and better-sourced knowledge than the base model can hold in the prompt alone',
+    analogy: 'remembering where knowledge lives and pulling the right note or memory when the task calls for it',
+    withoutCase: 'the agent guesses from stale memory or shoves too much irrelevant context into the prompt',
+    withCase: 'the system can fetch better evidence, compress it, and answer with stronger grounding',
+    exampleScenario: 'a policy assistant that must answer from current documents instead of vague model memory'
+  };
+
+  const toolUseTopicBriefGuide = {
+    roleLabel: 'an action, interface, or tool-use pattern',
+    purpose: 'how the agent leaves pure text generation and interacts with tools, APIs, browsers, or external state',
+    used: 'research agents, ops agents, coding agents, browser agents, and any workflow that needs live information or side effects',
+    unlock: 'real leverage in the world: the ability to inspect state, call capabilities, and do work instead of only describing it',
+    analogy: 'hands, instruments, and procedural know-how working together with thought',
+    withoutCase: 'the agent can only talk about the next step instead of executing it or checking the real environment',
+    withCase: 'the agent can gather evidence, invoke tools, and act in bounded, inspectable ways',
+    exampleScenario: 'an agent that needs to read a dashboard, call an API, or update a record instead of only drafting text'
+  };
+
+  const multiAgentTopicBriefGuide = {
+    roleLabel: 'a coordination pattern for specialized agents',
+    purpose: 'how work is split across roles, orchestrated across hops, and kept coherent at system scale',
+    used: 'pipelines where planning, retrieval, execution, review, and escalation are separated across multiple workers',
+    unlock: 'specialization, delegation, and throughput without forcing one agent to do every cognitive role',
+    analogy: 'a small human team with distinct roles, handoffs, and shared goals',
+    withoutCase: 'one overloaded agent becomes a bottleneck and mixes planning, execution, and checking into one blurry loop',
+    withCase: 'specialists can focus on narrow roles while an orchestrator or protocol keeps the whole job aligned',
+    exampleScenario: 'a report-building pipeline with separate planner, researcher, writer, critic, and approver roles'
+  };
+
+  const runtimeTopicBriefGuide = {
+    roleLabel: 'a runtime, operations, or delivery concern',
+    purpose: 'how an agent system is served, scaled, versioned, routed, and kept alive under real workload',
+    used: 'production APIs, long-running tasks, multi-tenant services, queues, retries, gateways, and release pipelines',
+    unlock: 'repeatability and survival under real traffic, not just correctness in a local demo',
+    analogy: 'the nervous system and circulation that make higher cognition usable in the body over time',
+    withoutCase: 'the agent works in a demo but breaks under scale, retries, latency spikes, or long-running state',
+    withCase: 'the system can handle load, persistence, versioning, and operational failure with far less drama',
+    exampleScenario: 'a customer-facing AI service that must survive concurrency, deployment changes, and uneven traffic'
+  };
+
+  const evaluationTopicBriefGuide = {
+    roleLabel: 'a measurement, debugging, or feedback discipline',
+    purpose: 'how teams inspect behavior, detect regressions, and learn whether the system is actually good enough',
+    used: 'release gates, experimentation, incident analysis, benchmarking, tracing, and model or prompt iteration',
+    unlock: 'evidence-driven improvement instead of intuition-driven guesswork',
+    analogy: 'self-monitoring, coaching, and checking work against a rubric instead of trusting first impressions',
+    withoutCase: 'regressions stay invisible and failures show up as anecdotes after users are already feeling them',
+    withCase: 'teams can trace behavior, compare variants, and tighten quality using measured signals',
+    exampleScenario: 'a team shipping a new prompt, model route, or workflow change and wanting proof that it improved things'
+  };
+
+  const applicationTopicBriefGuide = {
+    roleLabel: 'an application surface or domain lens',
+    purpose: 'how agent primitives become concrete workflows for a real user, team, or industry',
+    used: 'product design, domain adaptation, and decisions about where general agent patterns actually create value',
+    unlock: 'translation from abstract capability into a workflow that matters to someone',
+    analogy: 'a human job role or professional specialization built on top of the same general cognitive machinery',
+    withoutCase: 'the design stays abstract and it is hard to see what success, risk, or value should mean',
+    withCase: 'the same underlying agent patterns are grounded in users, constraints, and real operational goals',
+    exampleScenario: 'mapping a general agent stack onto coding, support, research, legal, or personal-assistant work'
+  };
+
+  const safetyTopicBriefGuide = {
+    roleLabel: 'a safety, boundary, or control layer',
+    purpose: 'how autonomy stays bounded, auditable, and aligned with permissions, policy, and risk tolerance',
+    used: 'tool-using agents, enterprise deployments, regulated settings, and any system that can take meaningful action',
+    unlock: 'safer delegation, clearer accountability, and controlled failure modes instead of blind autonomy',
+    analogy: 'impulse control, social rules, and institutional guardrails that let humans act without causing needless damage',
+    withoutCase: 'the agent has too much freedom for the amount of oversight, validation, or policy attached to it',
+    withCase: 'the system can act with clearer limits, safer defaults, and better auditability',
+    exampleScenario: 'an assistant with access to data, tools, or side effects that could become costly or unsafe if left unchecked'
+  };
+
+  const layerTopicBriefGuides = {
+    'Mental Models': mentalModelTopicBriefGuide,
+    'Models & Representations': modelTopicBriefGuide,
+    'Cognition & Control': reasoningTopicBriefGuide,
+    'Memory & Knowledge': retrievalTopicBriefGuide,
+    'Agency & Tool Use': toolUseTopicBriefGuide,
+    'Multi-Agent Systems': multiAgentTopicBriefGuide,
+    'Infrastructure & Runtime': runtimeTopicBriefGuide,
+    'Evaluation & Observability': evaluationTopicBriefGuide,
+    'Applications & Domains': applicationTopicBriefGuide,
+    'Safety, Security & Governance': safetyTopicBriefGuide
+  };
+
+  const topicBriefSectionRules = [
+    { pattern: /whole-system map|model\/runtime vocabulary|agent\/system vocabulary|design trade-offs|study route/i, guide: mentalModelTopicBriefGuide },
+    { pattern: /prompt/i, guide: promptTopicBriefGuide },
+    { pattern: /retrieval|rag|chunking|indexing|knowledge|memory/i, guide: retrievalTopicBriefGuide },
+    { pattern: /reasoning|planning|reflection|meta-cognition|decision-making/i, guide: reasoningTopicBriefGuide },
+    { pattern: /tool|action|browser|interaction|protocol|authentication|identity|meta tooling/i, guide: toolUseTopicBriefGuide },
+    { pattern: /multi-agent|coordination|workflow|framework|failure modes/i, guide: multiAgentTopicBriefGuide },
+    { pattern: /infrastructure|runtime|deployment|scaling|operations|finops|mlops|llmops|api design|training|adaptation|synthetic data/i, guide: runtimeTopicBriefGuide },
+    { pattern: /evaluation|observability|debugging|testing|performance|ci\/cd|specification vs emergence/i, guide: evaluationTopicBriefGuide },
+    { pattern: /developer|enterprise|research|consumer|human-agent|physical ai|application|domain/i, guide: applicationTopicBriefGuide },
+    { pattern: /safety|security|governance|alignment|privacy/i, guide: safetyTopicBriefGuide }
+  ];
+
+  function getTopicBriefGuide(entry) {
+    const matchText = `${entry.section.title} ${entry.layer.title}`;
+    const sectionRule = topicBriefSectionRules.find(rule => rule.pattern.test(matchText));
+    if (sectionRule) {
+      return sectionRule.guide;
+    }
+
+    return layerTopicBriefGuides[entry.layer.title] || defaultTopicBriefGuide;
+  }
+
+  function getTopicBriefPartnerText(entry, siblings = []) {
+    const partnerNames = uniqueStrings([
+      ...(entry.topic.prerequisites || []).slice(0, 2),
+      ...siblings.slice(0, 2).map(item => item.text)
+    ]).filter(name => name && name !== entry.text);
+
+    return partnerNames.length ? joinNaturalLanguage(partnerNames.slice(0, 2)) : `other topics in ${entry.section.title}`;
+  }
+
+  const topicBriefOverrides = Object.freeze({
+    'Workflow vs agent vs multi-agent system': {
+      'What it is': 'This topic draws the basic line between three system shapes. A workflow is mostly predetermined steps, an agent is a model-centered loop with local judgment, and a multi-agent system splits work across several collaborating agents.',
+      'Where it is used': 'You use this distinction at the very start of system design, especially when deciding whether a task needs autonomy at all. It is one of the fastest ways to avoid building a dramatic agent where a simpler workflow would be stronger.',
+      'What it unlocks': 'It unlocks the right complexity level for the problem. Once this is clear, the rest of the stack such as prompts, tools, memory, evals, and runtime choices becomes much easier to scope.',
+      'Human analogy': 'The human parallel is the difference between following a checklist, letting one skilled operator improvise, and coordinating a small team with separate roles. Each mode can solve the same goal, but with very different costs and failure modes.',
+      'Without it': 'Without this distinction, teams call everything an agent and end up mixing automation, reasoning, and coordination into one fuzzy bucket. A support task that needed a clean workflow can turn into an expensive and fragile pseudo-agent.',
+      'With it': 'With this distinction in place, architecture choices become much more honest. The team can say this should stay scripted, this needs one bounded agent, or this is complex enough to justify delegation across multiple agents.'
+    },
+    'Models, memory, tools, controllers, and environments': {
+      'What it is': 'This topic names the main building blocks of an agent system. Models generate and reason, memory carries state, tools let the system act, controllers govern the loop, and the environment is the outside world the agent reads from and changes.',
+      'Where it is used': 'It is used in architecture diagrams, design reviews, debugging sessions, and postmortems. Whenever a team asks where a failure really came from, these categories give a clean way to separate causes.',
+      'What it unlocks': 'It unlocks separation of concerns. Instead of treating the whole agent as one blob, you can ask whether the issue was bad retrieval, weak control flow, poor tool design, or the wrong model.',
+      'Human analogy': 'The brain analogy is straightforward: model as reasoning machinery, memory as recall, tools as hands and instruments, controller as executive function, and environment as the real world pushing back on every plan.',
+      'Without it': 'Without this mental model, teams keep reaching for prompt edits even when the true problem sits in tool contracts, stale memory, or weak control logic. The system stays hard to explain and harder to improve.',
+      'With it': 'With this decomposition, the agent becomes inspectable. A team can improve one component at a time and know whether it is strengthening intelligence, grounding, action, or reliability.'
+    },
+    'The observe -> think -> act -> verify -> update loop': {
+      'What it is': 'This is the core closed loop behind serious agents. The system gathers evidence, reasons over it, takes a step, checks whether the step worked, and updates state before continuing.',
+      'Where it is used': 'You see this pattern in browser agents, coding agents, research systems, and long-running workflows where the model cannot safely answer in one shot. It is especially important once tools or side effects enter the picture.',
+      'What it unlocks': 'It unlocks feedback-driven behavior. Instead of treating generation as a final answer, the agent can learn from the world after each move and correct itself before drifting too far.',
+      'Human analogy': 'Humans work the same way when doing careful tasks: look at the situation, think, try something, check the result, then adjust. It is closer to real skilled work than a single burst of verbal output.',
+      'Without it': 'Without a closed loop, the agent behaves like an open-loop guesser. It may confidently claim success after one bad action because nothing in the system forces it to verify what actually happened.',
+      'With it': 'With the loop in place, the agent starts behaving more like an operator than a chatbot. It can recover from partial failure, notice bad tool results, and tighten the gap between plan and reality.'
+    },
+    'System vs user prompts': {
+      'What it is': 'This topic separates enduring operating instructions from the current task request. The system prompt defines role, boundaries, and persistent behavior, while the user prompt expresses the immediate job to be done.',
+      'Where it is used': 'It matters in chat products, extraction pipelines, tool-using agents, and any multi-tenant system where stable behavior must survive across many user requests. It is one of the earliest prompt design distinctions that becomes operationally important.',
+      'What it unlocks': 'It unlocks layered control. The team can keep durable policies and behavior contracts stable while letting each task remain flexible and specific.',
+      'Human analogy': 'The human analogy is job role versus current assignment. A doctor, analyst, or project manager keeps the role rules in mind even when each individual request is different.',
+      'Without it': 'Without this split, task text and operating policy get tangled together. A single user request can accidentally override tone, output rules, or safety constraints that should have remained stable.',
+      'With it': 'With the split in place, prompts become much easier to reason about, test, and revise. The agent keeps a steadier identity while still responding to the specifics of the task at hand.'
+    },
+    'Prompt templates': {
+      'What it is': 'Prompt templates are reusable instruction frames with variables, slots, and fixed structure around a repeated task. They turn ad hoc prompting into an interface that can be versioned and reused.',
+      'Where it is used': 'They show up in extraction, classification, summarization, routing, report generation, and any system where the same task is run across many inputs. In production, templates are often the basic unit of prompt maintenance.',
+      'What it unlocks': 'They unlock consistency, repeatability, and comparison. Once the task lives in a template, teams can test changes, track regressions, and share the pattern instead of rewriting prompts from scratch.',
+      'Human analogy': 'The human version is a standard briefing form or operating checklist. Skilled people still think, but they benefit from a repeatable structure that keeps key instructions from drifting.',
+      'Without it': 'Without templates, prompting becomes artisanal and fragile. Two engineers solve the same task with different wording, the behavior drifts over time, and no one can clearly say what changed.',
+      'With it': 'With templates, the prompt becomes a managed artifact instead of personal improvisation. That makes agents easier to debug, compare, review, and hand off across a team.'
+    },
+    'Function calling': {
+      'What it is': 'Function calling is the pattern where a model emits structured arguments for a named tool instead of only producing prose. It is the bridge between language generation and reliable machine-to-machine action.',
+      'Where it is used': 'It is used in database access, API orchestration, business workflows, browser automation, and assistant products that must do work instead of merely describing work. It becomes central as soon as an agent needs typed actions.',
+      'What it unlocks': 'It unlocks structured execution. The system can validate arguments, route them to real tools, and reason about action in a form that software can trust much more than free text.',
+      'Human analogy': 'The human analogy is filling out a precise request form instead of giving a vague spoken instruction. The structure makes downstream execution more reliable and less open to interpretation.',
+      'Without it': 'Without function calling, teams often parse tool intent out of plain text after generation. That works in demos, but it breaks easily once the output must be exact, validated, and safely connected to real systems.',
+      'With it': 'With function calling, tool use becomes explicit and inspectable. An agent can choose a tool, provide arguments in a schema, and let the runtime decide whether the call is valid, safe, and worth executing.'
+    },
+    'Tool-calling loops': {
+      'What it is': 'A tool-calling loop is the repeated cycle of deciding what external capability to use, calling it, reading the result, and deciding what to do next. It turns tools into an active feedback channel rather than a one-off extension.',
+      'Where it is used': 'You see it in research agents, browser agents, coding assistants, ops agents, and troubleshooting systems that must inspect live state while they work. It is one of the defining patterns of practical agency.',
+      'What it unlocks': 'It unlocks iterative grounded action. The agent can move step by step through the task, reacting to actual results instead of trying to imagine the full path in advance.',
+      'Human analogy': 'The human parallel is a technician checking instruments while diagnosing a system. Thought and action alternate, and each measurement changes the next decision.',
+      'Without it': 'Without a loop, tool use stays shallow and brittle. The agent might call one tool once, then jump back into speculation even though the next good move depends on reading the new evidence.',
+      'With it': 'With a real loop, the agent can search, inspect, revise, and continue. That is the moment when the system starts to feel less like prompt chaining and more like situated problem solving.'
+    },
+    'ReAct agents': {
+      'What it is': 'ReAct agents interleave reasoning traces with concrete actions. Instead of first thinking in isolation and only later acting, they continually tie thought to tool use and environment feedback.',
+      'Where it is used': 'This pattern is common in search agents, web agents, coding agents, and troubleshooting workflows where new evidence appears after every step. It became popular because it matches how many real tasks unfold.',
+      'What it unlocks': 'It unlocks a tighter bond between plan and evidence. The model can revise its course as soon as a tool result challenges the current hypothesis.',
+      'Human analogy': 'The human analogy is thinking out loud while working through a task, then immediately changing strategy after checking a result. The person is not separating planning from doing; the two are braided together.',
+      'Without it': 'Without a ReAct-style pattern, an agent often overplans in the abstract or acts with too little reflection. Either way, the work can drift because the reasoning process is not grounded tightly enough in evidence.',
+      'With it': 'With ReAct, the agent becomes more adaptive. Each action creates new information, and the reasoning process uses that information immediately rather than pretending the world stayed still.'
+    },
+    'RAG vs fine-tuning vs long context (trade-offs)': {
+      'What it is': 'This topic is a decision framework for three very different ways of improving capability. RAG adds external knowledge at inference time, fine-tuning changes model behavior in the weights, and long context keeps more raw material in view during the call.',
+      'Where it is used': 'It comes up in enterprise search, domain adaptation, product planning, platform decisions, and almost every serious conversation about how to make an agent better at a task. It is one of the highest-value trade-off topics in the whole map.',
+      'What it unlocks': 'It unlocks better investment choices. Instead of defaulting to whichever technique is fashionable, a team can ask whether the problem is really about fresh knowledge, stable behavior, or sheer working context.',
+      'Human analogy': 'The human analogy is the difference between looking something up, practicing until the skill becomes internalized, and spreading a huge pile of source material across the desk. Each method helps, but in a different way and at a different cost.',
+      'Without it': 'Without this trade-off lens, teams often fine-tune when retrieval would be cheaper, or stuff enormous prompts into context when the real need is better retrieval and compression. The result is wasted effort and confusing architecture.',
+      'With it': 'With this lens, architecture decisions become sharper. The team can explain why knowledge should stay external, why behavior should move into weights, or why large working context is worth the latency and cost.'
+    },
+    'Agentic RAG': {
+      'What it is': 'Agentic RAG is retrieval that is no longer fixed to one static search step. The agent can reformulate the query, branch its search, inspect failures, retrieve again, and decide how evidence should be assembled.',
+      'Where it is used': 'It is used in harder research tasks, compliance workflows, technical support, investigations, and document-heavy reasoning where one retrieve-then-read pass is not enough. It is especially useful when the first search result set is only a rough starting point.',
+      'What it unlocks': 'It unlocks adaptive evidence gathering. The system can behave more like an investigator than a template, which often matters when the right answer is buried, fragmented, or phrased in an unexpected way.',
+      'Human analogy': 'The human version is a researcher who changes search terms, chases references, and adjusts the reading plan after each clue. Good inquiry is rarely one query followed by one perfect answer.',
+      'Without it': 'Without agentic behavior, RAG often stays shallow. If the first retrieval pass misses the key document or uses the wrong framing, the system has very little ability to recover.',
+      'With it': 'With agentic RAG, retrieval becomes a reasoning partner. The agent can probe the corpus, widen or narrow the search, and assemble a better evidence trail before it commits to an answer.'
+    },
+    'Model routing': {
+      'What it is': 'Model routing is the logic that chooses which model, provider, or tier should handle a given step. It turns a one-model system into a portfolio where capability, latency, price, and risk can be balanced dynamically.',
+      'Where it is used': 'It is used in production agent platforms, cost-aware pipelines, fallback systems, and multi-step workflows where not every subtask deserves the same model. Routing becomes more important as traffic and cost pressure rise.',
+      'What it unlocks': 'It unlocks economic and operational discipline. The system can reserve high-end models for hard steps, use smaller models for simpler work, and fail over across providers when needed.',
+      'Human analogy': 'The human analogy is triage: not every problem goes straight to the top specialist. Routine cases go to a generalist, and only the difficult edge cases escalate upward.',
+      'Without it': 'Without routing, one model has to do everything. That usually means either overspending on easy tasks or forcing difficult tasks through a weaker model that cannot reliably handle them.',
+      'With it': 'With routing, the stack becomes more strategic. The agent platform can trade cost against quality explicitly and adapt model choice to the task rather than pretending all requests are the same.'
+    },
+    'Orchestrator-subagent pattern': {
+      'What it is': 'The orchestrator-subagent pattern uses a supervisory agent or controller to delegate specific parts of the job to narrower workers. The orchestrator holds the bigger objective while subagents focus on specialized slices of the task.',
+      'Where it is used': 'It is used in research, coding, analysis, and document workflows where planning, retrieval, execution, and review benefit from separate contexts. It is one of the most practical multi-agent patterns because it stays understandable.',
+      'What it unlocks': 'It unlocks specialization without total chaos. Context can be narrowed for each subagent, while the orchestrator keeps the overall thread of the task intact.',
+      'Human analogy': 'The human analogy is a manager coordinating specialists. One person tracks the mission, while others focus on search, drafting, verification, or execution.',
+      'Without it': 'Without this pattern, one large agent often becomes overloaded. Planning, tool use, checking, and synthesis all compete inside one context window, and the quality of each role degrades.',
+      'With it': 'With the pattern in place, each worker can be simpler and more focused. The overall system becomes easier to debug because delegation boundaries, responsibilities, and handoffs are visible.'
+    },
+    'Human-in-the-loop (HITL)': {
+      'What it is': 'Human-in-the-loop means the system is designed to pause, escalate, or request approval at specific points rather than acting fully on its own. The human is part of the workflow, not just a spectator after the fact.',
+      'Where it is used': 'It is used in legal review, finance, support escalation, medical settings, sensitive enterprise workflows, and any task where the cost of a wrong action is higher than the cost of a short review step.',
+      'What it unlocks': 'It unlocks bounded autonomy. The agent can still do most of the work, but humans remain attached to key decisions, irreversible actions, or low-confidence situations.',
+      'Human analogy': 'The analogy is supervisor sign-off. A skilled junior operator can do substantial work alone, but a more senior person reviews the critical moment before something binding happens.',
+      'Without it': 'Without HITL, teams are pushed toward either reckless automation or constant manual babysitting. The system either acts too freely or never earns enough trust to be useful.',
+      'With it': 'With HITL in the right places, autonomy becomes more practical. The agent handles the repetitive and preparatory work, while the human provides judgment at the moments that truly warrant it.'
+    },
+    'Distributed tracing (LangSmith, Langfuse)': {
+      'What it is': 'Distributed tracing gives a time-ordered view of what the agent did across prompts, tool calls, model responses, retries, and downstream actions. It is the execution story of the system, not just the final answer on the screen.',
+      'Where it is used': 'It is used in production debugging, regression analysis, eval investigation, latency tuning, and incident response. As soon as an agent has more than one step, tracing stops being optional if the team wants to understand failures.',
+      'What it unlocks': 'It unlocks observability at the level that agent systems actually fail. Teams can inspect which prompt fired, which tool was slow, where the loop branched, and why the final answer looked wrong.',
+      'Human analogy': 'The closest analogy is a flight recorder or a detailed work log. Instead of only seeing the final mistake, you can reconstruct the sequence of choices that produced it.',
+      'Without it': 'Without tracing, teams diagnose agent behavior from symptoms and anecdotes. They see the wrong output, but they do not see the exact chain of steps, prompts, and tool results that made it happen.',
+      'With it': 'With tracing, failure becomes legible. The system can be debugged step by step, which is what turns agent engineering from mysticism into something closer to normal software operations.'
+    },
+    'Prompt injection': {
+      'What it is': 'Prompt injection is the attack pattern where hostile instructions are smuggled into content the model reads, such as user text, retrieved documents, websites, or tool outputs. The model may then treat those instructions as if they were trusted control text.',
+      'Where it is used': 'It matters anywhere an agent reads untrusted input and especially where that agent also has tools, memory, or side effects. RAG systems, browser agents, and enterprise assistants are particularly exposed.',
+      'What it unlocks': 'Treating prompt injection as a first-class topic unlocks real threat modeling for agent systems. It forces teams to think about trust boundaries, instruction hierarchy, tool permissions, and output validation.',
+      'Human analogy': 'The human analogy is social engineering. A person can be manipulated by hostile phrasing in a document or message if they fail to separate trusted instructions from untrusted content.',
+      'Without it': 'Without a prompt-injection mental model, teams assume retrieved text is just data. The agent then reads hostile content as if it were policy and may leak information, misuse tools, or derail the workflow.',
+      'With it': 'With prompt injection treated as a real attack surface, architectures become more defensive. Teams add validation, permission boundaries, content separation, and safer tool policies before an attacker teaches them the lesson in production.'
+    },
+    'Eval-gated deployments': {
+      'What it is': 'Eval-gated deployment means prompts, model routes, or workflow changes must clear a defined evaluation threshold before reaching users. It applies software release discipline to behavior that would otherwise drift silently.',
+      'Where it is used': 'It is used in CI pipelines, staging checks, canary release processes, and platforms where prompt or model changes are frequent. The more often an AI system changes, the more this topic starts to matter.',
+      'What it unlocks': 'It unlocks safer iteration. Teams can move quickly without pretending that intuition or ad hoc spot checks are enough to protect behavior in production.',
+      'Human analogy': 'The human analogy is a formal competency check before someone is allowed to use a new procedure unsupervised. The point is not bureaucracy; the point is proving that the change still meets the bar.',
+      'Without it': 'Without eval gates, behavior changes ship on gut feel. A prompt tweak can quietly break retrieval quality, tool behavior, or refusal boundaries, and the regression only becomes visible after users suffer it.',
+      'With it': 'With eval-gated deployment, release decisions become evidence-based. The team can say what passed, what failed, and why a change was safe enough to promote.'
+    }
+  });
+
+  function applyTopicBriefOverrides(entry, lines) {
+    const override = topicBriefOverrides[entry.id] || topicBriefOverrides[entry.text];
+    if (!override) {
+      return lines;
+    }
+
+    return lines.map(line => override[line.label] ? { ...line, text: override[line.label] } : line);
+  }
+
+  function buildTopicBrief(entry, context = {}) {
+    const guide = getTopicBriefGuide(entry);
+    const partnerText = getTopicBriefPartnerText(entry, context.siblings || []);
+    const relatedLayerText = context.relatedLayerTitles && context.relatedLayerTitles.length
+      ? ` It also tends to connect into ${joinNaturalLanguage(context.relatedLayerTitles.slice(0, 2))}.`
+      : '';
+
+    return applyTopicBriefOverrides(entry, [
+      {
+        label: 'What it is',
+        text: `${entry.text} lives in ${entry.layer.title} > ${entry.section.title}. It is best read as ${guide.roleLabel}, focused on ${guide.purpose}.`
+      },
+      {
+        label: 'Where it is used',
+        text: `You run into it in ${guide.used}. It usually travels with ${partnerText}.${relatedLayerText}`
+      },
+      {
+        label: 'What it unlocks',
+        text: `It unlocks ${guide.unlock}, which gives the agent a new control point instead of relying on vague defaults or manual patchwork.`
+      },
+      {
+        label: 'Human analogy',
+        text: `In human terms, it works like ${guide.analogy}. It is one of the ways an agent stack mirrors human method instead of raw reflex.`
+      },
+      {
+        label: 'Without it',
+        text: `Without ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, that usually means more guessing, more operator cleanup, or weaker reliability.`
+      },
+      {
+        label: 'With it',
+        text: `With ${entry.text}, ${guide.withCase}. In ${guide.exampleScenario}, the agent can take on a broader or more dependable role.`
+      }
+    ]);
+  }
+
   const officialResourceMatchers = [
     { pattern: /\bOpenAI\b|\bGPT-4o\b|\bGPT-4V\b|\bCodex\b|\bRealtime API\b/i, label: 'OpenAI docs', url: 'https://platform.openai.com/docs/overview' },
     { pattern: /\bAnthropic\b|\bClaude\b/i, label: 'Anthropic docs', url: 'https://docs.anthropic.com/' },
@@ -2373,6 +2725,7 @@
     return {
       entry,
       layers,
+      brief: buildTopicBrief(entry, { siblings, relatedLayerTitles }),
       stats: detailStats,
       theme: {
         color: entry.layer.color,

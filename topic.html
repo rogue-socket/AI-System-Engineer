@@ -18,6 +18,7 @@
     <div class="hero-k">Topic Detail</div>
     <h1 class="hero-title" id="hero-title"></h1>
     <p class="hero-summary" id="hero-summary"></p>
+    <div class="topic-brief" id="topic-brief"></div>
     <div id="topic-status-picker"></div>
     <div class="hero-grid" id="hero-grid"></div>
   </div>
@@ -68,6 +69,7 @@ const collapseButton = document.getElementById('collapse-button');
 const backLink = document.getElementById('back-link');
 const heroTitle = document.getElementById('hero-title');
 const heroSummary = document.getElementById('hero-summary');
+const topicBrief = document.getElementById('topic-brief');
 const heroGrid = document.getElementById('hero-grid');
 const breadcrumbs = document.getElementById('breadcrumbs');
 const metaBar = document.getElementById('meta-bar');
@@ -128,11 +130,33 @@ function renderHeroCards(cards) {
   });
 }
 
+function renderTopicBrief(lines) {
+  topicBrief.innerHTML = '';
+
+  (lines || []).forEach(line => {
+    const item = document.createElement('div');
+    item.className = 'topic-brief-line';
+
+    const label = document.createElement('div');
+    label.className = 'topic-brief-label';
+    label.textContent = line.label;
+
+    const text = document.createElement('div');
+    text.className = 'topic-brief-text';
+    text.textContent = line.text;
+
+    item.appendChild(label);
+    item.appendChild(text);
+    topicBrief.appendChild(item);
+  });
+}
+
 function renderNotFound() {
   document.title = 'Topic Not Found — AI Agent Systems';
   breadcrumbs.innerHTML = '';
   heroTitle.textContent = 'Topic not found';
   heroSummary.textContent = 'The requested topic route did not resolve to a valid syllabus node. Go back to the overview and pick a topic directly from the taxonomy.';
+  topicBrief.innerHTML = '';
   heroGrid.innerHTML = '';
   metaBar.style.display = 'none';
   searchInput.style.display = 'none';
@@ -143,7 +167,8 @@ function renderNotFound() {
 function exportMarkdown() {
   const markdown = layersToMarkdown(`${detail.entry.text} — Topic Detail`, detail.layers, [
     `Primary path: ${detail.entry.layer.title} / ${detail.entry.section.title}`,
-    detail.summary
+    detail.summary,
+    ...detail.brief.map(line => `${line.label}: ${line.text}`)
   ]);
   downloadMarkdown(`${detail.entry.text.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'topic'}_detail.md`, markdown);
 }
@@ -218,6 +243,7 @@ function mountResourceTools() {
 
 function renderDetailTree() {
   detail = buildTopicDetailData(topicId);
+  renderTopicBrief(detail.brief);
   renderHeroCards(detail.heroCards);
   renderLayerTree(root, detail.layers, { openAll: false, openFirstLayer: false });
   mountResourceTools();
