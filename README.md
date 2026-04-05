@@ -1,6 +1,6 @@
 # AI Agent Systems Syllabus
 
-Live site: https://rogue-socket.github.io/AI-System-Engineer/
+https://rogue-socket.github.io/AI-System-Engineer/
 
 An interactive, browser-based syllabus for learning AI agent systems from first principles through deployment, evaluation, and governance.
 
@@ -15,14 +15,9 @@ The site is a static GitHub Pages project with no build step. It presents the sy
 - Search, collapse/expand controls, and Markdown export
 - A minimal static frontend designed to work well on GitHub Pages
 
-## Live Experience
+## Running Locally
 
-The main syllabus homepage is the entry point for browsing the full taxonomy.
-
-- Main site: https://rogue-socket.github.io/AI-System-Engineer/
-- Topic detail pages open from the main syllabus and provide focused breakdowns for a selected topic
-
-## Project Structure
+Because this is a static site, you can run it in any simple local web server.
 
 - [index.html](/c:/workdir/AI-System-Engineer/index.html): main syllabus page
 - [topic.html](/c:/workdir/AI-System-Engineer/topic.html): topic detail page
@@ -30,27 +25,7 @@ The main syllabus homepage is the entry point for browsing the full taxonomy.
 - [styles.css](/c:/workdir/AI-System-Engineer/styles.css): visual system and layout
 - [README.md](/c:/workdir/AI-System-Engineer/README.md): project overview
 
-## Running Locally
-
-Because this is a static site, you can run it in any simple local web server.
-
-Example with Python:
-
-```bash
-python -m http.server 8000
-```
-
-Then open:
-
-```text
-http://localhost:8000/
-```
-
 You can also open `index.html` directly in a browser, but serving it locally is the safer default for consistent behavior.
 
-## Design Notes
-
 - No framework or bundler required
-- Content and interaction logic live in a single JavaScript file for easy editing and GitHub Pages deployment
 - Topic progress is stored in the browser with `localStorage`
-- The UI is intentionally minimal and content-forward
