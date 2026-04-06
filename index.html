@@ -64,6 +64,7 @@ wireHashFocus();
 refreshStatusLegend();
 subscribeToTopicStatusChanges(refreshStatusLegend);
 
+// Initialize with all layers collapsed by default
 const collapseButton = document.getElementById('collapse-button');
 let allCollapsed = true;
 setAllLayersOpen(root, false);
