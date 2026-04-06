@@ -871,7 +871,7 @@
     'Byte-pair encoding (BPE)': {
       'What it is': 'Byte-pair encoding is the most common tokenization algorithm used by modern language models. It starts from individual characters and iteratively merges the most frequent adjacent pairs until a target vocabulary size is reached, producing subword units that balance vocabulary size against token count.',
       'Where it is used': 'It is used in GPT-family models, many open-weight models, and most systems where teams need to understand why certain words split into multiple tokens and how vocabulary size affects cost, context usage, and multilingual coverage.',
-      'What it unlocks': 'It unlocks a concrete understanding of why text length in characters does not equal token count. Once BPE is understood, teams can predict tokenization behavior, debug encoding surprises, and reason about vocabulary coverage gaps.',
+      'What it unlocks': 'It unlocks predictive token budgeting. Teams can estimate costs per language, predict which words will fragment, debug encoding surprises, and compare vocabulary coverage gaps across models before committing to one.',
       'Human analogy': 'The human analogy is a filing clerk who starts labeling every individual letter, then notices common letter pairs and gives them shorthand codes, then common triples, and so on until the most frequent phrases each get a single short label.',
       'Without it': 'Without understanding BPE, token counts feel arbitrary. Teams cannot explain why a foreign-language sentence costs three times more tokens than an English one of similar meaning, or why a rare technical term fragments into many pieces.',
       'With it': 'With BPE understood, the team can reason about tokenizer behavior, compare vocabulary coverage across models, and make better decisions about multilingual support and prompt budgeting.'
@@ -879,7 +879,7 @@
     'SentencePiece / Unigram tokenization': {
       'What it is': 'SentencePiece is a language-agnostic tokenization library, and its Unigram mode builds a large initial vocabulary then prunes it down by removing tokens whose loss contributes least, producing a probabilistically optimal subword set. It is an alternative to BPE that treats tokenization as a statistical optimization problem.',
       'Where it is used': 'It is used in T5, Llama, Gemma, and many multilingual models. It matters when teams compare tokenizer behavior across model families or need to understand why two models of similar size tokenize the same input differently.',
-      'What it unlocks': 'It unlocks awareness that tokenization is not one-size-fits-all. Different algorithms produce different subword vocabularies, which affects token efficiency, multilingual fairness, and the effective capacity of the context window.',
+      'What it unlocks': 'It unlocks cross-model tokenizer comparison. Different algorithms produce different subword vocabularies, which affects token efficiency, multilingual fairness, and the effective capacity of the context window.',
       'Human analogy': 'The human analogy is a records team that starts with a large dictionary of possible short labels, then systematically drops the ones that save the least space, ending up with a compact but efficient coding scheme for the documents they handle most.',
       'Without it': 'Without knowing that tokenizers differ across model families, teams may assume token counts transfer between models or that multilingual cost differences are a model bug rather than a vocabulary design choice.',
       'With it': 'With this understood, the team can compare tokenizer efficiency across models, anticipate multilingual cost differences, and choose models whose vocabulary better fits their workload.'
@@ -887,7 +887,7 @@
     'Positional encoding': {
       'What it is': 'Positional encoding is how a transformer knows the order of tokens in the input. Because the attention mechanism treats input as a set by default, explicit position signals must be added so the model can distinguish first from last and respect sequence structure.',
       'Where it is used': 'It matters in long-context tasks, document processing, code generation, and any situation where token order carries meaning. It is also the foundation for understanding why different models handle long sequences differently.',
-      'What it unlocks': 'It unlocks an understanding of sequence awareness in models. Once positional encoding is clear, teams can reason about why models struggle at certain context lengths or why position-related techniques like RoPE or ALiBi exist.',
+      'What it unlocks': 'It unlocks informed decisions about context length and document ordering. Once positional encoding is clear, teams can reason about why models struggle at certain context lengths and evaluate position-related techniques like RoPE or ALiBi.',
       'Human analogy': 'The human analogy is page numbers and section headings in a reference binder. Without them, every page is just loose content with no indication of where it belongs in the overall sequence.',
       'Without it': 'Without understanding positional encoding, teams treat the context window as a simple bucket and are surprised when models lose track of information at certain positions or degrade on sequences longer than training length.',
       'With it': 'With positional encoding understood, decisions about context length, document ordering, and position-aware techniques become much more grounded.'
@@ -903,7 +903,7 @@
     'Generated tokens as iterative decoding steps': {
       'What it is': 'This topic explains that a language model generates output one token at a time, with each new token conditioned on all previous tokens. Generation is not a single pass that produces a complete answer; it is an iterative loop where each step is a fresh prediction.',
       'Where it is used': 'It matters in latency analysis, streaming design, stop-sequence logic, structured output constraints, and debugging generation artifacts. Understanding autoregressive decoding is essential for reasoning about when and why a model commits to a bad path.',
-      'What it unlocks': 'It unlocks a realistic picture of generation mechanics. Teams can explain why longer outputs cost more time, why early tokens influence everything that follows, and why constrained decoding or beam search change the output.',
+      'What it unlocks': 'It unlocks control over generation behavior. Teams can explain why longer outputs cost more time, why early tokens influence everything that follows, and why constrained decoding, beam search, and stop sequences change the output.',
       'Human analogy': 'The human analogy is someone writing a report sentence by sentence, where each new sentence must follow from what has already been written. There is no global plan executed at once; each step commits to a direction.',
       'Without it': 'Without this mental model, teams assume the model sees and plans the entire output before emitting it, which leads to confusion about generation failures, hallucination cascades, and why partial outputs can be valid up to a point.',
       'With it': 'With iterative decoding understood, token-level interventions like stop sequences, constrained decoding, and streaming become intuitive instead of mysterious.'
@@ -921,7 +921,7 @@
     'Attention mechanisms': {
       'What it is': 'Attention is the core operation that lets a transformer weigh the relevance of every token against every other token in the input. It replaces fixed-window processing with a dynamic lookup where each position can attend to the most informative parts of the sequence.',
       'Where it is used': 'It is the foundation of every transformer-based model. Understanding attention matters for prompt design, context-window reasoning, long-document handling, and diagnosing why models focus on the wrong evidence.',
-      'What it unlocks': 'It unlocks intuition about how models route information. Once attention is understood, teams can reason about why relevant context gets ignored, why position matters, and why certain architectural extensions exist.',
+      'What it unlocks': 'It unlocks the ability to diagnose context-usage failures. Teams can reason about why relevant evidence gets ignored in long contexts, why prompt ordering affects output, and which architectural extensions address which attention limitation.',
       'Human analogy': 'The human analogy is a researcher scanning a room full of pinned notes and selectively focusing on the ones most relevant to the current question, rather than reading every note in fixed order.',
       'Without it': 'Without understanding attention, the transformer is a black box. Teams cannot reason about why models lose information in long contexts, why some prompts work better than others, or what architectural improvements are actually improving.',
       'With it': 'With attention understood, model behavior becomes more explainable. The team can reason about information flow, diagnose attention-related failures, and evaluate architectural choices with more confidence.'
@@ -929,7 +929,7 @@
     'Multi-head attention': {
       'What it is': 'Multi-head attention runs several attention operations in parallel, each with its own learned projection. Different heads can specialize in different kinds of relationships such as syntax, coreference, or positional patterns, giving the model richer representational capacity per layer.',
       'Where it is used': 'It matters when reasoning about model capacity, parameter efficiency, and architectural choices like Grouped Query Attention or Multi-Head Latent Attention that modify how heads are organized to trade off quality against speed.',
-      'What it unlocks': 'It unlocks understanding of why transformers can capture multiple kinds of relationships simultaneously. It also explains the design space behind head-count tuning and attention-efficiency techniques.',
+      'What it unlocks': 'It unlocks informed evaluation of attention-efficiency tradeoffs. Teams can reason about why reducing heads affects quality, compare GQA and MLA designs, and match head-count choices to their serving constraints.',
       'Human analogy': 'The human analogy is a review panel where several specialists each read the same case file but focus on different aspects, such as financial risk, legal compliance, and operational feasibility, then combine their findings.',
       'Without it': 'Without understanding multi-head attention, teams cannot reason about why reducing heads affects quality, why some efficiency techniques work, or what grouped and latent attention variants are actually trading off.',
       'With it': 'With multi-head attention understood, architectural discussions about head counts, attention variants, and efficiency tradeoffs become concrete instead of abstract.'
@@ -937,7 +937,7 @@
     'Feed-forward layers': {
       'What it is': 'Feed-forward layers are the dense transformation blocks that sit between attention layers in a transformer. After attention gathers relevant information across positions, the feed-forward network processes each position independently, applying learned nonlinear transformations that store much of the model\'s factual and pattern knowledge.',
       'Where it is used': 'It matters in discussions about parameter count, model capacity, Mixture of Experts routing, knowledge storage, and quantization impact. A large fraction of a transformer\'s parameters live in feed-forward layers.',
-      'What it unlocks': 'It unlocks understanding of where knowledge is stored in the model. Once feed-forward layers are understood as the main capacity store, teams can reason about why larger models know more and why MoE architectures selectively activate subsets.',
+      'What it unlocks': 'It unlocks targeted reasoning about model capacity and sparsity. Once feed-forward layers are understood as the main parameter store, teams can explain why larger models know more, why MoE architectures selectively activate subsets, and which components quantization affects most.',
       'Human analogy': 'The human analogy is the reference knowledge each staff member carries internally. After consulting colleagues via discussion, each person applies their own deep expertise to transform the gathered information into a useful answer.',
       'Without it': 'Without understanding feed-forward layers, teams treat the transformer as pure attention and miss where most parameters and stored knowledge actually live. That makes discussions about model size, capacity, and sparsity harder to follow.',
       'With it': 'With feed-forward layers understood, the model architecture becomes more legible. Teams can reason about capacity, MoE, and quantization as operations on a concrete component rather than on an opaque whole.'
@@ -945,7 +945,7 @@
     'Layer normalization': {
       'What it is': 'Layer normalization stabilizes the activations flowing through a transformer by normalizing values at each layer. It prevents the signal from growing or shrinking uncontrollably as it passes through many successive layers, which is essential for training deep networks reliably.',
       'Where it is used': 'It matters in training stability, model convergence, and understanding why certain architectural choices like pre-norm vs post-norm placement affect training behavior and final quality.',
-      'What it unlocks': 'It unlocks understanding of training stability. Once layer normalization is clear, teams can follow discussions about training recipes, gradient flow, and why some model variants train more reliably than others.',
+      'What it unlocks': 'It unlocks the ability to evaluate training recipes. Once layer normalization is clear, teams can follow discussions about gradient flow, pre-norm versus post-norm placement, and why some model variants converge more reliably than others.',
       'Human analogy': 'The human analogy is a quality-control checkpoint at each stage of a production line that resets measurements to a standard scale before the next stage begins, preventing small deviations from compounding into chaos downstream.',
       'Without it': 'Without understanding layer normalization, training instabilities and convergence failures look mysterious. Teams cannot follow discussions about why training recipes differ or why architectural placement choices matter.',
       'With it': 'With layer normalization understood, the mechanics of deep-network training become more legible and training-related decisions easier to evaluate.'
@@ -953,7 +953,7 @@
     'Residual connections': {
       'What it is': 'Residual connections add the input of each transformer sublayer back to its output, creating skip paths that let information and gradients flow directly across many layers. They are the reason transformers can be stacked dozens or hundreds of layers deep without the signal degrading to noise.',
       'Where it is used': 'They matter in understanding model depth, training dynamics, and why transformers scale to hundreds of layers when earlier deep networks could not. They also explain the additive nature of transformer processing.',
-      'What it unlocks': 'It unlocks understanding of why depth works. Once residual connections are clear, teams can reason about how each layer adds a refinement on top of the previous representation rather than replacing it.',
+      'What it unlocks': 'It unlocks the ability to reason about model depth and layer-level behavior. Once residual connections are clear, teams can explain how each layer adds a refinement on top of the previous representation rather than replacing it.',
       'Human analogy': 'The human analogy is a review process where each reviewer annotates the original document rather than rewriting it from scratch. The original always travels with the annotations, so no single reviewer can destroy the starting material.',
       'Without it': 'Without understanding residual connections, teams cannot explain why transformers scale to great depth, why individual layers can be seen as incremental refinements, or why removing a layer does not break the whole network.',
       'With it': 'With residual connections understood, the incremental and additive nature of transformer processing becomes intuitive, and architectural depth discussions make more sense.'
@@ -961,7 +961,7 @@
     'KV cache': {
       'What it is': 'The KV cache stores precomputed key and value tensors from previous tokens during autoregressive generation so they do not need to be recomputed at every step. It turns generation from quadratic recomputation into a linear process, but it consumes memory proportional to sequence length and batch size.',
       'Where it is used': 'It is central to inference performance, GPU memory budgeting, long-context serving, and understanding why serving cost scales with sequence length. Techniques like MLA, GQA, and PagedAttention exist specifically to manage KV cache pressure.',
-      'What it unlocks': 'It unlocks practical reasoning about inference cost and memory. Once the KV cache is understood, teams can explain why long contexts are expensive, why batch sizes are memory-limited, and why cache compression matters.',
+      'What it unlocks': 'It unlocks accurate memory planning for inference. Once the KV cache is understood, teams can explain why long contexts cause memory exhaustion unrelated to model size, budget batch sizes correctly, and evaluate cache-efficiency techniques like GQA, MLA, and PagedAttention.',
       'Human analogy': 'The human analogy is a meeting scribe who keeps running notes so each new speaker does not have to re-read the entire transcript. The notes grow with each contribution and eventually fill the available whiteboard space.',
       'Without it': 'Without understanding the KV cache, teams treat inference cost as a simple function of model size and are surprised when long contexts or large batches cause memory exhaustion that has nothing to do with model parameters.',
       'With it': 'With KV cache mechanics understood, memory planning, batch sizing, and the motivation behind cache-efficiency techniques all become much clearer.'
@@ -971,7 +971,7 @@
     'Rotary Position Embedding (RoPE)': {
       'What it is': 'RoPE encodes position by rotating the query and key vectors in attention, so that the dot product between any two positions depends naturally on their relative distance. It replaced earlier absolute position encodings in most modern open-weight models because it generalizes better to unseen sequence lengths.',
       'Where it is used': 'It is used in Llama, Qwen, Mistral, and most post-2023 open-weight transformers. It matters when teams need to understand long-context extension techniques like NTK-aware scaling or YaRN, which modify RoPE to push context limits further.',
-      'What it unlocks': 'It unlocks a concrete understanding of how position information works in modern models and why some models extend to longer contexts more gracefully than others.',
+      'What it unlocks': 'It unlocks the ability to evaluate context-length claims. Teams can judge whether a model truly handles long sequences or degrades beyond its trained range, and assess why scaling methods like YaRN and NTK-aware interpolation work.',
       'Human analogy': 'The human analogy is a filing system where the relative gap between two documents matters more than their absolute shelf position, so the system reorganizes naturally when you insert new material in the middle.',
       'Without it': 'Without understanding RoPE, context-extension techniques look like arbitrary hacks. Teams cannot judge whether a claimed context length is real or whether the model degrades beyond its trained range.',
       'With it': 'With RoPE understood, context-length claims become evaluable. The team can reason about extrapolation limits and understand why certain scaling methods work.'
@@ -995,7 +995,7 @@
     'Mixture of Experts (MoE)': {
       'What it is': 'MoE architectures replace dense feed-forward layers with a set of expert subnetworks and a gating mechanism that routes each token to only a few experts. This allows models to have far more total parameters while activating only a fraction per token, breaking the usual link between parameter count and inference cost.',
       'Where it is used': 'It is used in Mixtral, DeepSeek V3, GPT-4 (rumored), and Switch Transformer. It matters for teams comparing model cost, understanding why some large models are surprisingly fast, and reasoning about capacity versus compute tradeoffs.',
-      'What it unlocks': 'It unlocks understanding of how scale and cost decouple. Once MoE is clear, teams can evaluate model efficiency claims and understand why two models with vastly different parameter counts can have similar inference latency.',
+      'What it unlocks': 'It unlocks honest model cost-performance comparison. Once MoE is clear, teams can separate total capacity from active per-token compute and explain why two models with vastly different parameter counts can have similar inference latency.',
       'Human analogy': 'The human analogy is a large firm with many specialists, but each incoming case is routed to only the two or three most relevant experts rather than engaging the entire staff on every job.',
       'Without it': 'Without understanding MoE, teams use parameter count as a proxy for both capability and cost. That leads to misleading comparisons between dense and sparse models.',
       'With it': 'With MoE understood, model comparisons become more honest. The team can separate total capacity from active compute and make better cost-performance tradeoffs.'
@@ -1003,7 +1003,7 @@
     'State-space models (Mamba, RWKV)': {
       'What it is': 'State-space models like Mamba and RWKV process sequences through recurrent state updates instead of global attention, achieving linear scaling with sequence length. They offer a fundamentally different compute profile from transformers, with potentially much lower cost for very long sequences.',
       'Where it is used': 'They matter in long-sequence processing, genomics, audio, and any domain where transformer attention cost is prohibitive. They also appear as alternative backbones in hybrid architectures that mix attention and recurrence.',
-      'What it unlocks': 'It unlocks awareness that transformers are not the only viable architecture. Teams can evaluate emerging alternatives and understand the tradeoffs between global attention and efficient recurrence.',
+      'What it unlocks': 'It unlocks evaluation of post-transformer alternatives. Teams can assess where recurrence might outperform or complement attention, especially on very long sequences where quadratic attention cost becomes prohibitive.',
       'Human analogy': 'The human analogy is a factory worker who maintains a running summary of the production line\'s status rather than reviewing the entire production log at every step. The summary is compact but lossy.',
       'Without it': 'Without awareness of state-space models, teams assume transformers are the only game in town and miss efficiency opportunities or fail to evaluate claims about post-transformer architectures.',
       'With it': 'With state-space models understood, the team can track alternative architectures and reason about where recurrence might outperform or complement attention.'
@@ -1129,7 +1129,7 @@
     'GPT-style (decoder-only)': {
       'What it is': 'Decoder-only models generate text left-to-right by predicting the next token given all previous tokens. They are the dominant architecture behind GPT-4, Claude, Llama, and most modern chat and agent models. Their strength is flexible, open-ended generation.',
       'Where it is used': 'They are the default choice for chat assistants, code generation, reasoning, tool calling, and general-purpose AI products. Nearly all frontier models as of 2026 are decoder-only.',
-      'What it unlocks': 'It unlocks a clear mental model of the dominant architecture class. Once the decoder-only pattern is understood, teams can reason about why generation is autoregressive, why prompts matter, and why these models excel at open-ended tasks.',
+      'What it unlocks': 'It unlocks informed reasoning about generation tradeoffs. Once the decoder-only pattern is understood, teams can explain why generation is autoregressive, what that means for latency, and why these models excel at open-ended tasks.',
       'Human analogy': 'The human analogy is a speaker who constructs a response word by word, with each word influenced by everything said so far but no ability to peek ahead at what comes next.',
       'Without it': 'Without understanding decoder-only architecture, teams conflate different model families and cannot explain why certain tasks favor different architectures or why generation is inherently sequential.',
       'With it': 'With this understood, the team can reason about why decoding is autoregressive, what that means for latency, and why decoder-only models dominate general-purpose agent work.'
@@ -1137,7 +1137,7 @@
     'BERT-style (encoder-only)': {
       'What it is': 'Encoder-only models process the entire input at once with bidirectional attention, producing contextualized representations of every token. They do not generate text autoregressively; instead they are used for understanding tasks like classification, extraction, and embedding.',
       'Where it is used': 'They are used in classification, named entity recognition, semantic search embedding, reranking, sentiment analysis, and any task where the goal is to understand input rather than generate output.',
-      'What it unlocks': 'It unlocks understanding of why some tasks use encoder models instead of generative decoders. Once the distinction is clear, teams can pick the right architecture for understanding-heavy tasks instead of defaulting to a large decoder for everything.',
+      'What it unlocks': 'It unlocks efficient architecture selection for understanding tasks. Once the distinction is clear, teams can assign classification, extraction, and embedding work to leaner encoder models instead of defaulting to a large decoder for everything.',
       'Human analogy': 'The human analogy is an analyst who reads the entire document first and then answers questions about it, rather than a writer who generates content one word at a time.',
       'Without it': 'Without this distinction, teams use large generative models for classification and embedding tasks that would be handled more efficiently by a smaller encoder model.',
       'With it': 'With encoder-only models understood, the team can assign understanding tasks to leaner, faster models and reserve decoder models for generation work.'
@@ -1145,7 +1145,7 @@
     'T5-style (encoder-decoder)': {
       'What it is': 'Encoder-decoder models process the full input with a bidirectional encoder, then generate output autoregressively with a decoder that attends to the encoded representation. They are well-suited to tasks with a clear input-to-output structure like translation, summarization, and structured extraction.',
       'Where it is used': 'They are used in translation, summarization, question answering, and tasks where the input and output have different lengths and structures. T5 and its variants remain common in specialized pipelines.',
-      'What it unlocks': 'It unlocks awareness of a third architecture option between encoder-only and decoder-only. For tasks with explicit input-output mapping, encoder-decoder models can be more natural and efficient than forcing a decoder-only model into the same shape.',
+      'What it unlocks': 'It unlocks a better fit for input-to-output transformation tasks. For translation, summarization, and structured extraction, encoder-decoder models can be more natural and efficient than forcing a decoder-only model into the same shape.',
       'Human analogy': 'The human analogy is a translator who first reads and fully understands the source document, then produces a new document in a different language or format, rather than translating word by word as they go.',
       'Without it': 'Without this option, teams default to decoder-only models for all tasks and miss cases where a dedicated encoder-decoder would be more efficient or more natural for the job.',
       'With it': 'With encoder-decoder models understood, the team has a richer architecture vocabulary and can pick the right structure for input-heavy transformation tasks.'
@@ -1212,7 +1212,7 @@
       'What it is': 'Reranker models, typically cross-encoders, take a query-document pair as joint input and score their relevance with much higher accuracy than bi-encoder similarity. They are slower because they process each pair individually, so they are used to rerank a shortlist rather than search the full corpus.',
       'Where it is used': 'They are used as a second-stage filter in RAG pipelines, enterprise search, and any retrieval system where first-pass recall is good but precision on the top results needs improvement.',
       'What it unlocks': 'It unlocks higher-precision retrieval. By adding a reranking step after initial vector search, the system can promote truly relevant documents and demote near-misses that scored well on embedding similarity alone.',
-      'Human analogy': 'The human analogy is a senior reviewer who examines the shortlisted candidates more carefully after initial screening, rather than accepting the first-pass ranking as final.',
+      'Human analogy': 'The human analogy is a subject-matter expert who reads each shortlisted case file alongside the original request, scoring relevance much more accurately than the keyword search that produced the shortlist.',
       'Without it': 'Without reranking, the final retrieval order is entirely determined by embedding similarity, which often lets slightly off-topic but high-similarity documents crowd out more relevant results.',
       'With it': 'With a reranker in place, the top results are more reliably relevant. That directly improves answer quality in RAG and reduces hallucination from grounding on marginally related content.'
     },
@@ -1253,7 +1253,7 @@
     'OpenAI o1 / o1-pro / o3 / o4-mini': {
       'What it is': 'OpenAI\'s o-series models are reasoning-focused models that spend extra compute at inference time by producing internal chain-of-thought before answering. o1 introduced the pattern, o3 extended it with stronger performance, and o4-mini offers a smaller, faster reasoning-capable variant.',
       'Where it is used': 'They are used in math, science, coding competitions, complex analysis, and agent workflows where extended deliberation measurably improves answer quality. They are the reference point for the test-time-compute scaling paradigm.',
-      'What it unlocks': 'It unlocks awareness of reasoning-oriented model design. Once the o-series is understood, teams can evaluate when allocating extra inference-time thinking budget is worth the cost and latency tradeoff.',
+      'What it unlocks': 'It unlocks deliberate cost-quality routing for hard problems. Once the o-series is understood, teams can evaluate when allocating extra inference-time thinking budget is worth the cost and latency, and reserve reasoning models for genuinely difficult work.',
       'Human analogy': 'The human analogy is giving an analyst extra time to work through a problem on scratch paper before presenting their answer, rather than requiring an immediate response.',
       'Without it': 'Without understanding o-series models, teams either ignore reasoning-capable models or use them for simple tasks where the extra thinking cost is wasted.',
       'With it': 'With the o-series understood, the team can route genuinely difficult problems to reasoning models and simpler tasks to faster models, optimizing the cost-quality tradeoff.'
@@ -1293,7 +1293,7 @@
     'Grok 3 (xAI) with reasoning': {
       'What it is': 'Grok 3 is xAI\'s large language model, which includes reasoning capabilities and was trained with access to real-time data from the X platform. It represents xAI\'s approach to combining large-scale pretraining with reasoning behavior.',
       'Where it is used': 'It matters in the reasoning model landscape as an additional competitor. Teams evaluating frontier models should understand its positioning, particularly its real-time data access and reasoning performance claims.',
-      'What it unlocks': 'It unlocks awareness of xAI\'s offering in the reasoning space. For teams doing model evaluation, understanding Grok 3\'s strengths and limitations helps broaden the comparison set beyond the biggest three providers.',
+      'What it unlocks': 'It unlocks a broader competitive evaluation for reasoning tasks. Grok 3\'s real-time data access and distinct training approach give teams another concrete option to benchmark against when the top three providers do not fully cover their needs.',
       'Human analogy': 'The human analogy is a new consulting firm entering an established market with a different data advantage and approach, offering teams another option to evaluate alongside incumbents.',
       'Without it': 'Without awareness of Grok 3, model selection may over-focus on a small set of frontier providers and miss alternatives that could offer better fit for certain tasks.',
       'With it': 'With Grok 3 in the evaluation set, teams have a broader view of the reasoning model landscape and can make more informed competitive comparisons.'
@@ -1333,14 +1333,14 @@
     'Kimi k1.5 (Moonshot AI)': {
       'What it is': 'Kimi k1.5 is Moonshot AI\'s reasoning model, notable for combining reinforcement learning on long chain-of-thought with strong performance. It demonstrated that a unified training approach across both short and long reasoning can be competitive.',
       'Where it is used': 'It matters in the reasoning model research landscape and for teams tracking the broader set of reasoning approaches beyond the biggest Western and Chinese labs.',
-      'What it unlocks': 'It unlocks awareness of alternative reasoning training approaches. Kimi k1.5\'s methods, particularly long-CoT RL, contribute to the broader understanding of how reasoning capability is built.',
+      'What it unlocks': 'It unlocks a demonstrated alternative to supervised-CoT distillation. Kimi k1.5\'s unified long-CoT RL method shows that a single training approach across short and long reasoning can be competitive, informing teams building their own reasoning pipelines.',
       'Human analogy': 'The human analogy is a smaller research group that publishes a novel training method which becomes influential, even if their brand is less well-known than the largest institutions.',
       'Without it': 'Without tracking Kimi k1.5, teams may miss training insights that apply to their own reasoning model work.',
       'With it': 'With Kimi k1.5 in the landscape, teams have a richer picture of how reasoning is being trained across different labs and methods.'
     },
     'Marco-o1 (Alibaba DAMO)': {
       'What it is': 'Marco-o1 is Alibaba DAMO Academy\'s reasoning model focused on open-ended problem solving. It emphasizes chain-of-thought reasoning on problems that lack clear standard answers, extending the reasoning paradigm beyond math and coding benchmarks.',
-      'Where it is used': 'It matters for teams interested in reasoning beyond the standard benchmark domains and for tracking the Chinese open-weight reasoning ecosystem.',
+      'Where it is used': 'It is used in open-ended analysis, ambiguous decision support, and research on reasoning under uncertainty. It matters for teams applying reasoning models to messy real-world problems that lack clean verifiable answers.',
       'What it unlocks': 'It unlocks awareness that reasoning models are being applied to open-ended and ambiguous problems, not just formal domains with verifiable answers.',
       'Human analogy': 'The human analogy is a research team that applies systematic analytical methods to messy real-world problems rather than only to clean textbook exercises.',
       'Without it': 'Without tracking Marco-o1, teams may assume reasoning models are only useful for math and coding, missing broader applicability.',
@@ -1349,7 +1349,7 @@
     'Skywork-o1 (Kunlun Tech)': {
       'What it is': 'Skywork-o1 is Kunlun Tech\'s reasoning model that explores process-based reward modeling and step-level supervision for reasoning. It offers another data point in the space of reasoning training methods.',
       'Where it is used': 'It matters for teams following reasoning research, particularly process-reward-based training approaches. It contributes to the understanding of how step-by-step verification can improve reasoning quality.',
-      'What it unlocks': 'It unlocks exposure to process-reward approaches to reasoning training. Teams interested in building or evaluating reasoning models can study these methods alongside the better-known approaches.',
+      'What it unlocks': 'It unlocks a concrete process-reward training strategy. Teams building or evaluating reasoning models can compare step-level supervision against outcome-based methods and assess whether grading each reasoning step produces more reliable reasoners.',
       'Human analogy': 'The human analogy is a training program that grades not just the final answer but each step of the analysis, so trainees learn to reason correctly rather than just arrive at correct conclusions by accident.',
       'Without it': 'Without awareness of process-reward approaches, teams may focus only on outcome-based training for reasoning, missing a potentially stronger supervisory signal.',
       'With it': 'With Skywork-o1\'s approach in view, teams have a broader toolkit of reasoning training strategies to consider and evaluate.'
@@ -1661,21 +1661,21 @@
       'Where it is used': 'They matter for teams in the Llama ecosystem who need code-specific performance. They serve as base models for further fine-tuning or as direct code assistants in self-hosted environments.',
       'What it unlocks': 'It unlocks code-optimized performance within the Llama open-weight family. Teams can stay within one model ecosystem for both general and code-specific tasks.',
       'Human analogy': 'The human analogy is a generalist employee who has additional specialized coding training, rather than the team hiring a completely separate specialist.',
-      'Without it': 'Without Llama code variants, teams using Llama must use general Llama models for coding or switch to a different model family for code-specific work.',
-      'With it': 'With Llama code variants, coding tasks stay within the Llama ecosystem, simplifying infrastructure and model management.'
+      'Without it': 'Without Llama code variants, teams either accept weaker code output from the general model or add a second model family to their stack, increasing serving complexity and adapter maintenance.',
+      'With it': 'With Llama code variants, the same fine-tuning pipelines, quantization tooling, and serving infrastructure the team already runs for Llama can cover code tasks without introducing a separate model lineage.'
     },
     'CodeGemma (Google)': {
       'What it is': 'CodeGemma is Google\'s code-specialized version of the Gemma model family. It is a compact open-weight code model designed for code completion, generation, and understanding, with the Gemma emphasis on efficient and accessible deployment.',
       'Where it is used': 'It matters for teams wanting a small, efficient code model from Google\'s open-weight family. It serves code completion, infill, and generation use cases at lower compute than larger alternatives.',
       'What it unlocks': 'It unlocks Google-ecosystem open-weight code intelligence. Teams can deploy code assistance locally using Gemma infrastructure and tools.',
       'Human analogy': 'The human analogy is a compact toolbox from a trusted manufacturer that handles standard coding tasks efficiently without requiring the full workshop.',
-      'Without it': 'Without CodeGemma, teams in the Gemma ecosystem lack a code-specialized variant and must use general models or switch families.',
-      'With it': 'With CodeGemma, code-specific tasks in the Gemma ecosystem get a purpose-built option at efficient sizes.'
+      'Without it': 'Without CodeGemma, teams wanting compact Google-backed code models must use general Gemma, which underperforms on infill and completion, or adopt a different model family for code work.',
+      'With it': 'With CodeGemma, code completion and infill get a purpose-built model small enough for local and on-device deployment while sharing the same tooling and format as general Gemma.'
     },
     'WizardCoder': {
       'What it is': 'WizardCoder applied the Evol-Instruct methodology to code models, using progressively more complex synthetic coding instructions to improve code generation quality. It demonstrated that instruction complexity scaling significantly improves code model performance.',
       'Where it is used': 'It matters as a training methodology reference and as an open-weight code model option. Teams interested in synthetic data for code training study WizardCoder\'s approach.',
-      'What it unlocks': 'It unlocks awareness that instruction complexity in training data significantly impacts code model quality. The Evol-Instruct approach is influential beyond WizardCoder itself.',
+      'What it unlocks': 'It unlocks a concrete training recipe for code model improvement. The Evol-Instruct approach of progressively scaling instruction complexity is applicable beyond WizardCoder itself and informs synthetic data strategies for code.',
       'Human analogy': 'The human analogy is a training curriculum that deliberately increases problem difficulty over time, producing developers who can handle complex tasks because they were trained on progressively harder examples.',
       'Without it': 'Without WizardCoder\'s contribution, the role of instruction complexity in code model training would be less well-understood in the open-source community.',
       'With it': 'With WizardCoder\'s approach, teams have a demonstrated recipe for improving code model quality through synthetic instruction scaling.'
@@ -1685,32 +1685,32 @@
       'Where it is used': 'It matters for teams in the Mistral ecosystem or those wanting efficient European-origin code models. It serves code completion and generation at competitive quality.',
       'What it unlocks': 'It unlocks Mistral-ecosystem code capability. Teams standardized on Mistral can add code intelligence without changing model providers.',
       'Human analogy': 'The human analogy is a European-trained developer with specific coding expertise, available through the same partnership channel as the team\'s other language specialists.',
-      'Without it': 'Without Codestral, Mistral ecosystem users must look outside the family for specialized code model capability.',
-      'With it': 'With Codestral, code intelligence stays within the Mistral ecosystem, preserving deployment consistency and vendor relationship simplicity.'
+      'Without it': 'Without Codestral, teams relying on Mistral for general language tasks must bring in a separate provider or model family for code generation, splitting their serving and evaluation infrastructure.',
+      'With it': 'With Codestral, code generation inherits Mistral\'s efficient architecture and existing serving setup, so teams add code capability without doubling their model operations overhead.'
     },
     'Granite Code (IBM)': {
       'What it is': 'Granite Code is IBM\'s enterprise-oriented open-weight code model family, designed for enterprise code tasks with a focus on trustworthy AI and responsible deployment. It reflects IBM\'s enterprise AI positioning.',
       'Where it is used': 'It matters for enterprise teams evaluating IBM\'s AI stack or needing code models with enterprise governance and provenance characteristics.',
       'What it unlocks': 'It unlocks enterprise-grade open-weight code intelligence within IBM\'s ecosystem. Teams already invested in IBM infrastructure gain a code model with matching governance properties.',
       'Human analogy': 'The human analogy is an enterprise-certified developer from a trusted consultancy that meets organizational governance and compliance requirements.',
-      'Without it': 'Without Granite Code, enterprise teams with IBM ecosystem commitments must look to other providers for code intelligence.',
-      'With it': 'With Granite Code, enterprise code tasks can be handled within the IBM ecosystem with governance characteristics that match enterprise requirements.'
+      'Without it': 'Without Granite Code, enterprise teams on IBM infrastructure must adopt external code models that may not meet the same governance, provenance, and audit requirements the rest of their IBM stack satisfies.',
+      'With it': 'With Granite Code, enterprise code assistance carries the same provenance documentation and governance properties as the organization\'s other IBM AI assets, keeping compliance posture consistent.'
     },
     'Arctic (Snowflake)': {
-      'What it is': 'Arctic is Snowflake\'s open enterprise-grade language model using a dense-MoE hybrid architecture for efficient inference. It is designed for enterprise data tasks including SQL generation, code, and enterprise assistant scenarios.',
-      'Where it is used': 'It matters for teams in the Snowflake ecosystem or those needing enterprise-focused models optimized for data and SQL workloads.',
-      'What it unlocks': 'It unlocks Snowflake-ecosystem AI capability. Teams already using Snowflake for data can add model-driven intelligence within the same platform.',
-      'Human analogy': 'The human analogy is a data analyst who works natively within the organization\'s existing data warehouse tooling rather than requiring a separate analytical environment.',
-      'Without it': 'Without Arctic, Snowflake teams must integrate external models for data-oriented AI tasks.',
-      'With it': 'With Arctic, data-oriented AI stays within the Snowflake ecosystem, simplifying integration for SQL and data tasks.'
+      'What it is': 'Arctic is Snowflake\'s open enterprise-grade language model using a dense-MoE hybrid architecture. It is positioned for SQL generation, code assistance, and enterprise tool-calling scenarios where the model must emit structured queries or API calls against data infrastructure.',
+      'Where it is used': 'It is used in data-pipeline automation, SQL copilots, Snowflake-native agents, and enterprise workflows where the model must call database tools or generate executable queries rather than produce free-form text.',
+      'What it unlocks': 'It unlocks tool-calling and code generation tuned for data infrastructure. Teams can route SQL generation and data-tool invocation to a model designed for structured output against warehouse schemas.',
+      'Human analogy': 'The human analogy is a data engineer who can both write SQL and fill out the correct integration forms for the warehouse, rather than a generalist who drafts prose descriptions of the query they want.',
+      'Without it': 'Without Arctic, teams needing SQL generation and data-tool calling in Snowflake must adapt general-purpose models that were not trained on warehouse-specific tool patterns.',
+      'With it': 'With Arctic, SQL and data-tool tasks get a model oriented toward structured query generation and enterprise tool schemas, reducing the gap between general code models and production data workflows.'
     },
     'Nemotron (NVIDIA)': {
-      'What it is': 'Nemotron is NVIDIA\'s model family designed to demonstrate strong performance on NVIDIA hardware and serve as a foundation for enterprise customization. It is optimized for NVIDIA\'s inference and training infrastructure.',
-      'Where it is used': 'It matters for teams standardized on NVIDIA hardware who want models optimized for their infrastructure, and for enterprises using NVIDIA\'s NeMo platform for model customization.',
-      'What it unlocks': 'It unlocks hardware-optimized model deployment on NVIDIA infrastructure. Teams using NVIDIA GPUs and NeMo can get better performance with models specifically optimized for their stack.',
-      'Human analogy': 'The human analogy is a specialist who has been specifically trained to work with the organization\'s existing equipment and tooling, rather than a generalist who may not leverage the available infrastructure as effectively.',
-      'Without it': 'Without Nemotron, teams on NVIDIA infrastructure use generic models that may not fully exploit the hardware-specific optimizations available.',
-      'With it': 'With Nemotron, NVIDIA-stack teams gain models tuned for their hardware, potentially extracting better performance from existing infrastructure.'
+      'What it is': 'Nemotron is NVIDIA\'s model family that includes tool-calling and code-capable variants built for enterprise customization on the NeMo platform. The family serves as both a deployable code and tool-use model and a base for fine-tuning function-calling behavior on proprietary APIs.',
+      'Where it is used': 'It is used in enterprise agent pipelines on NVIDIA infrastructure, code generation workflows using NeMo, and tool-calling scenarios where the model must be customized for internal tool schemas and API surfaces.',
+      'What it unlocks': 'It unlocks customizable tool-calling and code generation on NVIDIA hardware. Teams can fine-tune Nemotron for their own tool schemas using NeMo, producing a purpose-built function-calling model optimized for their GPU fleet.',
+      'Human analogy': 'The human analogy is an in-house developer trained on the organization\'s specific tools and codebase using the equipment already in the building, rather than a contractor who learned on generic setups elsewhere.',
+      'Without it': 'Without Nemotron, teams on NVIDIA infrastructure must fine-tune other model families for tool calling and code tasks without the hardware-specific optimizations and NeMo integration that a purpose-built model provides.',
+      'With it': 'With Nemotron, tool-use and code fine-tuning happen natively on NVIDIA infrastructure, so the resulting function-calling models are optimized end-to-end for the hardware they will actually serve on.'
     },
     'Tool-use fine-tuning datasets (ToolBench, API-Bank)': {
       'What it is': 'Tool-use fine-tuning datasets like ToolBench and API-Bank provide training examples of models selecting and calling tools correctly. They are the data foundation for teaching models function calling, tool selection, and argument formatting.',
@@ -1781,7 +1781,7 @@
     'Yi series (01.AI)': {
       'What it is': 'Yi models from 01.AI are open-weight models with strong bilingual (English-Chinese) capability and competitive performance at various sizes. They represent another strong entry from the Chinese open-weight ecosystem.',
       'Where it is used': 'They matter for teams needing bilingual English-Chinese models or evaluating the breadth of the Chinese open-weight ecosystem.',
-      'What it unlocks': 'It unlocks another bilingual open-weight option. Teams comparing open-weight models gain additional data points and choices.',
+      'What it unlocks': 'It unlocks a broader bilingual evaluation set. Teams comparing English-Chinese open-weight models gain additional data points on quality, licensing, and size tradeoffs.',
       'Human analogy': 'The human analogy is another strong bilingual professional entering the talent pool, giving hiring teams more options to evaluate.',
       'Without it': 'Without Yi, the Chinese open-weight ecosystem is less diverse and bilingual options are fewer.',
       'With it': 'With Yi, teams have a broader set of bilingual open-weight models to compare and choose from.'
@@ -1832,7 +1832,7 @@
       'What it is': 'KV cache compression reduces the memory consumed by stored key-value tensors during inference. MLA (Multi-Head Latent Attention) is one approach that projects keys and values into a lower-dimensional latent space. Other techniques include quantizing cache values or evicting less-used entries.',
       'Where it is used': 'It is used in long-context serving, high-concurrency inference, and any deployment where KV cache memory is the binding constraint on batch size or context length.',
       'What it unlocks': 'It unlocks longer contexts or larger batches within the same GPU memory. Teams can serve more users or longer documents without upgrading hardware.',
-      'Human analogy': 'The human analogy is a note-taker who compresses detailed minutes into a structured summary format, freeing up whiteboard space for more items while preserving the key information.',
+      'Human analogy': 'The human analogy is an operations team switching from full verbatim transcripts to structured key-point logs so the filing cabinet can hold three times as many active cases without losing the decisions that matter.',
       'Without it': 'Without cache compression, memory limits force hard tradeoffs between context length and concurrent users. Scaling either requires more GPUs.',
       'With it': 'With cache compression, the same hardware serves longer contexts or more concurrent requests, improving infrastructure efficiency.'
     },
