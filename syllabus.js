@@ -1777,7 +1777,6 @@
       layerHeader.innerHTML = `<span class="l-accent" style="background:${escapeHtml(layer.color || '#111')}"></span>
         <span class="l-n">${escapeHtml(String(layer.id).padStart(2, '0'))}</span>
         <span class="l-copy">
-          <span class="l-k">${escapeHtml(layer.kind || 'Layer')}</span>
           <span class="l-t">${escapeHtml(layer.title || '')}</span>
           <span class="l-s">${escapeHtml(layer.scope || '')}</span>
         </span>
