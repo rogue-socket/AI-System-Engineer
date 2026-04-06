@@ -83,6 +83,7 @@ collapseButton.addEventListener('click', () => {
 });
 
 const scrollTopBtn = document.getElementById('scroll-top');
+// Show collapse and scroll buttons only when scrolled down
 window.addEventListener('scroll', () => {
   scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
   collapseButton.classList.toggle('visible', window.scrollY > 400);
