@@ -2298,6 +2298,28 @@
     exampleScenario: 'a product team deciding whether a task needs a scripted workflow, a single agent, or a coordinated set of agents'
   };
 
+  const modelRuntimeVocabularyTopicBriefGuide = {
+    roleLabel: 'a model/runtime vocabulary distinction',
+    purpose: 'where closely related model, inference, token, state, or performance terms differ and why that boundary matters in practice',
+    used: 'prompt budgeting, cost estimation, model selection, performance tuning, and architecture conversations where teams need the right term for the right layer',
+    unlock: 'cleaner reasoning about model behavior, runtime limits, and cost or latency trade-offs without mixing adjacent concepts together',
+    analogy: 'an operations team using precise labels for queue time, handling time, throughput, and capacity so performance discussions refer to the same thing',
+    withoutCase: 'teams use the same word for several different runtime concepts and then misdiagnose cost, latency, or capability problems',
+    withCase: 'teams can talk about the right layer of the stack and make cleaner budgeting, tuning, and model-choice decisions',
+    exampleScenario: 'a team trying to explain why a model call is slow, expensive, or context-limited without blurring training, inference, and runtime state'
+  };
+
+  const agentSystemVocabularyTopicBriefGuide = {
+    roleLabel: 'an agent/system vocabulary distinction',
+    purpose: 'where nearby terms about plans, policies, memory, tools, orchestration, and state diverge in an agent architecture',
+    used: 'system design reviews, tool-calling workflows, memory design, orchestration planning, and debugging conversations about who decides what',
+    unlock: 'sharper boundaries between control artifacts, state, and action so the system design is easier to reason about',
+    analogy: 'a team using separate labels for policies, work orders, case files, approvals, and handoffs so operational discussions do not collapse different responsibilities together',
+    withoutCase: 'teams blur planning, control, memory, and action into one fuzzy bucket and then attach fixes to the wrong part of the system',
+    withCase: 'teams can place logic, memory, validation, and delegation in the right layer with less architectural confusion',
+    exampleScenario: 'a team designing an agent workflow and trying to keep prompts, plans, policies, memory, and orchestration from being treated as synonyms'
+  };
+
   const modelTopicBriefGuide = {
     roleLabel: 'a model, representation, or inference concept',
     purpose: 'how information is encoded, how a model family behaves, or how generation is shaped at runtime',
@@ -2331,6 +2353,17 @@
     exampleScenario: 'a research or coding agent that has to plan, verify, and recover from partial failure'
   };
 
+  const metacognitionTopicBriefGuide = {
+    roleLabel: 'a metacognition and calibration topic',
+    purpose: 'how an agent estimates confidence, notices uncertainty, decides whether to act, and judges when a task is done or needs escalation',
+    used: 'abstention logic, confidence thresholds, stop conditions, verification loops, escalation rules, and high-risk tool use under uncertainty',
+    unlock: 'better calibrated action, clearer stop decisions, and less overconfident behavior when evidence is partial or ambiguous',
+    analogy: 'a skilled operator deciding whether they know enough to act now, should ask for help, or should do one more check before closing the case',
+    withoutCase: 'the agent pushes ahead when it should hesitate, hesitates when it should finish, or speaks with more certainty than the evidence supports',
+    withCase: 'the agent can separate low-confidence from high-confidence situations and choose action, abstention, verification, or escalation more deliberately',
+    exampleScenario: 'an agent that must decide whether to answer, take an action, or escalate when evidence is partial or ambiguous'
+  };
+
   const retrievalTopicBriefGuide = {
     roleLabel: 'a grounding and retrieval topic',
     purpose: 'how the agent finds, filters, stores, and injects external knowledge at the moment of need',
@@ -2353,6 +2386,17 @@
     exampleScenario: 'an agent that needs to read a dashboard, call an API, or update a record instead of only drafting text'
   };
 
+  const controlValidationTopicBriefGuide = {
+    roleLabel: 'a control-and-validation architecture topic',
+    purpose: 'where checkpoints, approvals, validation gates, autonomy settings, and recovery logic shape how an agent is allowed to proceed',
+    used: 'tool-using workflows, human review systems, approval chains, risky automations, and multi-step tasks with explicit validation or escalation points',
+    unlock: 'clearer execution control, safer escalation, and more deliberate placement of validation before or after actions',
+    analogy: 'an operational process with review points, escalation rules, and recovery steps that determine when work can proceed, pause, or be undone',
+    withoutCase: 'the system acts too freely, validates too late, or cannot recover cleanly when an action goes wrong',
+    withCase: 'teams can choose where to gate, validate, escalate, or compensate so autonomy matches the risk of each step',
+    exampleScenario: 'an agent that can prepare work automatically but must pass validation, adapt autonomy, or compensate for failures as the workflow unfolds'
+  };
+
   const multiAgentTopicBriefGuide = {
     roleLabel: 'a coordination pattern for specialized agents',
     purpose: 'how work is split across roles, orchestrated across hops, and kept coherent at system scale',
@@ -2362,6 +2406,28 @@
     withoutCase: 'one overloaded agent becomes a bottleneck and mixes planning, execution, and checking into one blurry loop',
     withCase: 'specialists can focus on narrow roles while an orchestrator or protocol keeps the whole job aligned',
     exampleScenario: 'a report-building pipeline with separate planner, researcher, writer, critic, and approver roles'
+  };
+
+  const frameworkTopicBriefGuide = {
+    roleLabel: 'a framework or SDK topic',
+    purpose: 'what a named framework provides for building, orchestrating, or deploying agent systems and which design assumptions it bakes in',
+    used: 'platform selection, prototyping, production builds, tool integration, state orchestration, and team-standardization decisions',
+    unlock: 'faster implementation through reusable abstractions, with clearer trade-offs about ecosystem fit and control surface',
+    analogy: 'choosing a workflow platform or software framework that gives teams prebuilt structure, conventions, and tooling instead of writing the whole stack from scratch',
+    withoutCase: 'teams reinvent orchestration and glue code or pick tools without understanding the assumptions and constraints they impose',
+    withCase: 'teams can match framework capability and operating style to the system they actually want to build',
+    exampleScenario: 'a team choosing between agent frameworks, SDKs, and orchestration stacks for a new multi-agent product'
+  };
+
+  const multiAgentIncentivesTopicBriefGuide = {
+    roleLabel: 'a multi-agent incentives and strategic-behavior topic',
+    purpose: 'how several agents respond to incentives, allocate credit, build trust, and adapt when each actor\'s payoff depends on the others',
+    used: 'multi-agent negotiations, shared-reward systems, reputation-based routing, governance design, and research on strategic agent behavior',
+    unlock: 'clearer incentive shaping, better stability under cooperation or competition, and more predictable behavior when rewards are interdependent',
+    analogy: 'an organization designing bonus rules, reputation effects, and escalation incentives so people do not game the process, free-ride, or sabotage the shared outcome',
+    withoutCase: 'agents optimize local rewards, exploit loose rules, or cooperate badly because the incentive structure is underspecified',
+    withCase: 'teams can shape incentives, assign credit, and reason about strategic behavior instead of assuming coordination alone will solve it',
+    exampleScenario: 'a multi-agent system where several workers share rewards, compete for tasks, or rely on reputation and trust signals over time'
   };
 
   const runtimeTopicBriefGuide = {
@@ -2375,6 +2441,28 @@
     exampleScenario: 'a customer-facing AI service that must survive concurrency, deployment changes, and uneven traffic'
   };
 
+  const mlopsLifecycleTopicBriefGuide = {
+    roleLabel: 'an MLOps and lifecycle-management topic',
+    purpose: 'how models, prompts, experiments, and related artifacts are versioned, tracked, promoted, reproduced, and governed across environments',
+    used: 'platform teams, release management, experiment programs, model promotion, rollback planning, and reproducible evaluation across dev, staging, and production',
+    unlock: 'controlled iteration across model versions and environments instead of ad hoc experimentation and opaque releases',
+    analogy: 'a mix of release engineering and disciplined lab-notebook practice, where every version, experiment, artifact, and promotion step is recorded well enough to reproduce later',
+    withoutCase: 'teams cannot reliably tell which version produced a behavior, why staging differs from production, or which experiment justified the current release',
+    withCase: 'teams can compare runs, manage artifacts, and promote changes with stronger lineage, reproducibility, and rollback confidence',
+    exampleScenario: 'a platform team running repeated model experiments and controlled releases across development, staging, and production'
+  };
+
+  const finOpsTopicBriefGuide = {
+    roleLabel: 'an agent FinOps and cost-economics topic',
+    purpose: 'how agent systems are budgeted, metered, attributed, and economically governed as model, tool, and infrastructure spend accumulate',
+    used: 'shared agent platforms, enterprise AI budgeting, model-routing policy, chargebacks, ROI review, and cost-aware pipeline design',
+    unlock: 'clearer visibility and control over how autonomous behavior turns into spend',
+    analogy: 'a finance operations function that tracks unit economics, cost centers, approval thresholds, and usage reports for teams running expensive automated workloads',
+    withoutCase: 'spend grows faster than understanding, and teams cannot clearly say which workflow, model, or loop is driving cost',
+    withCase: 'teams can budget, attribute, and optimize agent spend with stronger accountability and clearer economic trade-offs',
+    exampleScenario: 'an organization trying to scale agent pipelines without losing cost visibility or economic discipline'
+  };
+
   const evaluationTopicBriefGuide = {
     roleLabel: 'a measurement, debugging, or feedback discipline',
     purpose: 'how teams inspect behavior, detect regressions, and learn whether the system is actually good enough',
@@ -2384,6 +2472,17 @@
     withoutCase: 'regressions stay invisible and failures show up as anecdotes after users are already feeling them',
     withCase: 'teams can trace behavior, compare variants, and tighten quality using measured signals',
     exampleScenario: 'a team shipping a new prompt, model route, or workflow change and wanting proof that it improved things'
+  };
+
+  const specificationGapTopicBriefGuide = {
+    roleLabel: 'a specification-versus-behavior gap topic',
+    purpose: 'how deployed behavior diverges from stated objectives, evaluation assumptions, or user expectations as tasks get longer or environments shift',
+    used: 'robustness testing, eval design, incident review, red teaming, and release decisions where the written objective may not match the behavior that actually emerges',
+    unlock: 'clearer visibility into where apparent success diverges from real success under drift, shifted inputs, or longer-horizon behavior',
+    analogy: 'a quality team comparing the written job description and official success metric to what staff actually optimize for once the real workload gets messy',
+    withoutCase: 'teams ship systems that look correct on paper while failing under shifted conditions, hidden incentives, or unstated user expectations',
+    withCase: 'teams can measure, diagnose, and narrow the gap between intended behavior and what the system actually does in practice',
+    exampleScenario: 'a team trying to prove an agent still behaves acceptably when the inputs, incentives, or task horizon change'
   };
 
   const applicationTopicBriefGuide = {
@@ -2397,6 +2496,17 @@
     exampleScenario: 'mapping a general agent stack onto coding, support, research, legal, or personal-assistant work'
   };
 
+  const humanTeamingTopicBriefGuide = {
+    roleLabel: 'a human-agent collaboration topic',
+    purpose: 'how people and agents divide work, hand off responsibility, calibrate trust, and stay coordinated in mixed-initiative systems',
+    used: 'copilots, supervised automation, escalation flows, review queues, and team workflows where humans and agents share responsibility',
+    unlock: 'clearer collaboration boundaries, safer escalation paths, and better trust calibration in mixed teams',
+    analogy: 'a mixed team of operators, specialists, and supervisors with explicit handoffs and review points for when responsibility should shift',
+    withoutCase: 'people either over-trust the agent, underuse it, or lose track of who should take over next',
+    withCase: 'humans and agents can share work with clearer roles, better escalation behavior, and less coordination confusion',
+    exampleScenario: 'a mixed human-agent workflow where the agent prepares work and a person reviews, escalates, or resumes control when needed'
+  };
+
   const safetyTopicBriefGuide = {
     roleLabel: 'a safety, boundary, or control layer',
     purpose: 'how autonomy stays bounded, auditable, and aligned with permissions, policy, and risk tolerance',
@@ -2406,6 +2516,50 @@
     withoutCase: 'the agent has too much freedom for the amount of oversight, validation, or policy attached to it',
     withCase: 'the system can act with clearer limits, safer defaults, and better auditability',
     exampleScenario: 'an assistant with access to data, tools, or side effects that could become costly or unsafe if left unchecked'
+  };
+
+  const alignmentTopicBriefGuide = {
+    roleLabel: 'an alignment and behavior-steering topic',
+    purpose: 'how an agent\'s goals, outputs, and decision tendencies are kept in line with intended use, human values, and acceptable behavior',
+    used: 'assistant alignment, policy-sensitive systems, behavior review, safety evaluation, and products where competence is not enough unless behavior also stays normatively acceptable',
+    unlock: 'clearer control over whether the system is pursuing the right objective in the right way',
+    analogy: 'an organization defining mission, review standards, and escalation norms so staff not only follow rules but also pursue the right outcomes for the right reasons',
+    withoutCase: 'the system may optimize the wrong proxy, hide harmful bias, or stay hard to trust because its behavior is misaligned with the intended objective',
+    withCase: 'teams can reason more clearly about whether the system is pursuing the intended goal, exposing its behavior legibly, and treating people consistently',
+    exampleScenario: 'a team deploying an agent where being capable is not enough unless the behavior also matches human values, fairness, and control expectations'
+  };
+
+  const privacyDataProtectionTopicBriefGuide = {
+    roleLabel: 'a privacy and data-protection topic',
+    purpose: 'how sensitive data is minimized, protected, geographically constrained, or removed across agent training, context handling, and inference',
+    used: 'regulated environments, enterprise deployments, personal-data workflows, and systems that handle customer, employee, or otherwise protected information',
+    unlock: 'clearer control over sensitive-data exposure, legal obligations, and privacy-preserving system design',
+    analogy: 'a records-management and compliance team deciding what sensitive data may be stored, where it may travel, who may see it, and what must be masked or deleted',
+    withoutCase: 'sensitive data leaks too far through the pipeline or the organization cannot prove it handled protected data within policy and law',
+    withCase: 'teams can design data flows, storage boundaries, masking rules, and protected computation paths that reduce privacy risk and support compliance',
+    exampleScenario: 'an agent pipeline that handles personal or regulated data across ingestion, retrieval, training, and inference'
+  };
+
+  const governanceTopicBriefGuide = {
+    roleLabel: 'a governance, compliance, or accountability topic',
+    purpose: 'how organizations classify risk, track deployed systems, document controls, and assign responsibility around agent use',
+    used: 'enterprise governance programs, audits, procurement reviews, regulated deployments, and standards work around agent systems',
+    unlock: 'clearer accountability, stronger evidence trails, and a more defensible operating model for agent deployment',
+    analogy: 'a governance office maintaining system inventories, control mappings, audit records, and named owners before a new operational capability is scaled',
+    withoutCase: 'deployments become hard to inventory, justify, audit, or defend when the system crosses organizational or regulatory boundaries',
+    withCase: 'teams can map obligations, keep evidence, assign owners, and scale deployment with clearer accountability',
+    exampleScenario: 'an organization trying to ship agent systems while satisfying internal governance, external standards, or regulatory expectations'
+  };
+
+  const studyRouteTopicBriefGuide = {
+    roleLabel: 'a study-sequencing topic',
+    purpose: 'how a learner should order foundational topics so later concepts land on top of the right prerequisites',
+    used: 'self-study plans, onboarding curricula, and syllabus design for people learning agent systems end to end',
+    unlock: 'a cleaner learning path with fewer false abstractions and less cargo-culting of advanced patterns',
+    analogy: 'an apprenticeship program that teaches the toolkit first, then supervised practice, then advanced coordination once the basics are stable',
+    withoutCase: 'learners jump into advanced patterns before the underlying concepts are stable and end up memorizing terms without usable mental models',
+    withCase: 'learners can build understanding in a sequence that makes later abstractions easier to place and apply',
+    exampleScenario: 'a learner trying to go from model basics to production agent design without getting lost in advanced jargon too early'
   };
 
   const distinctionTopicBriefGuide = {
@@ -2545,45 +2699,143 @@
   ];
 
   const topicBriefKindRules = [
-    { pattern: /\bvs\b|trade-offs?|choice|beats|difference between/i, kind: 'comparison' },
+    { pattern: /\bvs\b|trade-offs?|choice|\bbeats\b|difference between/i, kind: 'comparison' },
     { pattern: /inputs?, state, outputs?, and side effects|compound ai systems|rough system picture/i, kind: 'system-decomposition' },
     { pattern: /^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, kind: 'decision-lens' },
-    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|rlhf|rlaif|dpo|ppo|grpo|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, kind: 'training-method' },
+    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|\brlhf\b|\brlaif\b|\bdpo\b|\bppo\b|\bgrpo\b|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, kind: 'training-method' },
     { pattern: /read \/ write memory policies|memory selection policies|memory routing|memory ttl|time decay|conflict resolution across memories|personalized vs shared memory|importance scoring|salience|compaction|summarization policies|archival|forgetting|memory provenance|source lineage|memory permissions|access control/i, kind: 'memory-operations' },
-    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|compliance|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, kind: 'policy-control' },
+    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|compliance|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|\bliability\b|accountability|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, kind: 'policy-control' },
     { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, kind: 'detection-measurement' },
     { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, kind: 'threat-failure' },
     { pattern: /oauth|authentication|credential|mTLS|workload identity|service identities|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, kind: 'identity-trust' },
     { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|agent directories|task handoff|status semantics|transport|session patterns|interop layers|agent card|manifest|a2a|mcp|fipa/i, kind: 'protocol-standards' },
-    { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, kind: 'runtime-durability' }
+    { pattern: /runtime environments|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|checkpointing|recovery|long-running agent processes|durable execution|background workers|message queues|persistent agent processes|edge vs cloud/i, kind: 'runtime-durability' }
   ];
 
   const topicBriefGuideRules = [
     { pattern: /inputs?, state, outputs?, and side effects|compound ai systems|rough system picture/i, guide: systemDecompositionTopicBriefGuide },
-    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|rlhf|rlaif|dpo|ppo|grpo|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, guide: trainingMethodTopicBriefGuide },
+    { pattern: /pretraining|next-token|instruction tuning|preference tuning|alignment tuning|\brlhf\b|\brlaif\b|\bdpo\b|\bppo\b|\bgrpo\b|fine-tuning|fine tuning|lora|qlora|peft|online learning|continual learning|personalization|feedback loops?|synthetic data|distillation|model merging|curriculum|trajectory fine-tuning|multi-task agent training|tool-use fine-tuning|bootstrapped self-improvement|rejection sampling|quality filtering|self-play|self-instruct|instruction-following data|trajectory synthesis|simulated environment trajectories/i, guide: trainingMethodTopicBriefGuide },
     { pattern: /read \/ write memory policies|memory selection policies|memory routing|memory ttl|time decay|conflict resolution across memories|personalized vs shared memory|importance scoring|salience|compaction|summarization policies|archival|forgetting|memory provenance|source lineage|memory permissions|access control/i, guide: memoryOperationsTopicBriefGuide },
-    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|liability|accountability|compliance|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, guide: policyControlTopicBriefGuide },
+    { pattern: /validation|approval|guardrails|permission systems|capability gating|policy enforcement|least privilege|oversight checkpoints|output filtering|boundary testing|kill switches|audit trails|owasp|eu ai act|nist ai rmf|iso\/iec 42001|responsible ai|\bliability\b|accountability|compliance|rollback-on-failure|compensating actions|adaptive autonomy|human-in-the-loop|human-on-the-loop|full autonomy|oversight/i, guide: policyControlTopicBriefGuide },
     { pattern: /measuring|detection|detect|robustness|mismatch|unintended behaviors/i, guide: detectionMeasurementTopicBriefGuide },
     { pattern: /threats?|attack|injection|hijacking|misuse|abuse|poisoning|hallucination|rogue|exfiltration|theft|excessive agency|draining|explosion|exhaustion|drift|misgeneralization|gaming|mismatch|robustness|failure|objective compliance|apparent success|emergent strategy|unintended behaviors|contamination|leakage/i, guide: threatFailureTopicBriefGuide },
     { pattern: /oauth|authentication|credential|mTLS|workload identity|service identities|delegated authorization|authorization frameworks|scoped permission|identity management|identity cards|manifests|trust chains|signing|provenance verification|credential rotation|impersonation prevention|federation|non-repudiation|zero-trust/i, guide: identityTrustTopicBriefGuide },
     { pattern: /protocol|interoperability|openapi|asyncapi|capability discovery|agent directories|task handoff|status semantics|transport|session patterns|interop layers|agent card|manifest|a2a|mcp|fipa/i, guide: protocolStandardsTopicBriefGuide },
-    { pattern: /runtime environments|execution sandboxes|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|isolation boundaries|checkpointing|recovery|configuration versioning|long-running agent processes|durable execution|background workers|message queues|load balancing|api gateways|agent sandboxing|persistent agent processes|serverless agents|edge vs cloud|blue-green deployments/i, guide: runtimeDurabilityTopicBriefGuide },
-    { pattern: /\bvs\b|trade-offs?|choice|beats|difference between|^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, guide: distinctionTopicBriefGuide }
+    { pattern: /runtime environments|state persistence models|deterministic vs non-deterministic execution|idempotent task execution|replayability|resumability|event logs|task ledgers|ephemeral vs persistent workers|stateful vs stateless agents|checkpointing|recovery|long-running agent processes|durable execution|background workers|message queues|persistent agent processes|edge vs cloud/i, guide: runtimeDurabilityTopicBriefGuide },
+    { pattern: /\bvs\b|trade-offs?|choice|\bbeats\b|difference between|^when\b|^why\b|\bbefore\b|\bthen\b|starting point|at the end|budget|frontier|surface area|uncertainty|signal|overhang|deficit|constraints?/i, guide: distinctionTopicBriefGuide }
   ];
 
+  const topicBriefExactOverrides = [
+    { pattern: /^MCP server hosting$/i, kind: 'default', guide: runtimeTopicBriefGuide },
+    { pattern: /^Policy enforcement$/i, kind: 'policy-control', guide: policyControlTopicBriefGuide },
+    { pattern: /^Adversarial \/ self-play agent systems$/i, kind: 'default', guide: multiAgentIncentivesTopicBriefGuide }
+  ];
+
+  const topicBriefTargetedGuideRules = [
+    { pattern: /eval suites?|leaderboards?|benchmarks? \(/i, guide: evaluationTopicBriefGuide }
+  ];
+
+  const topicBriefSectionOverrides = [
+    { layerTitle: 'Mental Models', sectionTitle: 'Study route', kind: 'study-route', guide: studyRouteTopicBriefGuide },
+    { layerTitle: 'Safety, Security & Governance', sectionTitle: 'Governance & compliance', kind: 'governance', guide: governanceTopicBriefGuide },
+    { layerTitle: 'Applications & Domains', sectionTitle: 'Enterprise & business agents', kind: 'default', guide: applicationTopicBriefGuide },
+    { layerTitle: 'Applications & Domains', sectionTitle: 'Consumer & personal agents', kind: 'default', guide: applicationTopicBriefGuide },
+    { layerTitle: 'Applications & Domains', sectionTitle: 'Human-agent teaming', kind: 'default', guide: humanTeamingTopicBriefGuide },
+    { layerTitle: 'Agency & Tool Use', sectionTitle: 'Prompt & interface design', kind: 'default', guide: promptTopicBriefGuide },
+    { layerTitle: 'Agency & Tool Use', sectionTitle: 'Control & validation', guide: controlValidationTopicBriefGuide },
+    { layerTitle: 'Cognition & Control', sectionTitle: 'Reflection, critique & repair', kind: 'default', guide: reasoningTopicBriefGuide },
+    { layerTitle: 'Cognition & Control', sectionTitle: 'Meta-cognition', guide: metacognitionTopicBriefGuide },
+    { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Frameworks', guide: frameworkTopicBriefGuide },
+    { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Incentives & mechanism design (advanced / research)', guide: multiAgentIncentivesTopicBriefGuide },
+    { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Failure modes at scale', kind: 'threat-failure', guide: threatFailureTopicBriefGuide },
+    { layerTitle: 'Multi-Agent Systems', sectionTitle: 'Interoperability & standards', kind: 'protocol-standards', guide: protocolStandardsTopicBriefGuide }
+    ,{ layerTitle: 'Evaluation & Observability', sectionTitle: 'Specification vs emergence gap', guide: specificationGapTopicBriefGuide }
+    ,{ layerTitle: 'Infrastructure & Runtime', sectionTitle: 'Agent FinOps & cost economics', guide: finOpsTopicBriefGuide }
+    ,{ layerTitle: 'Infrastructure & Runtime', sectionTitle: 'MLOps & LLMOps', guide: mlopsLifecycleTopicBriefGuide }
+    ,{ layerTitle: 'Safety, Security & Governance', sectionTitle: 'Alignment', guide: alignmentTopicBriefGuide }
+    ,{ layerTitle: 'Safety, Security & Governance', sectionTitle: 'Privacy & data protection', guide: privacyDataProtectionTopicBriefGuide }
+  ];
+
+  function getTopicBriefExactOverride(entry) {
+    return topicBriefExactOverrides.find(rule => rule.pattern.test(entry.text));
+  }
+
+  function getTopicBriefSectionOverride(entry) {
+    return topicBriefSectionOverrides.find(override => override.layerTitle === entry.layer.title && override.sectionTitle === entry.section.title);
+  }
+
   function getTopicBriefKind(entry) {
+    const exactOverride = getTopicBriefExactOverride(entry);
+    if (exactOverride && exactOverride.kind) {
+      return exactOverride.kind;
+    }
+
+    const sectionOverride = getTopicBriefSectionOverride(entry);
+    if (sectionOverride && sectionOverride.kind) {
+      return sectionOverride.kind;
+    }
+
     const titleRule = topicBriefKindRules.find(rule => rule.pattern.test(entry.text));
+    if (titleRule && titleRule.kind === 'decision-lens' && entry.layer.title !== 'Mental Models') {
+      return 'default';
+    }
+
     return titleRule ? titleRule.kind : 'default';
   }
 
   function getTopicBriefGuide(entry) {
+    const exactOverride = getTopicBriefExactOverride(entry);
+    if (exactOverride && exactOverride.guide) {
+      return exactOverride.guide;
+    }
+
+    const sectionOverride = getTopicBriefSectionOverride(entry);
+    if (sectionOverride && sectionOverride.guide) {
+      return sectionOverride.guide;
+    }
+
+    const targetedGuideRule = topicBriefTargetedGuideRules.find(rule => rule.pattern.test(entry.text));
+    if (targetedGuideRule) {
+      return targetedGuideRule.guide;
+    }
+
+    const briefKind = getTopicBriefKind(entry);
+    const sectionMatchText = `${entry.section.title} ${entry.layer.title}`;
+    const sectionRule = topicBriefSectionRules.find(rule => rule.pattern.test(sectionMatchText));
+
+    if (briefKind === 'comparison') {
+      if (entry.layer.title === 'Mental Models') {
+        if (entry.section.title === 'Model/runtime vocabulary') {
+          return modelRuntimeVocabularyTopicBriefGuide;
+        }
+
+        if (entry.section.title === 'Agent/system vocabulary') {
+          return agentSystemVocabularyTopicBriefGuide;
+        }
+
+        return distinctionTopicBriefGuide;
+      }
+
+      return sectionRule ? sectionRule.guide : (layerTopicBriefGuides[entry.layer.title] || defaultTopicBriefGuide);
+    }
+
+    if (briefKind === 'decision-lens' && entry.layer.title === 'Mental Models') {
+      if (entry.section.title === 'Model/runtime vocabulary') {
+        return modelRuntimeVocabularyTopicBriefGuide;
+      }
+
+      return distinctionTopicBriefGuide;
+    }
+
     const titleRule = topicBriefGuideRules.find(rule => rule.pattern.test(entry.text));
     if (titleRule) {
+      if (titleRule.guide === distinctionTopicBriefGuide && entry.layer.title !== 'Mental Models') {
+        return sectionRule ? sectionRule.guide : (layerTopicBriefGuides[entry.layer.title] || defaultTopicBriefGuide);
+      }
+
       return titleRule.guide;
     }
 
-    const sectionMatchText = `${entry.section.title} ${entry.layer.title}`;
-    const sectionRule = topicBriefSectionRules.find(rule => rule.pattern.test(sectionMatchText));
     if (sectionRule) {
       return sectionRule.guide;
     }
@@ -2722,6 +2974,62 @@
           }
         ];
 
+      case 'study-route':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a study-sequencing topic about the order in which nearby ideas should be learned so later material lands on top of the right prerequisites.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when someone is choosing what to study first instead of grabbing the most advanced-looking topic on the page. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning the syllabus into a buildable sequence rather than a flat pile of terms.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is to build later judgment on top of earlier fluency instead of forcing advanced coordination before the basics are stable.`
+          },
+          {
+            label: 'Without it',
+            text: `Without clear guidance from ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, learners usually know the words earlier than they understand how the pieces actually fit.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, later topics arrive with better context and much less conceptual whiplash.`
+          }
+        ];
+
+      case 'governance':
+        return [
+          {
+            label: 'What it is',
+            text: `${entry.text} is a governance topic about how organizations classify risk, document controls, track deployed systems, or assign responsibility around agent use.`
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially when an agent system has to be justified to auditors, leadership, customers, or ecosystem partners rather than only built by engineers. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by giving teams a clearer program for evidence, ownership, and operational discipline around deployment.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is that scaling a new operational capability usually requires records, named owners, and proof that the organization is running it responsibly.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams often have the system running before they have a credible way to explain who owns the risk or what evidence exists.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, deployment becomes easier to justify, review, and scale because the accountability story is explicit.`
+          }
+        ];
+
       case 'training-method':
         return [
           {
@@ -2782,7 +3090,7 @@
         return [
           {
             label: 'What it is',
-            text: `${entry.text} is a control-layer topic about where rules, approvals, validation checks, or policy boundaries are enforced before the agent is allowed to continue.`
+            text: `${entry.text} is a control-layer topic about where rules, approvals, validation checks, or control boundaries shape what the agent is allowed to do before, during, or after execution.`
           },
           {
             label: 'Where it is used',

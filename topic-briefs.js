@@ -1997,6 +1997,134 @@
       'Human analogy': 'The human analogy is a searchable internal knowledge base of templates, procedures, and best practices so a new team member can find what already exists instead of creating yet another version.',
       'Without it': 'Without catalogs, teams duplicate prompt work unknowingly. The organization has no view of its total prompt inventory and cannot enforce consistency.',
       'With it': 'With prompt catalogs, discovery replaces duplication. Teams build on existing work and the organization maintains visibility over its prompt landscape.'
+    },
+    'Red teaming': {
+      'What it is': 'Red teaming is a structured adversarial testing practice where people or agent-based testers deliberately probe a system for prompt injection paths, tool misuse, policy bypasses, and other unsafe behaviors before real users encounter them.',
+      'Where it is used': 'It is used in pre-launch safety review, high-risk workflow validation, regulated deployments, and incident follow-up. It matters most when an agent has tools, external data access, or meaningful side effects.',
+      'What it unlocks': 'It unlocks early evidence about how the system fails under pressure rather than only how it behaves on happy-path examples. Teams can harden weak spots before those weak spots become production incidents.',
+      'Human analogy': 'The human analogy is an internal security or audit team acting like attackers, difficult customers, or malicious insiders to see where the organization\'s process controls actually break.',
+      'Without it': 'Without red teaming, major failure modes often stay invisible until an attacker, a power user, or a noisy real-world environment discovers them first.',
+      'With it': 'With red teaming, the team gets a safer proving ground for hostile inputs and boundary-pushing behavior. Controls, prompts, and permissions can be tightened using evidence instead of wishful thinking.'
+    },
+    'Constitutional AI': {
+      'What it is': 'Constitutional AI is an alignment method where model behavior is critiqued and revised against an explicit set of principles or rules, often called a constitution, rather than relying only on preference labels or manual moderation.',
+      'Where it is used': 'It is used in safer assistant design, refusal tuning, alignment pipelines, and policy-sensitive products where the model should follow a consistent set of behavioral principles across many situations.',
+      'What it unlocks': 'It unlocks principle-guided behavior shaping. Teams can make the policy standard more explicit and reusable instead of burying it inside scattered examples or ad hoc reviewer judgments.',
+      'Human analogy': 'The human analogy is an editorial team reviewing drafts against a published handbook of principles so each revision can be checked against the same written standard, not just personal taste.',
+      'Without it': 'Without Constitutional AI-style guidance, desired behavior often stays implicit. The system may follow policy unevenly because the rules are not expressed clearly enough to critique and revise against.',
+      'With it': 'With an explicit constitution in place, alignment work becomes more legible. The model has a clearer standard for critique and revision, which helps behavior stay more consistent across edge cases.'
+    },
+    'Agent boundary testing': {
+      'What it is': 'Agent boundary testing checks whether an agent actually respects its defined permissions, escalation rules, tool scopes, and safety boundaries when inputs become messy, adversarial, or unusually persistent.',
+      'Where it is used': 'It is used in pre-release validation, red teaming, tool-approval flows, least-privilege review, and any agent system where written boundaries are supposed to hold under real execution pressure.',
+      'What it unlocks': 'It unlocks evidence that boundaries work in practice rather than only on architecture diagrams. Teams can verify that the agent stops where it is supposed to stop and escalates when it is supposed to escalate.',
+      'Human analogy': 'The human analogy is a QA or internal-controls team trying every doorway, exception path, and sign-off sequence to prove a worker cannot bypass the restricted parts of a process.',
+      'Without it': 'Without boundary testing, controls may look strong on paper while still failing under unusual sequences, prompt tricks, or tool combinations that nobody exercised directly.',
+      'With it': 'With explicit boundary testing, teams can validate guardrails before trusting them. The result is clearer confidence that permissions, approvals, and escalation points actually hold under stress.'
+    },
+    'Canary tokens': {
+      'What it is': 'Canary tokens are planted decoy secrets, files, links, or records that should never be touched during legitimate operation and generate an alert if an agent or attacker accesses them.',
+      'Where it is used': 'They are used in data-exfiltration detection, prompt-injection monitoring, sandbox validation, and sensitive knowledge stores where teams want a fast signal that the system has wandered into forbidden territory.',
+      'What it unlocks': 'It unlocks tripwire-style detection. Teams get a high-signal alert when the system reaches for data or resources that normal workflows should never access.',
+      'Human analogy': 'The human analogy is placing clearly marked bait records or honey documents in a file room so security knows immediately if someone opens material that no legitimate job should require.',
+      'Without it': 'Without canary tokens, silent misuse or exfiltration can continue longer before anyone realizes the system is probing places it should never have touched.',
+      'With it': 'With canary tokens in place, suspicious access becomes much easier to detect early. The team gains a fast warning signal before a small misuse turns into a larger incident.'
+    },
+    'Credential rotation for long-running agents': {
+      'What it is': 'Credential rotation for long-running agents is the operational practice of replacing expiring secrets, tokens, or certificates for persistent agents without breaking the workflow or leaving stale credentials active longer than necessary.',
+      'Where it is used': 'It is used in background workers, persistent assistants, browser agents, service-to-service automations, and any agent process that stays alive long enough for its credentials to expire or need revocation.',
+      'What it unlocks': 'It unlocks durable operation with lower credential exposure. Teams can keep agents running over time while still shrinking the blast radius of leaked or outdated secrets.',
+      'Human analogy': 'The human analogy is a facilities team periodically reissuing access badges for contractors on a long engagement so old badges expire cleanly without stopping approved work.',
+      'Without it': 'Without credential rotation, long-running agents become brittle and overexposed. They either fail when secrets expire unexpectedly or keep using long-lived credentials that are harder to revoke safely.',
+      'With it': 'With credential rotation in place, access stays current, revocable, and less fragile over time. Persistent agents can keep operating without forcing teams to choose between uptime and secret hygiene.'
+    },
+    'Non-repudiation for agent actions': {
+      'What it is': 'Non-repudiation for agent actions means an action carries durable evidence about who initiated it, under what authority it ran, and what exactly was executed so that the action can later be verified and not plausibly denied.',
+      'Where it is used': 'It is used in regulated workflows, financial operations, approval systems, cross-organizational automations, and any high-stakes setting where an agent action may later need investigation, dispute resolution, or legal review.',
+      'What it unlocks': 'It unlocks defensible accountability after the action, not just authentication before it. Teams can prove what happened with stronger evidence than a loose log line or a remembered story.',
+      'Human analogy': 'The human analogy is a signed transaction record showing who approved a step, under which delegated authority, and what was actually carried out, preserved for later audit and dispute handling.',
+      'Without it': 'Without non-repudiation, disputes about who authorized or triggered an action become much harder to settle. The organization may know something happened without having durable proof strong enough for audit or liability review.',
+      'With it': 'With non-repudiation in place, important agent actions carry a stronger evidence trail. That makes audit, investigation, and accountability decisions much more defensible after the fact.'
+    },
+    'Latency, cost, reliability, and accuracy as system constraints': {
+      'What it is': 'This topic is the core tradeoff frame for production AI systems. Latency, cost, reliability, and accuracy pull architecture in different directions, and serious design work starts by deciding how those constraints should be balanced instead of pretending they can all be maximized at once.',
+      'Where it is used': 'It is used in architecture reviews, model routing, prompt and context budgeting, product SLO design, and deployment planning. It matters whenever a team has to explain why the chosen system shape is economically and operationally defensible.',
+      'What it unlocks': 'It unlocks honest prioritization. Teams can choose what they are optimizing for, what they are willing to trade away, and which failure modes are acceptable for the product they are actually building.',
+      'Human analogy': 'The human analogy is a service organization balancing response time, operating budget, error rate, and depth of work. A team can move faster, spend less, or add more review, but not all of those goals can be pushed to the maximum simultaneously.',
+      'Without it': 'Without this constraint frame, teams promise everything at once and then keep rediscovering the same tradeoffs under stress. Architecture decisions become reactive because nobody agreed which dimension should win when they conflict.',
+      'With it': 'With the tradeoff made explicit, design gets much cleaner. The team can justify model choice, retrieval depth, fallback behavior, and runtime architecture against the priorities that actually matter for the system.'
+    },
+    'Governance agents': {
+      'What it is': 'Governance agents are specialist agents whose main job is oversight rather than task execution. They review actions, enforce policy, route approvals, check compliance conditions, or act as a control point inside a broader multi-agent workflow.',
+      'Where it is used': 'They are used in regulated automations, tool-approval flows, high-autonomy systems, enterprise orchestration, and any pipeline where someone needs an explicit governance role inside the agent team rather than only outside it.',
+      'What it unlocks': 'It unlocks built-in oversight as an active system role. Instead of treating governance as an afterthought, the workflow can assign policy checking and approval logic to a dedicated participant in the loop.',
+      'Human analogy': 'The human analogy is a quality, compliance, or internal-controls officer embedded in a team who reviews work, blocks unsafe steps, and makes sure the process stays inside policy before the rest of the operation continues.',
+      'Without it': 'Without a governance role, agent teams can move quickly but drift into unclear ownership and weak oversight. Policy checks end up scattered across prompts and tools instead of living in one visible control function.',
+      'With it': 'With governance agents in place, oversight becomes explicit and inspectable. Teams can separate execution from policy review and make high-autonomy workflows easier to trust and audit.'
+    },
+    'FinOps governance for autonomous agent pipelines': {
+      'What it is': 'FinOps governance for autonomous agent pipelines is the set of policies, ownership rules, budget controls, and review processes used to manage spending across agent systems that can make many decisions and calls without constant human intervention.',
+      'Where it is used': 'It is used in enterprise AI programs, shared agent platforms, multi-step pipelines, and any environment where autonomous behavior can create meaningful model, tool, or infrastructure spend at scale.',
+      'What it unlocks': 'It unlocks cost accountability. Teams can attach budgets, approval thresholds, reporting lines, and chargeback logic to autonomous workflows instead of discovering spend only after the bill arrives.',
+      'Human analogy': 'The human analogy is a finance operations office that sets cost centers, spending limits, approval thresholds, and monthly reporting for departments running expensive workloads so the organization knows who owns which spend.',
+      'Without it': 'Without FinOps governance, autonomous pipelines can create surprise cost growth with no clear owner, weak spend controls, and too little visibility into which loops or teams are driving the bill.',
+      'With it': 'With FinOps governance in place, autonomous behavior is tied to budgets and accountability. The organization can let pipelines act independently while still managing spend with deliberate controls.'
+    },
+    'Audit trails': {
+      'What it is': 'Audit trails are durable records of what an agent system did, including relevant prompts, tool calls, approvals, state changes, and externally visible actions. Their purpose is to make later reconstruction possible, not just to store a vague log line.',
+      'Where it is used': 'They are used in compliance review, incident investigation, regulated workflows, financial operations, approval systems, and any environment where the team may later need to prove what happened and why.',
+      'What it unlocks': 'It unlocks traceability and reconstructable evidence. Teams can replay the path of an action, understand which step changed what, and support audit or dispute resolution with something stronger than memory.',
+      'Human analogy': 'The human analogy is a case log or transaction journal with timestamped entries that lets an auditor reconstruct the exact path a team followed from request to final action.',
+      'Without it': 'Without audit trails, postmortems and accountability become guesswork. The organization may know an important action happened without having a reliable record of the approvals, inputs, and state transitions that produced it.',
+      'With it': 'With audit trails in place, actions become much easier to explain and defend later. Investigation, compliance review, and process improvement all get stronger because the system kept an evidentiary trail of its work.'
+    },
+    'Agentic AI Foundation (Linux Foundation governance)': {
+      'What it is': 'This topic points to ecosystem governance rather than internal product controls. It refers to a foundation-style effort, under the Linux Foundation umbrella, that coordinates open work, shared infrastructure, and community stewardship around agentic AI.',
+      'Where it is used': 'It is used in open-source ecosystem coordination, cross-vendor collaboration, working groups, shared infrastructure efforts, and standards-adjacent projects where several organizations need a neutral place to collaborate.',
+      'What it unlocks': 'It unlocks neutral ecosystem stewardship. Competing vendors and contributors can cooperate on common building blocks without forcing one company to act as the de facto governor of the shared stack.',
+      'Human analogy': 'The human analogy is an industry foundation that hosts working groups, charters, and governance processes so several organizations can collaborate on common infrastructure without handing permanent control to one participant.',
+      'Without it': 'Without a neutral governance venue, open agent infrastructure tends to fragment into incompatible efforts or drift under one vendor\'s informal control, which makes ecosystem coordination much harder.',
+      'With it': 'With a foundation-style governance body in place, open agent work has a clearer home for stewardship, collaboration, and shared decision-making across the ecosystem.'
+    },
+    'Open governance for agent protocols': {
+      'What it is': 'Open governance for agent protocols is about how shared protocols are stewarded in the open: how changes are proposed, reviewed, versioned, and accepted so a common interface can evolve without becoming arbitrary or vendor-captured.',
+      'Where it is used': 'It is used in multi-vendor protocol ecosystems, standards efforts, open-source foundations, interoperability communities, and any environment where many participants depend on a shared agent interface over time.',
+      'What it unlocks': 'It unlocks more credible protocol evolution. Communities can change a shared interface through visible process, review, and stewardship instead of opaque unilateral decisions.',
+      'Human analogy': 'The human analogy is a public standards committee with charters, review cycles, and consensus procedures for changing the common forms and handoff rules that many organizations depend on.',
+      'Without it': 'Without open governance, shared protocols can drift under one vendor\'s control or fork unpredictably when participants lose trust in how changes are being made.',
+      'With it': 'With open governance in place, ecosystems can evolve common agent interfaces with more legitimacy, less fragmentation, and clearer expectations about how change is supposed to happen.'
+    },
+    'Prompt state injection from memory': {
+      'What it is': 'Prompt state injection from memory is the practice of selecting the right stored state, summaries, or facts from memory and inserting them into the current prompt so the model has continuity without dragging along the entire history.',
+      'Where it is used': 'It is used in long-running assistants, personalized agents, planner-executor workflows, and any system where the current step depends on durable context from earlier turns or tasks.',
+      'What it unlocks': 'It unlocks usable continuity. The agent can carry forward the right working state at the right moment instead of either forgetting critical context or flooding the prompt with stale detail.',
+      'Human analogy': 'The human analogy is a case manager attaching only the relevant current case notes to today\'s work packet instead of handing the worker the full archive every time.',
+      'Without it': 'Without careful state injection, the agent either loses important context between steps or overloads the prompt with too much history, which makes behavior noisier and more expensive.',
+      'With it': 'With memory state injected deliberately, the prompt stays smaller and more relevant. The system gets better continuity without turning every request into a dump of the full past.'
+    },
+    'Prompt versioning and change control': {
+      'What it is': 'Prompt versioning and change control treat prompts as managed artifacts with version history, diffs, review steps, and controlled promotion between draft, staging, and production states.',
+      'Where it is used': 'It is used in prompt registries, experimentation programs, release workflows, shared prompt libraries, and any product where prompt behavior changes need to be reviewed, traced, and rolled back safely.',
+      'What it unlocks': 'It unlocks traceable prompt iteration. Teams can see which version is live, what changed, who approved it, and how to revert if the new behavior causes trouble.',
+      'Human analogy': 'The human analogy is source control and change management for operating procedures: every revision is documented, reviewed, and promoted deliberately rather than edited in place without a record.',
+      'Without it': 'Without versioning and change control, prompt behavior drifts without clear lineage. Teams struggle to explain which edit caused a regression or how to return quickly to a known-good version.',
+      'With it': 'With prompt changes managed explicitly, iteration gets safer. The team can test, review, deploy, and roll back prompt changes with much stronger control over behavior in production.'
+    },
+    'Failure analysis': {
+      'What it is': 'Failure analysis is the practice of reconstructing why a system failed by tracing the contributing inputs, decisions, tool responses, environment conditions, and control logic that led to the bad outcome.',
+      'Where it is used': 'It is used in postmortems, regression debugging, incident review, eval failures, and production troubleshooting. It matters whenever a team needs to move from a visible symptom to a defensible root-cause explanation.',
+      'What it unlocks': 'It unlocks diagnosis instead of guesswork. Teams can tell whether the failure came from the model, the prompt, retrieval, tooling, orchestration, permissions, or the surrounding environment.',
+      'Human analogy': 'The human analogy is an incident review board reconstructing the exact sequence of events behind an outage so the team can fix the real cause rather than arguing from fragments and memory.',
+      'Without it': 'Without failure analysis, teams often fix the nearest symptom and miss the deeper cause. The same class of incident then returns because nobody fully explained how the failure path actually unfolded.',
+      'With it': 'With disciplined failure analysis, fixes land much closer to root cause. That improves debugging speed, regression prevention, and the quality of later design decisions.'
+    },
+    'Kill switches': {
+      'What it is': 'Kill switches are explicit emergency-stop mechanisms that can halt agent actions, disable risky capabilities, or shut down automation quickly when unsafe behavior, compromise, or severe malfunction is detected.',
+      'Where it is used': 'They are used in high-autonomy agents, tool-using production systems, incident-response playbooks, regulated workflows, and any environment where operators need a fast way to contain harm.',
+      'What it unlocks': 'It unlocks rapid containment. Teams can stop the system before a bad loop, unsafe action, or compromised component keeps amplifying damage.',
+      'Human analogy': 'The human analogy is the emergency stop button or safety cutoff on industrial equipment: it exists for the moment when continuing to run the process is more dangerous than interrupting it immediately.',
+      'Without it': 'Without a kill switch, harmful behavior can continue while the team scrambles for a slower workaround. That increases blast radius exactly when the system is already behaving badly.',
+      'With it': 'With a kill switch in place, operators gain a clear containment tool. Unsafe automation can be stopped quickly while the incident is investigated and the safer path is restored.'
     }
   });
 }());
