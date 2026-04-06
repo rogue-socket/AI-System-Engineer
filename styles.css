@@ -683,17 +683,22 @@ a{color:inherit;text-decoration:none}
 .topic-status-control{
   width:12px;
   height:12px;
-  margin-left:auto;
+  margin-left:2px;
   border-radius:50%;
   border:none;
   padding:0;
-  background:currentColor;
+  background:var(--status-default);
   cursor:pointer;
   box-shadow:0 0 0 1px rgba(255,255,255,0.92), 0 0 0 2px rgba(17,17,17,0.05);
   transition:transform 0.15s, box-shadow 0.15s, opacity 0.15s;
   flex-shrink:0;
   margin-top:3px;
 }
+
+.topic-status-control[data-status="default"]{background:var(--status-default)}
+.topic-status-control[data-status="need-visit"]{background:var(--status-need-visit)}
+.topic-status-control[data-status="learning"]{background:var(--status-learning)}
+.topic-status-control[data-status="done"]{background:var(--status-done)}
 
 .topic-status-control:hover{transform:scale(1.12);box-shadow:0 0 0 1px rgba(255,255,255,0.96), 0 0 0 3px rgba(17,17,17,0.08)}
 .topic-status-control:focus-visible{outline:2px solid currentColor;outline-offset:3px}
@@ -792,7 +797,7 @@ a{color:inherit;text-decoration:none}
   .l-s{white-space:normal}
   .sec-t{font-size:14px}
   .t,.t-new,.t-link{font-size:13px}
-  .topic-token{padding:8px 0}
+  .topic-token{padding:8px 0 10px 8px}
   .prompt-token{padding:14px}
   .prompt-body{padding:14px;font-size:11px}
 }
