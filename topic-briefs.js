@@ -386,6 +386,14 @@
       'Without it': 'Without eval gates, behavior changes ship on gut feel. A prompt tweak can quietly break retrieval quality, tool behavior, or refusal boundaries, and the regression only becomes visible after users suffer it.',
       'With it': 'With eval-gated deployment, release decisions become evidence-based. The team can say what passed, what failed, and why a change was safe enough to promote.'
     },
+    'Tokenization': {
+      'What it is': 'Tokenization is the process of splitting raw text into the subword units that a model actually reads and generates. It defines the alphabet of the model: every prompt, every retrieved document, and every generated output is a sequence of these tokens, not of characters or whole words.',
+      'Where it is used': 'It matters in prompt budgeting, cost estimation, multilingual support, code generation, structured output, and any situation where you need to know how much space something actually occupies inside the context window. It also explains why some languages or scripts cost more tokens per word than others.',
+      'What it unlocks': 'It unlocks accurate reasoning about model input limits, cost, and edge-case behavior. Once you understand tokenization, you can explain why a prompt that looks short might actually be expensive, why certain rare words get split into many pieces, and why off-by-one truncation bugs happen.',
+      'Human analogy': 'The human analogy is a mailroom that can only handle standard-sized envelopes. Before any document goes in, it must be cut into pieces that fit those envelopes. Common phrases fit neatly into one envelope, but unusual names or foreign-language text might need several. Everything downstream, such as sorting, routing, and storage, works in units of envelopes, not in units of the original pages.',
+      'Without it': 'Without understanding tokenization, teams misjudge context limits, write prompts that silently truncate, and cannot explain why the same sentence costs different amounts across models or languages. Debugging becomes guesswork when the real issue is at the token boundary.',
+      'With it': 'With tokenization understood, the team can budget context windows accurately, predict cost, diagnose truncation and encoding issues, and make informed choices about multilingual coverage and model vocabulary fit.'
+    },
     'Context windows': {
       'What it is': 'A context window is the amount of information a model can actively attend to during a single call. It defines the size of the model\'s short-term working space, not the total knowledge the system could possibly access.',
       'Where it is used': 'It matters in long-document analysis, chat memory, coding sessions, multimodal tasks, and any workflow where too much relevant material competes for space. Many higher-level design choices are really responses to this one limit.',
