@@ -66,28 +66,59 @@ subscribeToTopicStatusChanges(refreshStatusLegend);
 
 // Initialize with all layers collapsed by default
 const collapseButton = document.getElementById('collapse-button');
-let allCollapsed = true;
 setAllLayersOpen(root, false);
-collapseButton.textContent = 'Expand all';
 
-searchInput.addEventListener('input', event => {
-  filterLayerTree(root, event.target.value);
-});
+function hasAnyOpenItems() {
+  return !!root.querySelector('.l.open, .sec.open');
+}
+
+function updateCollapseButtonState() {
+  const anyOpen = hasAnyOpenItems();
+  collapseButton.textContent = anyOpen ? 'Collapse all' : 'Expand all';
+  collapseButton.setAttribute(
+    'aria-label',
+    anyOpen ? 'Collapse all layers and sections' : 'Expand all layers and sections'
+  );
+}
+
+function updateFloatingControls() {
+  const showScrollTop = window.scrollY > 400;
+  scrollTopBtn.classList.toggle('visible', showScrollTop);
+  collapseButton.classList.toggle('with-scroll-top', showScrollTop);
+  updateCollapseButtonState();
+}
+
+updateCollapseButtonState();
 
 exportButton.addEventListener('click', exportMarkdown);
 
 collapseButton.addEventListener('click', () => {
-  allCollapsed = !allCollapsed;
-  setAllLayersOpen(root, !allCollapsed);
-  collapseButton.textContent = allCollapsed ? 'Expand all' : 'Collapse all';
+  setAllLayersOpen(root, !hasAnyOpenItems());
+  updateCollapseButtonState();
+});
+
+root.addEventListener('click', event => {
+  if (event.target.closest('.l-h, .sec-h')) {
+    requestAnimationFrame(updateCollapseButtonState);
+  }
 });
 
 const scrollTopBtn = document.getElementById('scroll-top');
-// Show collapse and scroll buttons only when scrolled down
 window.addEventListener('scroll', () => {
-  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
-  collapseButton.classList.toggle('visible', window.scrollY > 400);
+  updateFloatingControls();
 }, { passive: true });
+
+searchInput.addEventListener('input', event => {
+  filterLayerTree(root, event.target.value);
+  updateCollapseButtonState();
+});
+
+window.addEventListener('hashchange', () => {
+  requestAnimationFrame(updateCollapseButtonState);
+});
+
+requestAnimationFrame(updateFloatingControls);
+
 scrollTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
