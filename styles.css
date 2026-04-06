@@ -40,8 +40,16 @@ a{color:inherit;text-decoration:none}
 
 .s{width:100%;max-width:none;margin:0 auto;padding:36px 40px 48px}
 
+.header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:32px;
+  margin-bottom:24px;
+}
+
 .page-title{
-  font-size:28px;
+  font-size:48px;
   line-height:1.1;
   font-weight:500;
   letter-spacing:-0.03em;
@@ -63,28 +71,27 @@ a{color:inherit;text-decoration:none}
 
 .status-legend{
   display:flex;
-  flex-wrap:wrap;
-  gap:12px 18px;
-  align-items:center;
-  margin:-2px 0 24px;
-  padding:14px 16px;
-  border:1px solid var(--theme-line);
-  border-radius:14px;
-  background:rgba(255,255,255,0.68);
-  backdrop-filter:blur(10px);
+  flex-direction:column;
+  gap:12px;
+  align-items:flex-end;
+  padding:0;
+  border:none;
+  border-radius:0;
+  background:transparent;
+  backdrop-filter:none;
+  flex-shrink:0;
+  min-width:200px;
 }
 
 .status-note{
-  font-size:12px;
-  line-height:1.5;
-  color:var(--fg3);
-  max-width:620px;
+  display:none;
 }
 
 .status-items{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
+  justify-content:flex-end;
 }
 
 .status-item,
@@ -159,20 +166,39 @@ a{color:inherit;text-decoration:none}
 .s-collapse:hover{color:var(--fg);border-color:var(--fg)}
 
 .s-collapse{
-  display:inline-flex;
+  position:fixed;
+  bottom:28px;
+  right:72px;
+  display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(255,255,255,0.72);
-  border:1px solid var(--theme-line);
-  color:var(--fg3);
+  width:auto;
+  height:38px;
+  padding:6px 14px;
   font-size:12px;
   font-family:var(--font);
-  padding:6px 14px;
+  background:rgba(255,255,255,0.82);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--theme-line);
   border-radius:4px;
+  color:var(--fg3);
   cursor:pointer;
   transition:all 0.15s;
   letter-spacing:0.3px;
+  z-index:100;
+  box-shadow:0 4px 16px rgba(17,17,17,0.06);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(8px);
 }
+
+.s-collapse.visible{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+.s-collapse:hover{color:var(--fg);border-color:var(--fg)}
 
 .scroll-top{
   position:fixed;

@@ -9,20 +9,24 @@
 <body>
 
 <div class="s">
-  <h1 class="page-title">AI System Engineering</h1>
-  <div class="s-meta">
-    <span id="meta-layers"></span><span class="dot"></span>
-    <span id="meta-sections"></span><span class="dot"></span>
-    <span id="meta-topics"></span><span class="dot"></span>
-    <button class="s-collapse" id="collapse-button" type="button">Collapse all</button>
-    <button class="s-export" id="export-button" type="button">Export .md</button>
+  <div class="header-row">
+    <div>
+      <h1 class="page-title">AI System Engineering</h1>
+      <div class="s-meta">
+        <span id="meta-layers"></span><span class="dot"></span>
+        <span id="meta-sections"></span><span class="dot"></span>
+        <span id="meta-topics"></span><span class="dot"></span>
+        <button class="s-export" id="export-button" type="button">Export .md</button>
+      </div>
+    </div>
+    <div class="status-legend" id="status-legend"></div>
   </div>
-  <div class="status-legend" id="status-legend"></div>
   <input class="s-search" id="search" type="search" aria-label="Search layers, sections, topics, and prerequisites" placeholder="Search layers, sections, or topics...">
   <div id="root"></div>
 </div>
 
 <button class="scroll-top" id="scroll-top" type="button" aria-label="Scroll to top">↑</button>
+<button class="s-collapse" id="collapse-button" type="button">Collapse all</button>
 
 <script src="syllabus.js"></script>
 <script>
@@ -60,14 +64,17 @@ wireHashFocus();
 refreshStatusLegend();
 subscribeToTopicStatusChanges(refreshStatusLegend);
 
+const collapseButton = document.getElementById('collapse-button');
+let allCollapsed = true;
+setAllLayersOpen(root, false);
+collapseButton.textContent = 'Expand all';
+
 searchInput.addEventListener('input', event => {
   filterLayerTree(root, event.target.value);
 });
 
 exportButton.addEventListener('click', exportMarkdown);
 
-const collapseButton = document.getElementById('collapse-button');
-let allCollapsed = false;
 collapseButton.addEventListener('click', () => {
   allCollapsed = !allCollapsed;
   setAllLayersOpen(root, !allCollapsed);
@@ -77,6 +84,7 @@ collapseButton.addEventListener('click', () => {
 const scrollTopBtn = document.getElementById('scroll-top');
 window.addEventListener('scroll', () => {
   scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  collapseButton.classList.toggle('visible', window.scrollY > 400);
 }, { passive: true });
 scrollTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
