@@ -3142,6 +3142,105 @@
       }
     },
     {
+      sectionTitle: 'Action tools',
+      pattern: /^Code execution \(sandboxed\)$/i,
+      guide: {
+        roleLabel: 'a sandboxed execution topic',
+        purpose: 'how an agent runs code inside a constrained runtime when it needs computation, transformation, or validation that prose alone cannot provide',
+        used: 'data processing, scripted checks, file transformation, and tool-using workflows that need a bounded compute surface',
+        unlock: 'real executable work without immediately exposing the host environment to unrestricted code',
+        exampleScenario: 'an agent that needs to run code against task data while keeping the execution boundary isolated from the main system'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^File system operations$/i,
+      guide: {
+        roleLabel: 'a local-state mutation topic',
+        purpose: 'how an agent reads, writes, moves, or deletes files and directories as part of a workflow that changes local working state',
+        used: 'coding agents, document pipelines, artifact generation, and automations that materialize outputs on disk',
+        unlock: 'direct manipulation of working artifacts instead of only describing what should be changed',
+        exampleScenario: 'an agent editing files, generating outputs, or reorganizing a workspace as part of task execution'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Shell \/ CLI automation$/i,
+      guide: {
+        roleLabel: 'a command-runner automation topic',
+        purpose: 'how an agent invokes shell commands and scripts to drive existing developer or ops tooling instead of reimplementing those capabilities from scratch',
+        used: 'build pipelines, diagnostics, package management, system checks, and any workflow already exposed through a command-line interface',
+        unlock: 'reuse of mature automation surfaces that already exist in CLI form',
+        exampleScenario: 'an agent orchestrating an existing toolchain by running commands, inspecting outputs, and deciding the next step'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Browser automation$/i,
+      guide: {
+        roleLabel: 'a scripted web-action topic',
+        purpose: 'how an agent drives a browser through explicit page actions, selectors, and navigation steps to complete web tasks programmatically',
+        used: 'testing, form workflows, web operations, and tasks where the target system is primarily exposed through a web interface',
+        unlock: 'repeatable interaction with web applications beyond read-only inspection',
+        exampleScenario: 'an agent completing a structured web task by driving a browser step by step through the page flow'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Computer use \/ GUI agents$/i,
+      guide: {
+        roleLabel: 'a desktop interaction topic',
+        purpose: 'how an agent acts through graphical interfaces when the real workflow depends on clicks, menus, windows, and desktop state rather than clean APIs',
+        used: 'legacy software, desktop operations, and environments where computer-use behavior must approximate a human operator using the screen directly',
+        unlock: 'access to workflows that are otherwise trapped inside GUI-only systems',
+        exampleScenario: 'an agent controlling a legacy desktop application that has no usable API but still must be operated reliably'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Email & calendar APIs$/i,
+      guide: {
+        roleLabel: 'a communication-side-effect topic',
+        purpose: 'how an agent sends messages, schedules events, and changes collaborative coordination state through communication-system APIs',
+        used: 'meeting coordination, outreach automation, reminders, and workflows where the agent interacts directly with inboxes and calendars',
+        unlock: 'action on real communication channels rather than only drafting content for a human to send later',
+        exampleScenario: 'an agent that turns a workflow decision into a scheduled meeting, sent update, or calendar change'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Form filling$/i,
+      guide: {
+        roleLabel: 'a structured submission topic',
+        purpose: 'how an agent maps collected task data into UI or document forms that must be completed accurately for the workflow to proceed',
+        used: 'application processing, back-office workflows, browser tasks, and any system where structured submission is the action surface',
+        unlock: 'faster completion of repetitive structured workflows with less manual re-entry',
+        exampleScenario: 'an agent taking already-known task data and submitting it into a required form without a human retyping every field'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Voice & telephony agents$/i,
+      guide: {
+        roleLabel: 'a real-time voice-action topic',
+        purpose: 'how an agent takes actions through calls, spoken interaction, and telephony systems where timing, turn-taking, and audio channels matter',
+        used: 'call automation, voice support, appointment handling, and workflows that happen live over audio rather than text',
+        unlock: 'agent workflows that can operate in real-time spoken channels instead of only asynchronous text environments',
+        exampleScenario: 'an agent handling a phone-based task where it must listen, respond, and act while the conversation is still in progress'
+      }
+    },
+    {
+      sectionTitle: 'Action tools',
+      pattern: /^Image \/ video generation tools$/i,
+      guide: {
+        roleLabel: 'a media-generation action topic',
+        purpose: 'how an agent triggers image or video generation systems to produce visual assets as a concrete downstream output of the workflow',
+        used: 'creative pipelines, marketing workflows, content automation, and products where the agent produces media rather than only text or data changes',
+        unlock: 'direct creation of visual deliverables inside the agent loop',
+        exampleScenario: 'an agent that turns a content brief or product workflow into generated visual assets ready for review'
+      }
+    },
+    {
       sectionTitle: 'Evaluation',
       pattern: /automated benchmarks|swe-bench|webarena|agentbench|bfcl|toolbench|end-to-end agent evals|multi-turn evals/i,
       guide: {
