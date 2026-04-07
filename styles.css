@@ -253,6 +253,11 @@ a{color:inherit;text-decoration:none}
   margin-top:10px;
 }
 
+.resource-form .s-collapse{
+  position:static;
+  box-shadow:none;
+}
+
 .resource-field{
   display:flex;
   flex-direction:column;

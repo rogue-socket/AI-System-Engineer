@@ -310,9 +310,19 @@ if (!detail) {
 }
 
 const scrollTopBtn = document.getElementById('scroll-top');
+
+function updateFloatingControls() {
+  const showScrollTop = window.scrollY > 400;
+  scrollTopBtn.classList.toggle('visible', showScrollTop);
+  collapseButton.classList.toggle('with-scroll-top', showScrollTop);
+}
+
 window.addEventListener('scroll', () => {
-  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  updateFloatingControls();
 }, { passive: true });
+
+requestAnimationFrame(updateFloatingControls);
+
 scrollTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
