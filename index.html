@@ -28,100 +28,14 @@
 <button class="scroll-top" id="scroll-top" type="button" aria-label="Scroll to top">↑</button>
 <button class="s-collapse" id="collapse-button" type="button" aria-label="Collapse all layers">Collapse all</button>
 
+<script src="js/data/syllabus-content.js"></script>
+<script src="js/core/syllabus-core.js"></script>
+<script src="js/features/topic-detail-shared.js"></script>
+<script src="js/features/topic-brief.js"></script>
+<script src="js/features/topic-prompt.js"></script>
+<script src="js/features/topic-resources.js"></script>
+<script src="js/features/topic-detail.js"></script>
 <script src="syllabus.js"></script>
-<script>
-const { data, getStats, renderLayerTree, filterLayerTree, wireHashFocus, layersToMarkdown, downloadMarkdown, renderStatusLegend, subscribeToTopicStatusChanges, applyPageTheme, setAllLayersOpen } = window.Syllabus;
-
-const root = document.getElementById('root');
-const searchInput = document.getElementById('search');
-const exportButton = document.getElementById('export-button');
-const statusLegend = document.getElementById('status-legend');
-
-function updateMeta(stats) {
-  document.getElementById('meta-layers').textContent = `${stats.layers} layers`;
-  document.getElementById('meta-sections').textContent = `${stats.sections} sections`;
-  document.getElementById('meta-topics').textContent = `${stats.topics} topics`;
-}
-
-function exportMarkdown() {
-  const stats = getStats(data);
-  const markdown = layersToMarkdown('AI Agent Systems — Syllabus', data, [
-    `${stats.layers} layers · ${stats.sections} sections · ${stats.topics} topics`
-  ]);
-  downloadMarkdown('ai_agent_systems_syllabus.md', markdown);
-}
-
-function refreshStatusLegend() {
-  renderStatusLegend(statusLegend, {
-    noteText: 'Classification colors come from the layer taxonomy. Status colors are personal progress markers saved in your browser.'
-  });
-}
-
-applyPageTheme({ color: '#111111', bg: '#F3F4F6' });
-renderLayerTree(root, data, { anchorIds: true });
-updateMeta(getStats(data));
-wireHashFocus();
-refreshStatusLegend();
-subscribeToTopicStatusChanges(refreshStatusLegend);
-
-// Initialize with all layers collapsed by default
-const collapseButton = document.getElementById('collapse-button');
-setAllLayersOpen(root, false);
-
-function hasAnyOpenItems() {
-  return !!root.querySelector('.l.open, .sec.open');
-}
-
-function updateCollapseButtonState() {
-  const anyOpen = hasAnyOpenItems();
-  collapseButton.textContent = anyOpen ? 'Collapse all' : 'Expand all';
-  collapseButton.setAttribute(
-    'aria-label',
-    anyOpen ? 'Collapse all layers and sections' : 'Expand all layers and sections'
-  );
-}
-
-function updateFloatingControls() {
-  const showScrollTop = window.scrollY > 400;
-  scrollTopBtn.classList.toggle('visible', showScrollTop);
-  collapseButton.classList.toggle('with-scroll-top', showScrollTop);
-  updateCollapseButtonState();
-}
-
-updateCollapseButtonState();
-
-exportButton.addEventListener('click', exportMarkdown);
-
-collapseButton.addEventListener('click', () => {
-  setAllLayersOpen(root, !hasAnyOpenItems());
-  updateCollapseButtonState();
-});
-
-root.addEventListener('click', event => {
-  if (event.target.closest('.l-h, .sec-h')) {
-    requestAnimationFrame(updateCollapseButtonState);
-  }
-});
-
-const scrollTopBtn = document.getElementById('scroll-top');
-window.addEventListener('scroll', () => {
-  updateFloatingControls();
-}, { passive: true });
-
-searchInput.addEventListener('input', event => {
-  filterLayerTree(root, event.target.value);
-  updateCollapseButtonState();
-});
-
-window.addEventListener('hashchange', () => {
-  requestAnimationFrame(updateCollapseButtonState);
-});
-
-requestAnimationFrame(updateFloatingControls);
-
-scrollTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-</script>
+<script src="js/pages/index-page.js"></script>
 </body>
 </html>
