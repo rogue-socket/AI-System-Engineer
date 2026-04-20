@@ -1,8 +1,18 @@
 (function () {
   const syllabusApi = window.Syllabus;
+  const startupApi = window.__SyllabusStartup || {};
 
-  if (!syllabusApi) {
-    throw new Error('Syllabus API failed to load before index page startup.');
+  if (typeof startupApi.hasFailure === 'function' && startupApi.hasFailure()) {
+    return;
+  }
+
+  if (!syllabusApi || !syllabusApi.data || typeof syllabusApi.renderLayerTree !== 'function' || typeof syllabusApi.filterLayerTree !== 'function' || typeof syllabusApi.wireHashFocus !== 'function') {
+    if (typeof startupApi.failStartup === 'function') {
+      startupApi.failStartup('Overview page failed to load.', 'The shared syllabus runtime is missing or incomplete on the overview page.');
+      return;
+    }
+
+    throw new Error('Syllabus core API failed to load before index page startup.');
   }
 
   const {

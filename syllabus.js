@@ -2,12 +2,19 @@
   const contentApi = window.__SyllabusContent || {};
   const coreApi = window.__SyllabusCore || {};
   const detailApi = window.__SyllabusTopicDetail || {};
+  const startupApi = window.__SyllabusStartup || {};
+  const validationApi = window.__SyllabusValidation || {};
 
-  if (!contentApi.rawData || !coreApi.data || !detailApi.buildTopicDetailData) {
-    throw new Error('Syllabus modules failed to load in the expected order.');
+  if (!contentApi.rawData || !coreApi.data) {
+    if (typeof startupApi.failStartup === 'function') {
+      startupApi.failStartup('Shared syllabus runtime failed to load.', 'The content or core modules did not initialize in the expected order.');
+      return;
+    }
+
+    throw new Error('Syllabus content/core modules failed to load in the expected order.');
   }
 
-  window.Syllabus = {
+  const syllabusApi = {
     rawData: contentApi.rawData,
     data: coreApi.data,
     getText: contentApi.getText,
@@ -33,7 +40,16 @@
     getTopicHref: coreApi.getTopicHref,
     getIndexAnchorHref: coreApi.getIndexAnchorHref,
     getTopicEntryById: coreApi.getTopicEntryById,
-    buildTopicDetailData: detailApi.buildTopicDetailData,
     setAllLayersOpen: coreApi.setAllLayersOpen
   };
+
+  if (typeof detailApi.buildTopicDetailData === 'function') {
+    syllabusApi.buildTopicDetailData = detailApi.buildTopicDetailData;
+  }
+
+  if (typeof validationApi.getValidationReport === 'function') {
+    syllabusApi.getValidationReport = validationApi.getValidationReport;
+  }
+
+  window.Syllabus = syllabusApi;
 }());

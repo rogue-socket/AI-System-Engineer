@@ -1,8 +1,18 @@
 (function () {
   const syllabusApi = window.Syllabus;
+  const startupApi = window.__SyllabusStartup || {};
 
-  if (!syllabusApi) {
-    throw new Error('Syllabus API failed to load before topic page startup.');
+  if (typeof startupApi.hasFailure === 'function' && startupApi.hasFailure()) {
+    return;
+  }
+
+  if (!syllabusApi || typeof syllabusApi.buildTopicDetailData !== 'function') {
+    if (typeof startupApi.failStartup === 'function') {
+      startupApi.failStartup('Topic page failed to load.', 'The topic-detail runtime is missing or incomplete on the topic page.');
+      return;
+    }
+
+    throw new Error('Topic detail API failed to load before topic page startup.');
   }
 
   const {
