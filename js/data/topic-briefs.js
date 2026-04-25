@@ -5365,6 +5365,758 @@
       'Human analogy': 'The human analogy is a sealed, tamper-evident processing room where even the building owner cannot observe what happens inside.',
       'Without it': 'Without confidential computing, the infrastructure operator can theoretically access data during processing, which is unacceptable for the most sensitive workloads.',
       'With it': 'With confidential computing, even the most sensitive data can be processed by AI agents with hardware-enforced privacy guarantees.'
+    },
+    'Automated benchmarks (MMLU, HumanEval, GAIA)': {
+      'What it is': 'Automated benchmarks evaluate model and agent capability on standardized test suites. MMLU tests broad knowledge, HumanEval tests code generation, and GAIA tests real-world agent task completion. They provide quantitative comparison across models.',
+      'Where it is used': 'They are used in model selection, tracking progress across model generations, and research on improving specific capabilities. They are the starting point for any model evaluation.',
+      'What it unlocks': 'It unlocks quantitative model comparison on standardized tasks. Teams can objectively compare models rather than relying on marketing claims or anecdotal impressions.',
+      'Human analogy': 'The human analogy is standardized professional exams: they provide a common baseline for comparing candidates, even if they do not capture every relevant skill.',
+      'Without it': 'Without benchmarks, model comparison is subjective and anecdotal. Teams cannot systematically evaluate which model best fits their needs.',
+      'With it': 'With automated benchmarks, model evaluation has a quantitative foundation, though teams should supplement benchmarks with task-specific evaluation.'
+    },
+    'Human evaluation': {
+      'What it is': 'Human evaluation has trained raters assess agent outputs on criteria like helpfulness, accuracy, safety, and naturalness. It captures quality dimensions that automated metrics miss, including subjective qualities like tone and usefulness.',
+      'Where it is used': 'It is used as the gold standard for output quality assessment, in preference data collection for alignment, and for evaluating dimensions that automated metrics cannot capture.',
+      'What it unlocks': 'It unlocks evaluation of subjective quality. Human raters can assess helpfulness, tone, and appropriateness in ways that automated metrics cannot.',
+      'Human analogy': 'The human analogy is expert review: a panel of experienced reviewers assessing work quality based on professional judgment.',
+      'Without it': 'Without human evaluation, quality assessment relies on automated metrics that may not correlate with what users actually value.',
+      'With it': 'With human evaluation, teams can assess the qualities that matter most to users, even when those qualities are hard to automate.'
+    },
+    'Task success rate': {
+      'What it is': 'Task success rate measures the percentage of tasks an agent completes successfully according to defined success criteria. It is the most direct measure of agent utility — did the agent accomplish what it was asked to do?',
+      'Where it is used': 'It is used as the primary metric for agent performance in production, in eval suites, and as the bottom-line measure for whether an agent is useful.',
+      'What it unlocks': 'It unlocks direct measurement of agent utility. Unlike proxy metrics, task success rate measures what actually matters: does the agent complete tasks?',
+      'Human analogy': 'The human analogy is measuring employee performance by task completion rate rather than by hours worked or activity metrics.',
+      'Without it': 'Without task success rate, teams measure proxy metrics (latency, token usage) without knowing whether the agent actually accomplishes its goals.',
+      'With it': 'With task success rate, teams have the most direct measure of whether their agent is delivering value.'
+    },
+    'Faithfulness scoring': {
+      'What it is': 'Faithfulness scoring measures whether an agent\'s output is supported by its source material — retrieved documents, provided context, or cited references. An output is faithful if every claim can be traced to the evidence; unfaithful claims are hallucinations.',
+      'Where it is used': 'It is used in RAG evaluation, fact-critical applications, and any system where outputs must be grounded in provided evidence rather than model imagination.',
+      'What it unlocks': 'It unlocks quantitative grounding measurement. Teams can measure exactly how much of the output is supported by evidence versus fabricated.',
+      'Human analogy': 'The human analogy is checking a research paper\'s citations: every claim should be traceable to a cited source.',
+      'Without it': 'Without faithfulness scoring, there is no systematic way to distinguish between evidence-grounded and hallucinated claims in agent output.',
+      'With it': 'With faithfulness scoring, teams can measure and improve the grounding quality of their RAG and retrieval-based systems.'
+    },
+    'Relevance scoring': {
+      'What it is': 'Relevance scoring measures whether the agent\'s response actually addresses the user\'s question. A response can be well-written and factual but irrelevant if it does not answer what was asked.',
+      'Where it is used': 'It is used in search quality evaluation, RAG pipeline assessment, and any system where the match between query intent and response content matters.',
+      'What it unlocks': 'It unlocks measurement of query-response alignment. Teams can identify when the system produces high-quality but off-topic responses.',
+      'Human analogy': 'The human analogy is evaluating whether an answer addresses the question that was asked, not just whether the answer is correct in isolation.',
+      'Without it': 'Without relevance scoring, systems may return high-quality content that does not address the user\'s actual question.',
+      'With it': 'With relevance scoring, teams can measure and optimize the alignment between user queries and system responses.'
+    },
+    'Adversarial testing': {
+      'What it is': 'Adversarial testing probes agent systems with deliberately hostile inputs: prompt injections, edge cases, boundary-pushing queries, and attempts to break safety mechanisms. It reveals vulnerabilities that normal testing misses.',
+      'Where it is used': 'It is used in pre-deployment security assessment, ongoing red-teaming, and any production system where robustness against adversarial inputs matters.',
+      'What it unlocks': 'It unlocks discovery of failure modes that only appear under adversarial conditions. Normal testing finds normal failures; adversarial testing finds exploitable weaknesses.',
+      'Human analogy': 'The human analogy is hiring a team to try to break into your building: they test the security with hostile intent, finding weaknesses that friendly inspectors miss.',
+      'Without it': 'Without adversarial testing, systems are only validated against benign inputs. Real-world adversaries will find vulnerabilities that friendly testing did not.',
+      'With it': 'With adversarial testing, exploitable weaknesses are found and fixed before real adversaries discover them.'
+    },
+    'A/B testing agents': {
+      'What it is': 'A/B testing for agents compares two or more agent configurations on real user traffic, measuring which performs better on defined metrics. It provides statistical evidence for decisions about model versions, prompt changes, and configuration updates.',
+      'Where it is used': 'It is used in production agent optimization, model version selection, prompt improvement, and any decision where real-world performance data should drive the choice.',
+      'What it unlocks': 'It unlocks data-driven agent improvement. Decisions about agent configuration are backed by statistical evidence from real users.',
+      'Human analogy': 'The human analogy is a controlled experiment comparing two approaches and letting the data decide which is better.',
+      'Without it': 'Without A/B testing, agent configuration decisions are based on offline evaluation or intuition, which may not reflect real-world performance.',
+      'With it': 'With A/B testing, agent improvements are validated with real user data before full rollout.'
+    },
+    'SWE-bench': {
+      'What it is': 'SWE-bench evaluates coding agents on real-world software engineering tasks: resolving actual GitHub issues from open-source repositories. It tests whether agents can understand issue descriptions, navigate codebases, write correct patches, and pass existing tests.',
+      'Where it is used': 'It is the primary benchmark for coding agent capability. Performance on SWE-bench is the standard measure of how well an agent can handle real software engineering tasks.',
+      'What it unlocks': 'It unlocks realistic coding agent evaluation. Unlike simple code-generation benchmarks, SWE-bench tests the full software engineering workflow: understanding, navigation, editing, and verification.',
+      'Human analogy': 'The human analogy is evaluating a developer by having them fix real bugs in real projects, rather than solving toy coding exercises.',
+      'Without it': 'Without SWE-bench, coding agent evaluation relies on synthetic tasks that may not reflect real-world software engineering complexity.',
+      'With it': 'With SWE-bench, coding agent capability is measured against real-world engineering tasks, providing a meaningful measure of practical utility.'
+    },
+    'WebArena': {
+      'What it is': 'WebArena evaluates web agents on realistic web tasks in self-hosted, sandboxed web environments. Agents must navigate real websites, fill forms, find information, and complete multi-step web workflows.',
+      'Where it is used': 'It is the standard benchmark for web agent capability, used in research and model evaluation for browser-based task completion.',
+      'What it unlocks': 'It unlocks realistic web agent evaluation in safe, reproducible environments. Agents are tested on real web interfaces without affecting production websites.',
+      'Human analogy': 'The human analogy is a practical driving test in a realistic simulated environment: real road conditions without real-world risk.',
+      'Without it': 'Without WebArena, web agent evaluation relies on cherry-picked demos or unsafe testing on production websites.',
+      'With it': 'With WebArena, web agent capability is measured reproducibly on realistic tasks in safe environments.'
+    },
+    'AgentBench': {
+      'What it is': 'AgentBench evaluates LLM agents across diverse environments: operating systems, databases, web browsing, and games. It measures general agent capability across multiple task types rather than specializing in one domain.',
+      'Where it is used': 'It is used for broad agent capability assessment, comparing models on general-purpose agent tasks, and identifying which environments each model handles well.',
+      'What it unlocks': 'It unlocks cross-domain agent evaluation. Instead of evaluating coding and web agents separately, AgentBench measures general agent competence across environments.',
+      'Human analogy': 'The human analogy is a general aptitude test that evaluates capability across multiple skill areas rather than one specialty.',
+      'Without it': 'Without multi-domain benchmarks, agent evaluation is fragmented across separate domain-specific tests with no unified capability picture.',
+      'With it': 'With AgentBench, teams get a unified view of agent capability across diverse task environments.'
+    },
+    'BFCL (Berkeley Function Calling Leaderboard)': {
+      'What it is': 'BFCL evaluates how well models handle function/tool calling: selecting the right function, formatting arguments correctly, handling parallel calls, and managing multi-step tool workflows. It is the standard measure of tool-calling capability.',
+      'Where it is used': 'It is used in model selection for tool-heavy agent systems, in evaluating tool-calling improvements across model versions, and in research on improving function-calling reliability.',
+      'What it unlocks': 'It unlocks standardized tool-calling evaluation. Teams can compare models on the specific patterns their agent system uses (parallel calls, nested tools, error handling).',
+      'Human analogy': 'The human analogy is a practical skills assessment focused specifically on tool use: can the candidate use the right tool correctly for each task?',
+      'Without it': 'Without BFCL, tool-calling capability is evaluated informally, and teams cannot compare models on the specific tool-use patterns they need.',
+      'With it': 'With BFCL, tool-calling model selection is data-driven, based on measured performance on relevant function-calling patterns.'
+    },
+    'ToolBench': {
+      'What it is': 'ToolBench provides a large-scale benchmark and training dataset for tool-using agents, covering thousands of real-world APIs. It evaluates agents on API selection, argument formatting, multi-step API workflows, and error handling.',
+      'Where it is used': 'It is used in training and evaluating tool-calling models, in researching API-use capability, and as a source of tool-use training data.',
+      'What it unlocks': 'It unlocks large-scale tool-use evaluation and training data. Agents can be tested against thousands of real API patterns rather than a handful of synthetic examples.',
+      'Human analogy': 'The human analogy is a comprehensive practical exam covering hundreds of different tools and procedures, testing both breadth and depth of tool proficiency.',
+      'Without it': 'Without ToolBench, tool-use evaluation is limited to small, synthetic test sets that may not represent the diversity of real-world API usage.',
+      'With it': 'With ToolBench, tool-use evaluation and training cover a realistic breadth of API patterns.'
+    },
+    'Cost tracking': {
+      'What it is': 'Cost tracking monitors the financial cost of agent operations in real-time: model API costs, tool call fees, infrastructure costs, and total per-task spending. It provides the financial visibility needed to manage agent economics.',
+      'Where it is used': 'It is used in every production agent deployment with non-trivial costs. Without cost tracking, organizations discover budget overruns in monthly bills rather than in real-time.',
+      'What it unlocks': 'It unlocks real-time financial visibility into agent operations. Teams see spending as it happens and can intervene before budgets are exceeded.',
+      'Human analogy': 'The human analogy is real-time expense tracking for a business trip: you see spending as it happens rather than getting surprised by the credit card statement.',
+      'Without it': 'Without cost tracking, agent spending is opaque until the bill arrives. Runaway costs go undetected for days or weeks.',
+      'With it': 'With cost tracking, agent economics are visible in real-time, enabling proactive cost management.'
+    },
+    'Latency monitoring': {
+      'What it is': 'Latency monitoring tracks the time each agent operation takes: model calls, tool invocations, retrieval, and end-to-end task completion. It identifies bottlenecks and detects latency regressions.',
+      'Where it is used': 'It is used in every production agent with user-facing latency requirements, in performance optimization, and for SLA monitoring.',
+      'What it unlocks': 'It unlocks performance visibility and bottleneck identification. Teams can see exactly where time is spent and where optimization will have the most impact.',
+      'Human analogy': 'The human analogy is timing each step of a process to find the bottleneck: you cannot speed up what you cannot measure.',
+      'Without it': 'Without latency monitoring, performance problems are experienced by users but their root cause is unknown to the engineering team.',
+      'With it': 'With latency monitoring, performance bottlenecks are visible and measurable, enabling targeted optimization.'
+    },
+    'Token usage dashboards': {
+      'What it is': 'Token usage dashboards visualize token consumption across models, users, tasks, and time periods. They show input tokens, output tokens, reasoning tokens, and cached tokens separately, providing granular consumption visibility.',
+      'Where it is used': 'They are used in cost management, capacity planning, usage optimization, and executive reporting on AI resource consumption.',
+      'What it unlocks': 'It unlocks granular consumption visibility. Teams can see which tasks, users, or models consume the most tokens and optimize accordingly.',
+      'Human analogy': 'The human analogy is a utility usage dashboard showing water, electricity, and gas consumption by department and time period.',
+      'Without it': 'Without token dashboards, consumption is an aggregate number with no breakdown. Optimization is impossible without visibility into what drives usage.',
+      'With it': 'With token dashboards, consumption patterns are visible, enabling targeted optimization of the highest-consumption areas.'
+    },
+    'Agent audit logs': {
+      'What it is': 'Agent audit logs record every significant agent action with full context: what was decided, what tools were called, what data was accessed, and what the outcome was. They provide the evidence trail needed for compliance, debugging, and incident investigation.',
+      'Where it is used': 'They are used in regulated industries, compliance auditing, incident investigation, and any production system where agent actions must be reconstructable after the fact.',
+      'What it unlocks': 'It unlocks complete action accountability. Every agent decision and action is recorded with enough detail to reconstruct what happened and why.',
+      'Human analogy': 'The human analogy is a detailed activity log that records every action taken on a financial account, enabling audit and investigation.',
+      'Without it': 'Without audit logs, agent actions are ephemeral. Investigating what went wrong or proving compliance is impossible after the fact.',
+      'With it': 'With audit logs, every agent action is reconstructable, enabling compliance, debugging, and accountability.'
+    },
+    'OpenTelemetry for agents': {
+      'What it is': 'OpenTelemetry provides a vendor-neutral standard for collecting traces, metrics, and logs from agent systems. It enables distributed tracing across agent hops, model calls, tool invocations, and retrieval operations using a single instrumentation framework.',
+      'Where it is used': 'It is used in production agent observability, multi-service agent architectures, and any system that needs vendor-neutral instrumentation across the agent pipeline.',
+      'What it unlocks': 'It unlocks vendor-neutral agent observability. Teams can instrument once and send telemetry to any compatible backend without lock-in.',
+      'Human analogy': 'The human analogy is a universal instrumentation standard: like standardized electrical meters that work regardless of which utility company you use.',
+      'Without it': 'Without OpenTelemetry, observability is vendor-specific. Switching observability providers requires re-instrumenting the entire system.',
+      'With it': 'With OpenTelemetry, agent observability is portable, vendor-neutral, and interoperable with the broad OTel ecosystem.'
+    },
+    'Arize / Phoenix': {
+      'What it is': 'Arize and Phoenix provide ML observability platforms with specific support for LLM and agent monitoring: trace visualization, eval pipelines, embedding drift detection, and prompt performance tracking. Phoenix is Arize\'s open-source offering.',
+      'Where it is used': 'They are used in production LLM and agent monitoring, in evaluation workflows, and as platforms for tracking model and prompt performance over time.',
+      'What it unlocks': 'It unlocks LLM-native observability. Unlike general APM tools, these platforms understand LLM-specific concepts like token usage, embedding quality, and prompt performance.',
+      'Human analogy': 'The human analogy is specialized medical monitoring equipment versus a general vital-signs monitor: the specialist tool understands domain-specific signals.',
+      'Without it': 'Without LLM-native observability, teams must adapt general-purpose monitoring tools that do not understand token-level metrics, traces, or eval quality.',
+      'With it': 'With LLM-native platforms, agent monitoring captures the domain-specific signals that matter for AI system quality.'
+    },
+    'Braintrust': {
+      'What it is': 'Braintrust is an evaluation and observability platform for AI applications. It provides eval frameworks, prompt playground, logging, and scoring tools designed for iterative AI development — helping teams measure, debug, and improve prompt and model performance.',
+      'Where it is used': 'It is used in prompt development, eval pipeline construction, and production monitoring for AI features and agent systems.',
+      'What it unlocks': 'It unlocks integrated eval-and-observe workflows. Teams can evaluate prompt changes, monitor production quality, and iterate on agent behavior in a single platform.',
+      'Human analogy': 'The human analogy is a combined testing and monitoring platform for software: test during development, monitor in production, all in one system.',
+      'Without it': 'Without integrated eval-observe platforms, teams use separate tools for development evaluation and production monitoring, losing continuity between the two.',
+      'With it': 'With Braintrust, eval and observability are unified, enabling continuous quality management from development through production.'
+    },
+    'Tool call debugging': {
+      'What it is': 'Tool call debugging investigates why a tool call failed or produced unexpected results: wrong tool selected, malformed arguments, unexpected response format, timeout, or authentication failure. It requires visibility into the full tool call lifecycle.',
+      'Where it is used': 'It is used whenever an agent\'s tool interaction produces errors or unexpected results. Tool call failures are one of the most common agent debugging scenarios.',
+      'What it unlocks': 'It unlocks systematic diagnosis of tool interaction failures. Teams can identify exactly where in the tool call lifecycle the problem occurred.',
+      'Human analogy': 'The human analogy is debugging a failed API integration: checking the request format, the endpoint, the authentication, the response, and the parsing in sequence.',
+      'Without it': 'Without tool call debugging visibility, tool failures are opaque. Teams cannot distinguish between wrong tool selection, bad arguments, and service errors.',
+      'With it': 'With tool call debugging, every stage of tool interaction is visible, enabling rapid diagnosis of tool-related agent failures.'
+    },
+    'Unit tests for agents': {
+      'What it is': 'Unit tests for agents test individual components in isolation: prompt templates, tool schemas, parsing logic, routing rules, and guardrails. They verify that each component behaves correctly without running the full agent loop.',
+      'Where it is used': 'They are used in CI pipelines, during development, and as regression guards for agent components that have deterministic expected behavior.',
+      'What it unlocks': 'It unlocks fast, reliable testing of deterministic agent components. Changes to prompts, schemas, and logic are verified automatically.',
+      'Human analogy': 'The human analogy is testing individual machine parts before assembling the full machine: each component works correctly in isolation.',
+      'Without it': 'Without unit tests, agent components are only tested as part of the full agent loop, making failures hard to isolate and slow to detect.',
+      'With it': 'With unit tests, deterministic agent components are verified quickly and reliably in CI.'
+    },
+    'Integration tests': {
+      'What it is': 'Integration tests verify that agent components work correctly together: model + tools, retrieval + generation, planning + execution. They test the interfaces between components rather than individual components or end-to-end flows.',
+      'Where it is used': 'They are used in validating component integration, testing tool-calling pipelines, and verifying that changes to one component do not break its interactions with others.',
+      'What it unlocks': 'It unlocks confidence in component interactions. The system works not just because each part works alone, but because the parts work together correctly.',
+      'Human analogy': 'The human analogy is testing that departments can hand off work to each other correctly, beyond just testing each department in isolation.',
+      'Without it': 'Without integration tests, components may work individually but fail when combined. Interface bugs are discovered only in production.',
+      'With it': 'With integration tests, component interactions are verified before deployment, catching interface bugs early.'
+    },
+    'Regression testing': {
+      'What it is': 'Regression testing verifies that agent changes do not break previously working behavior. It runs a suite of known-good test cases after every change to ensure that fixes and features do not introduce new problems.',
+      'Where it is used': 'It is used in CI/CD pipelines, after prompt updates, model switches, and any configuration change that could affect agent behavior.',
+      'What it unlocks': 'It unlocks safe iteration. Teams can change agent behavior confidently because regressions are caught automatically before they reach production.',
+      'Human analogy': 'The human analogy is re-running previous quality checks after making changes, to ensure nothing that was working is now broken.',
+      'Without it': 'Without regression testing, every change risks breaking something that was previously working, discovered only when users report problems.',
+      'With it': 'With regression testing, teams iterate on agent behavior with confidence that existing capabilities are preserved.'
+    },
+    'Chaos engineering for agents': {
+      'What it is': 'Chaos engineering deliberately introduces failures into agent systems to test resilience: tool outages, model timeouts, corrupted retrieval, and resource exhaustion. It verifies that the system degrades gracefully under failure conditions.',
+      'Where it is used': 'It is used in production readiness testing, resilience validation, and any system where graceful degradation under failure is critical.',
+      'What it unlocks': 'It unlocks confidence in failure handling. Teams verify that the system behaves acceptably when things go wrong, not just when everything works.',
+      'Human analogy': 'The human analogy is a fire drill: you deliberately simulate the emergency to test whether the response procedures actually work.',
+      'Without it': 'Without chaos engineering, failure handling is untested. Teams assume resilience mechanisms work but have never verified them under real failure conditions.',
+      'With it': 'With chaos engineering, failure handling is validated through deliberate testing, building confidence in production resilience.'
+    },
+    'Snapshot testing for prompts': {
+      'What it is': 'Snapshot testing captures a prompt\'s output on a set of reference inputs and compares future runs against these snapshots. Changes in output trigger review, catching unintended behavior changes from prompt updates, model switches, or configuration changes.',
+      'Where it is used': 'It is used in prompt versioning, CI pipelines, and any workflow where prompt behavior changes should be reviewed before deployment.',
+      'What it unlocks': 'It unlocks change detection for prompt behavior. Even subtle changes in model output are caught and surfaced for review.',
+      'Human analogy': 'The human analogy is comparing today\'s output against yesterday\'s reference: any differences are flagged for review before accepting the change.',
+      'Without it': 'Without snapshot testing, prompt behavior changes go undetected. A model update or prompt edit may change output quality without anyone noticing.',
+      'With it': 'With snapshot testing, every behavior change is caught and reviewed before it reaches production.'
+    },
+    'Mock tool servers for testing': {
+      'What it is': 'Mock tool servers simulate external tool APIs for testing, returning predictable responses without calling real services. They enable deterministic agent testing, eliminate external dependencies, and allow testing of error scenarios.',
+      'Where it is used': 'They are used in CI pipelines, local development, integration testing, and any testing scenario where calling real tools would be slow, expensive, or dangerous.',
+      'What it unlocks': 'It unlocks fast, deterministic, safe agent testing. Tests do not depend on external service availability and produce consistent results.',
+      'Human analogy': 'The human analogy is using training simulators instead of real equipment: you can practice all scenarios including failures without real-world risk or cost.',
+      'Without it': 'Without mock servers, agent tests depend on real external services, making them slow, flaky, expensive, and unable to test error scenarios.',
+      'With it': 'With mock servers, agent tests are fast, deterministic, and can simulate any scenario including failures and edge cases.'
+    },
+    'Latency optimization': {
+      'What it is': 'Latency optimization reduces the time between a user\'s request and the agent\'s response. Techniques include model selection (smaller models for simple tasks), prompt compression, parallel tool calls, caching, streaming, and eliminating unnecessary agent loop iterations.',
+      'Where it is used': 'It is used in every user-facing agent system where response time affects user experience and adoption.',
+      'What it unlocks': 'It unlocks responsive agent experiences. Lower latency directly improves user satisfaction and the range of tasks agents can handle interactively.',
+      'Human analogy': 'The human analogy is streamlining a service process: reducing wait times by eliminating unnecessary steps, parallelizing independent work, and pre-preparing common requests.',
+      'Without it': 'Without latency optimization, agents are too slow for interactive use. Users abandon tools that make them wait too long.',
+      'With it': 'With latency optimization, agents respond fast enough for interactive use, making them practical tools rather than batch processors.'
+    },
+    'Cost optimization': {
+      'What it is': 'Cost optimization reduces the per-task cost of agent operations through model routing (cheap models for easy tasks), prompt caching, token budgeting, response compression, and eliminating unnecessary processing steps.',
+      'Where it is used': 'It is used in every production agent with meaningful volume. Cost optimization determines whether an agent system is economically viable at scale.',
+      'What it unlocks': 'It unlocks economically sustainable agent operations. Without optimization, many agent use cases are too expensive to deploy at production volume.',
+      'Human analogy': 'The human analogy is process improvement in operations: doing the same work with less waste, matching resource intensity to task difficulty.',
+      'Without it': 'Without cost optimization, agent systems that work in demos become unaffordable at production scale.',
+      'With it': 'With cost optimization, agent systems achieve the economics needed for sustainable production deployment.'
+    },
+    'Semantic caching': {
+      'What it is': 'Semantic caching stores model responses keyed by semantic similarity rather than exact string match. When a new query is similar enough to a cached one, the cached response is returned without making a model call.',
+      'Where it is used': 'It is used in high-volume systems with repetitive queries where many users ask similar (but not identical) questions.',
+      'What it unlocks': 'It unlocks cache hits for semantically similar queries, not just exact duplicates. This dramatically increases cache hit rates for natural-language workloads.',
+      'Human analogy': 'The human analogy is a customer service team that recognizes "how do I return this?" and "what is your return policy?" as the same question and gives the same prepared answer.',
+      'Without it': 'Without semantic caching, only exact query matches hit the cache. Natural-language variation means most similar queries are cache misses.',
+      'With it': 'With semantic caching, similar queries share cached responses, providing significant cost and latency reduction for repetitive workloads.'
+    },
+    'Batching': {
+      'What it is': 'Batching groups multiple requests together and processes them in a single model call or pipeline execution. It amortizes per-request overhead and can achieve higher throughput than processing requests individually.',
+      'Where it is used': 'It is used in batch processing pipelines, background task processing, and any workload where latency per individual request is less important than total throughput.',
+      'What it unlocks': 'It unlocks higher throughput at lower per-request cost. Fixed overhead is shared across batch members rather than paid individually.',
+      'Human analogy': 'The human analogy is batch processing in a factory: processing items in groups is more efficient than handling each one individually.',
+      'Without it': 'Without batching, each request pays the full per-request overhead individually, reducing throughput and increasing per-unit cost.',
+      'With it': 'With batching, throughput increases and per-request cost decreases, making high-volume processing more efficient.'
+    },
+    'Model routing (small→large)': {
+      'What it is': 'Small-to-large model routing sends each request to the smallest (cheapest, fastest) model likely to handle it correctly. Only requests that the small model cannot handle are escalated to a larger, more capable model.',
+      'Where it is used': 'It is used in production systems with diverse request complexity, where most requests are simple enough for a cheap model and only a fraction requires frontier capability.',
+      'What it unlocks': 'It unlocks dramatic cost reduction while maintaining quality. The system uses frontier models only when they are actually needed.',
+      'Human analogy': 'The human analogy is a medical triage system: nurses handle routine cases, and only complex cases see the specialist.',
+      'Without it': 'Without routing, every request hits the most expensive model, even when a cheaper one would produce an equally good answer.',
+      'With it': 'With small-to-large routing, average per-request cost drops dramatically while quality on hard requests is maintained.'
+    },
+    'Context pruning': {
+      'What it is': 'Context pruning removes low-value information from the agent\'s context window to make room for high-value content. Techniques include removing old conversation turns, dropping irrelevant retrieved documents, and summarizing verbose tool outputs.',
+      'Where it is used': 'It is used in long-running conversations, multi-step agent workflows, and any context where accumulated history threatens to crowd out useful information.',
+      'What it unlocks': 'It unlocks effective use of limited context windows. The agent always has the most relevant information available rather than a mix of useful and stale content.',
+      'Human analogy': 'The human analogy is clearing your desk of completed project files to make room for the current project\'s materials.',
+      'Without it': 'Without pruning, context windows fill with stale or irrelevant information, reducing the space available for useful content and degrading reasoning quality.',
+      'With it': 'With context pruning, the agent maintains a clean, relevant working context regardless of how long the interaction runs.'
+    },
+    'Prompt testing in CI pipelines': {
+      'What it is': 'Prompt testing in CI runs automated evaluations on prompt changes before they merge. Tests check that the prompt produces expected outputs on reference inputs, passes quality thresholds, and does not regress on previously passing cases.',
+      'Where it is used': 'It is used in any team that treats prompts as code: version-controlled, reviewed, and tested before deployment.',
+      'What it unlocks': 'It unlocks automated quality gates for prompt changes. Bad prompt updates are caught in CI before they reach production.',
+      'Human analogy': 'The human analogy is requiring test passes before merging code changes: the same discipline applied to prompt engineering.',
+      'Without it': 'Without CI prompt testing, prompt changes go to production untested, and regressions are discovered by users.',
+      'With it': 'With CI prompt testing, prompt quality is verified automatically before every change reaches production.'
+    },
+    'Model regression checks': {
+      'What it is': 'Model regression checks verify that a model update does not degrade performance on key tasks. They run a standardized eval suite against the new model and compare results to the previous version before allowing the switch.',
+      'Where it is used': 'They are used before every model version switch, fine-tuning deployment, or provider migration to ensure the new model is at least as good as what it replaces.',
+      'What it unlocks': 'It unlocks safe model updates. Teams can upgrade models with confidence that quality has not regressed.',
+      'Human analogy': 'The human analogy is running acceptance tests before deploying a software update: verify the new version passes all existing requirements.',
+      'Without it': 'Without regression checks, model updates may silently degrade quality on important tasks, discovered only through user complaints.',
+      'With it': 'With regression checks, model updates are validated against existing quality standards before deployment.'
+    },
+    'Prompt diff and review workflows': {
+      'What it is': 'Prompt diff and review workflows show the exact changes between prompt versions and require human review before deployment — similar to code review for pull requests. Reviewers see what changed and can assess the impact.',
+      'Where it is used': 'They are used in teams that manage prompts as versioned artifacts, in production prompt updates, and wherever prompt changes should be reviewed before going live.',
+      'What it unlocks': 'It unlocks reviewed, controlled prompt evolution. Prompt changes are visible, discussed, and approved before deployment.',
+      'Human analogy': 'The human analogy is code review: changes are visible in a diff view, reviewed by peers, and approved before merging.',
+      'Without it': 'Without prompt review, changes go live without anyone verifying that the new wording achieves its intended effect.',
+      'With it': 'With prompt review workflows, prompt evolution is controlled, visible, and collaborative.'
+    },
+    'Automated eval suites in pull requests': {
+      'What it is': 'Automated eval suites run comprehensive agent evaluations on every pull request that changes prompts, models, or agent configuration. Results are posted as PR comments, enabling reviewers to see the quality impact of proposed changes.',
+      'Where it is used': 'They are used in development workflows where prompt and model changes are version-controlled and code-reviewed.',
+      'What it unlocks': 'It unlocks quality-informed code review. Reviewers see not just what changed but how it affected agent quality metrics.',
+      'Human analogy': 'The human analogy is running the full test suite on every proposed change and posting the results in the review, so reviewers can assess impact.',
+      'Without it': 'Without automated evals in PRs, reviewers assess prompt changes without knowing their quality impact. Bad changes pass review because the damage is invisible.',
+      'With it': 'With automated eval suites, every PR shows its quality impact, making reviews informed and catching regressions before merge.'
+    },
+    'Staging environments for AI features': {
+      'What it is': 'Staging environments for AI features provide production-like testing environments where agent behavior can be validated before deployment. They mirror production configuration including models, tools, and data connections.',
+      'Where it is used': 'They are used for pre-deployment validation, user acceptance testing, and any change that should be verified in a production-like environment before going live.',
+      'What it unlocks': 'It unlocks realistic pre-deployment testing. Agent behavior in staging predicts production behavior because the environments are equivalent.',
+      'Human analogy': 'The human analogy is a dress rehearsal: performing in the actual venue with full setup before opening night.',
+      'Without it': 'Without staging, agent changes go directly from development to production. Problems are discovered by real users.',
+      'With it': 'With staging, agent changes are validated in a realistic environment before any user is affected.'
+    },
+    'Shadow mode and dark launches for model changes': {
+      'What it is': 'Shadow mode runs a new model alongside the current one, processing the same requests, but only the current model\'s results are shown to users. The new model\'s outputs are logged for comparison. Dark launches expose new features to a small audience without announcement.',
+      'Where it is used': 'They are used for risk-free evaluation of model changes, A/B comparison data collection, and validating new models against production traffic before switching.',
+      'What it unlocks': 'It unlocks risk-free model evaluation on production traffic. The new model is tested with real requests without affecting any users.',
+      'Human analogy': 'The human analogy is having a new employee shadow an experienced one: the new person handles the same cases but their work is reviewed rather than delivered.',
+      'Without it': 'Without shadow mode, model changes can only be tested on synthetic data or must be deployed directly to users with real risk.',
+      'With it': 'With shadow mode, new models are validated against real production traffic with zero user risk.'
+    },
+    'Rollback strategies for model updates': {
+      'What it is': 'Rollback strategies define how to quickly revert a model update when it causes problems: instant traffic switching, config-based model selection, and pre-validated fallback models that are always ready to serve.',
+      'Where it is used': 'They are used in every production model deployment as the safety net for updates that cause regressions.',
+      'What it unlocks': 'It unlocks fast recovery from bad model updates. Problems are resolved in seconds by reverting to the previous known-good model.',
+      'Human analogy': 'The human analogy is having a backup generator that starts automatically when the main power fails: recovery is immediate and automatic.',
+      'Without it': 'Without rollback strategies, bad model updates require emergency fixes or manual redeployment, leaving users affected during the recovery period.',
+      'With it': 'With rollback strategies, bad model updates are resolved in seconds, minimizing user impact.'
+    },
+    'Canary releases with eval thresholds': {
+      'What it is': 'Canary releases with eval thresholds automatically monitor a new model version on a small percentage of traffic and only promote it to full deployment if it meets quality thresholds. If metrics drop below threshold, the canary is automatically rolled back.',
+      'Where it is used': 'They are used for automated safe deployment of model and prompt changes in production systems.',
+      'What it unlocks': 'It unlocks automated safe deployment. Model updates are validated on real traffic with automatic rollback if quality degrades.',
+      'Human analogy': 'The human analogy is a pilot program with defined success criteria: expand if it works, cancel if it does not, with automatic monitoring.',
+      'Without it': 'Without canary releases, model updates are either full rollouts (risky) or manual canaries (slow and labor-intensive).',
+      'With it': 'With automated canary releases, model deployment is safe and hands-off, with quality gates that prevent bad updates from reaching all users.'
+    },
+    'Integration testing for tool-calling agents': {
+      'What it is': 'Integration testing for tool-calling agents verifies the full cycle: model generates a tool call, the runtime dispatches it, the tool executes, and the model correctly processes the result. It tests the complete tool-call lifecycle end-to-end.',
+      'Where it is used': 'It is used for validating tool integrations, testing new tool additions, and ensuring that model-tool interactions work correctly after any change.',
+      'What it unlocks': 'It unlocks confidence in tool-calling reliability. The full tool call cycle is verified, not just individual components.',
+      'Human analogy': 'The human analogy is testing a complete order fulfillment cycle end-to-end: order placement, processing, fulfillment, and delivery confirmation.',
+      'Without it': 'Without integration testing, tool-calling components may pass individual tests but fail when combined in the actual agent loop.',
+      'With it': 'With integration testing, the full tool-calling cycle is verified, catching interface bugs between model, runtime, and tools.'
+    },
+    'Eval dashboards in CI (pass/fail gates)': {
+      'What it is': 'Eval dashboards in CI display comprehensive evaluation results for each build: pass/fail status on eval suites, quality metric trends, regression alerts, and comparison against previous versions. They serve as quality gates that block deployment when thresholds are not met.',
+      'Where it is used': 'They are used in CI/CD pipelines for AI systems, providing the same quality-gating role that test coverage and code analysis play for traditional software.',
+      'What it unlocks': 'It unlocks automated quality-gated deployment. No change ships to production unless it passes eval thresholds.',
+      'Human analogy': 'The human analogy is a quality inspection dashboard at a factory: nothing ships until all quality checks pass.',
+      'Without it': 'Without eval dashboards, AI quality is assessed manually or not at all before deployment.',
+      'With it': 'With eval dashboards as CI gates, quality is systematically enforced before every deployment.'
+    },
+    'Coding agents': {
+      'What it is': 'Coding agents are AI systems that write, edit, debug, and test code autonomously. They navigate codebases, understand requirements, generate implementations, run tests, and iterate until the code works. They represent one of the most mature agent application domains.',
+      'Where it is used': 'They are used in software development: feature implementation, bug fixing, test generation, refactoring, and code review. Products include Claude Code, Cursor, GitHub Copilot, and Devin.',
+      'What it unlocks': 'It unlocks AI-assisted software development that goes beyond code completion to full task execution: understanding context, writing code, testing, and iterating.',
+      'Human analogy': 'The human analogy is a junior developer who can be given a task, work through it independently, and deliver working code — rather than just suggesting completions.',
+      'Without it': 'Without coding agents, AI assistance is limited to code suggestions that developers must manually verify, test, and integrate.',
+      'With it': 'With coding agents, software development tasks can be delegated to AI that handles the full write-test-iterate cycle.'
+    },
+    'Agentic coding (Cursor, Copilot, Devin)': {
+      'What it is': 'Agentic coding products integrate AI agents directly into the development workflow. Cursor provides an AI-native IDE, GitHub Copilot integrates into existing editors, and Devin operates as an autonomous coding agent. Each takes a different approach to how much autonomy the AI has.',
+      'Where it is used': 'They are used by individual developers and engineering teams to accelerate coding tasks, from in-line suggestions (Copilot) to autonomous task completion (Devin).',
+      'What it unlocks': 'It unlocks a spectrum of AI-assisted development: from autocomplete to autonomous coding, with different products serving different autonomy preferences.',
+      'Human analogy': 'The human analogy is the range from a helpful colleague who suggests edits (Copilot) to an IDE that actively partners on code (Cursor) to a remote developer who handles tasks independently (Devin).',
+      'Without it': 'Without agentic coding tools, developers interact with AI through separate chat interfaces, losing the integration with their development environment.',
+      'With it': 'With agentic coding tools, AI assistance is embedded directly in the development workflow at the level of autonomy each developer prefers.'
+    },
+    'Code review agents': {
+      'What it is': 'Code review agents automatically review pull requests: checking for bugs, style issues, security vulnerabilities, and logical errors. They provide review comments similar to a human reviewer, often as PR comments in the code review workflow.',
+      'Where it is used': 'They are used in engineering teams to supplement human code review, catching issues that humans might miss and providing immediate feedback on every PR.',
+      'What it unlocks': 'It unlocks consistent, immediate code review feedback. Every PR gets reviewed for common issues regardless of reviewer availability.',
+      'Human analogy': 'The human analogy is an always-available junior reviewer who checks every PR for common issues before senior reviewers invest their time.',
+      'Without it': 'Without code review agents, review quality depends entirely on human reviewer availability and thoroughness, which varies.',
+      'With it': 'With code review agents, every PR gets a baseline review for common issues, supplementing human review.'
+    },
+    'DevOps / SRE agents': {
+      'What it is': 'DevOps and SRE agents automate infrastructure operations: incident response, deployment management, monitoring alert triage, and routine operational tasks. They can investigate alerts, diagnose issues, and execute remediation runbooks.',
+      'Where it is used': 'They are used in operations teams to handle routine tasks, accelerate incident response, and reduce the toil burden on human operators.',
+      'What it unlocks': 'It unlocks automated operations for routine tasks and faster incident response. Human operators focus on complex problems while agents handle routine work.',
+      'Human analogy': 'The human analogy is a junior operations engineer who can triage alerts, run diagnostic procedures, and execute standard remediations, escalating to seniors for complex issues.',
+      'Without it': 'Without DevOps agents, every operational task requires human attention, creating bottlenecks during incidents and toil during normal operations.',
+      'With it': 'With DevOps agents, routine operations are automated and incident response is faster, freeing human operators for complex problems.'
+    },
+    'Testing & QA agents': {
+      'What it is': 'Testing and QA agents automatically generate test cases, execute test suites, identify regressions, and report quality issues. They can generate tests from requirements, explore edge cases, and maintain test suites as code changes.',
+      'Where it is used': 'They are used in software quality assurance to increase test coverage, catch regressions faster, and reduce the manual testing burden.',
+      'What it unlocks': 'It unlocks scalable test generation and execution. Test coverage increases without proportional increase in human QA effort.',
+      'Human analogy': 'The human analogy is a QA engineer who can write and run tests, explore edge cases, and report issues — at the speed of an automated system.',
+      'Without it': 'Without QA agents, test generation and maintenance are manual, limiting coverage to what human testers can write and maintain.',
+      'With it': 'With QA agents, test coverage scales with the codebase, and edge cases are explored more thoroughly than manual testing allows.'
+    },
+    'Documentation generation agents': {
+      'What it is': 'Documentation generation agents create and maintain technical documentation from code, comments, and project artifacts. They can generate API docs, architecture descriptions, and user guides, keeping documentation in sync with the codebase.',
+      'Where it is used': 'They are used to reduce documentation debt, maintain docs as code changes, and generate initial documentation for undocumented codebases.',
+      'What it unlocks': 'It unlocks documentation that stays current with the code. The perennial problem of outdated documentation is addressed by automated generation and maintenance.',
+      'Human analogy': 'The human analogy is a technical writer who reads the code and keeps the documentation current as the codebase evolves.',
+      'Without it': 'Without documentation agents, docs go stale as code changes because manual documentation updates are consistently deprioritized.',
+      'With it': 'With documentation agents, technical documentation stays synchronized with the codebase through automated generation and updates.'
+    },
+    'Database migration agents': {
+      'What it is': 'Database migration agents assist with schema changes, data migrations, and database upgrades. They can generate migration scripts, verify data integrity, and manage the migration lifecycle.',
+      'Where it is used': 'They are used in database administration and software deployment where schema changes must be applied safely across environments.',
+      'What it unlocks': 'It unlocks safer, faster database migrations. The agent handles the tedious work of generating migration scripts and verifying data integrity.',
+      'Human analogy': 'The human analogy is a database specialist who can write migration scripts, verify they are safe, and manage the rollout process.',
+      'Without it': 'Without migration agents, database migrations are entirely manual, error-prone, and slow — one of the highest-risk routine development tasks.',
+      'With it': 'With migration agents, database changes are generated, verified, and managed more safely and quickly.'
+    },
+    'Security scanning agents': {
+      'What it is': 'Security scanning agents automatically analyze code, configurations, and infrastructure for vulnerabilities, misconfigurations, and security policy violations. They can triage findings, assess severity, and suggest remediation.',
+      'Where it is used': 'They are used in security programs, CI pipelines, and DevSecOps workflows to continuously scan for security issues.',
+      'What it unlocks': 'It unlocks continuous security assessment with intelligent triage. Unlike static scanners, agent-based scanning can assess context and prioritize findings.',
+      'Human analogy': 'The human analogy is a security analyst who continuously reviews systems for vulnerabilities and reports prioritized findings with remediation suggestions.',
+      'Without it': 'Without security agents, security scanning produces noisy alerts that require manual triage, or runs infrequently as a periodic audit.',
+      'With it': 'With security agents, security assessment is continuous and intelligently triaged, catching issues earlier with less manual effort.'
+    },
+    'Customer support agents': {
+      'What it is': 'Customer support agents handle customer inquiries, resolve issues, and manage support workflows. They access knowledge bases, query customer records, execute actions (refunds, account changes), and escalate to humans when needed.',
+      'Where it is used': 'They are the most widely-deployed enterprise agent application: chat support, email triage, ticket classification, and self-service resolution.',
+      'What it unlocks': 'It unlocks scalable, 24/7 customer support with consistent quality. Common issues are resolved instantly while complex cases are escalated with full context.',
+      'Human analogy': 'The human analogy is a well-trained first-line support agent who can resolve most issues independently and knows when to escalate.',
+      'Without it': 'Without support agents, every customer interaction requires human attention, limiting support capacity and availability.',
+      'With it': 'With support agents, organizations handle support volume at scale with instant response for common issues and intelligent escalation for complex ones.'
+    },
+    'Data analysis agents': {
+      'What it is': 'Data analysis agents answer analytical questions by querying databases, running computations, creating visualizations, and interpreting results. They translate natural-language questions into SQL queries, Python analysis, or BI tool interactions.',
+      'Where it is used': 'They are used in business intelligence, reporting, ad-hoc analysis, and any workflow where non-technical users need answers from data.',
+      'What it unlocks': 'It unlocks self-service data analysis. Business users can get answers from data without writing SQL or waiting for analyst availability.',
+      'Human analogy': 'The human analogy is a data analyst who can take a plain-English question, query the right databases, and present the findings with charts and explanation.',
+      'Without it': 'Without data agents, every analytical question requires either SQL proficiency or a request to the data team, creating bottlenecks.',
+      'With it': 'With data agents, analytical questions get immediate answers, democratizing data access across the organization.'
+    },
+    'Automation / RPA agents': {
+      'What it is': 'Automation and RPA agents combine traditional robotic process automation with AI judgment. They handle structured workflows (form filling, data entry, system updates) while using AI to handle exceptions, ambiguity, and unstructured inputs that rule-based RPA cannot.',
+      'Where it is used': 'They are used in operations, finance, HR, and any department with repetitive processes that have both structured and unstructured components.',
+      'What it unlocks': 'It unlocks intelligent automation that handles exceptions. Traditional RPA breaks on edge cases; AI-augmented RPA handles them gracefully.',
+      'Human analogy': 'The human analogy is upgrading a rule-following clerk to a knowledgeable assistant who can handle both routine and exceptional cases.',
+      'Without it': 'Without AI-augmented RPA, automation is limited to perfectly structured processes. Anything with ambiguity or exceptions requires human intervention.',
+      'With it': 'With AI-augmented automation, a much larger portion of business processes can be automated, including those with unstructured inputs and exceptions.'
+    },
+    'Financial agents': {
+      'What it is': 'Financial agents assist with financial analysis, reporting, compliance monitoring, fraud detection, and transaction processing. They combine financial domain knowledge with AI reasoning and tool use.',
+      'Where it is used': 'They are used in banking, insurance, investment management, accounting, and any financial workflow that benefits from AI-augmented analysis and automation.',
+      'What it unlocks': 'It unlocks AI-augmented financial operations: faster analysis, automated compliance checking, and intelligent fraud detection.',
+      'Human analogy': 'The human analogy is a financial analyst who can quickly review documents, check compliance, flag anomalies, and prepare reports.',
+      'Without it': 'Without financial agents, financial analysis and compliance are entirely manual, slow, and limited by human availability.',
+      'With it': 'With financial agents, financial operations gain AI-augmented speed and coverage for analysis, compliance, and anomaly detection.'
+    },
+    'Legal agents': {
+      'What it is': 'Legal agents assist with contract review, legal research, compliance analysis, and document preparation. They combine legal domain knowledge with retrieval and reasoning to accelerate legal workflows.',
+      'Where it is used': 'They are used in contract review, due diligence, regulatory compliance, legal research, and document drafting — high-value tasks that benefit from AI-augmented thoroughness.',
+      'What it unlocks': 'It unlocks faster, more thorough legal work. AI agents can review contracts in minutes rather than hours, flagging issues that human reviewers might miss under time pressure.',
+      'Human analogy': 'The human analogy is a junior associate who can quickly review documents, research precedents, and flag issues for partner review.',
+      'Without it': 'Without legal agents, legal review is bottlenecked by attorney availability, and thorough review of large document sets is cost-prohibitive.',
+      'With it': 'With legal agents, legal teams handle larger volumes with greater thoroughness, with AI handling initial review and humans handling judgment calls.'
+    },
+    'Sales & marketing agents': {
+      'What it is': 'Sales and marketing agents assist with lead qualification, content creation, campaign optimization, outreach personalization, and CRM management. They combine customer data analysis with content generation and workflow automation.',
+      'Where it is used': 'They are used in sales development, content marketing, email campaigns, social media management, and customer engagement workflows.',
+      'What it unlocks': 'It unlocks personalized, scalable sales and marketing operations. Outreach is tailored to each prospect; content is generated at scale.',
+      'Human analogy': 'The human analogy is a sales development representative who can research prospects, personalize outreach, and manage follow-ups at much higher volume.',
+      'Without it': 'Without sales agents, personalization does not scale. High-quality outreach is limited to what human SDRs can manually produce.',
+      'With it': 'With sales agents, personalized engagement scales to every prospect rather than being limited to high-value targets.'
+    },
+    'Supply chain agents': {
+      'What it is': 'Supply chain agents monitor and optimize procurement, inventory, logistics, and supplier management. They analyze demand patterns, detect supply risks, optimize routing, and automate procurement workflows.',
+      'Where it is used': 'They are used in manufacturing, retail, logistics, and any organization with complex supply chain operations that benefit from AI-augmented decision-making.',
+      'What it unlocks': 'It unlocks intelligent supply chain management: faster risk detection, optimized inventory, and automated procurement for routine purchases.',
+      'Human analogy': 'The human analogy is a supply chain analyst who continuously monitors supplier health, inventory levels, and demand patterns, flagging issues proactively.',
+      'Without it': 'Without supply chain agents, supply chain management is reactive. Problems are discovered when they cause disruptions rather than being anticipated.',
+      'With it': 'With supply chain agents, operations gain proactive risk management and optimization that human analysts cannot maintain continuously.'
+    },
+    'HR & recruiting agents': {
+      'What it is': 'HR and recruiting agents assist with resume screening, candidate matching, interview scheduling, onboarding workflows, and employee support. They combine document understanding with workflow automation.',
+      'Where it is used': 'They are used in talent acquisition, employee services, policy Q&A, and administrative HR workflows that involve high volumes of routine processing.',
+      'What it unlocks': 'It unlocks faster recruiting and more responsive employee services. Routine HR tasks are handled instantly rather than waiting in queues.',
+      'Human analogy': 'The human analogy is an HR coordinator who can screen resumes, schedule interviews, answer policy questions, and process routine requests quickly.',
+      'Without it': 'Without HR agents, recruiting is bottlenecked by manual screening, and employee services are limited by HR team availability.',
+      'With it': 'With HR agents, recruiting throughput increases and employees get instant responses to routine HR questions.'
+    },
+    'Compliance & audit agents': {
+      'What it is': 'Compliance and audit agents continuously monitor organizational activities against regulatory requirements, internal policies, and audit criteria. They flag violations, prepare audit evidence, and track compliance status.',
+      'Where it is used': 'They are used in regulated industries (finance, healthcare, government) and any organization with ongoing compliance obligations that require continuous monitoring.',
+      'What it unlocks': 'It unlocks continuous compliance monitoring rather than periodic audits. Violations are caught in real-time instead of quarterly.',
+      'Human analogy': 'The human analogy is a compliance officer who continuously reviews activities against regulations, rather than conducting periodic spot-checks.',
+      'Without it': 'Without compliance agents, compliance is assessed periodically through manual audits. Violations may persist between audit cycles.',
+      'With it': 'With compliance agents, regulatory adherence is monitored continuously, catching violations when they occur rather than months later.'
+    },
+    'Meeting summarization agents': {
+      'What it is': 'Meeting summarization agents transcribe, summarize, and extract action items from meetings. They produce structured summaries with key decisions, assigned tasks, and follow-up items, eliminating the need for manual note-taking.',
+      'Where it is used': 'They are used in every meeting-heavy organization. They save time on note-taking and ensure that decisions and action items are captured accurately.',
+      'What it unlocks': 'It unlocks reliable meeting documentation without dedicated note-takers. Every meeting produces a structured summary with extracted action items.',
+      'Human analogy': 'The human analogy is a dedicated note-taker who captures every decision, action item, and key discussion point, then distributes a clean summary.',
+      'Without it': 'Without summarization agents, meeting notes are taken manually (inconsistent quality) or not at all (decisions and action items are forgotten).',
+      'With it': 'With summarization agents, every meeting produces a reliable summary, improving organizational memory and follow-through.'
+    },
+    'Procurement agents': {
+      'What it is': 'Procurement agents automate purchasing workflows: vendor comparison, price negotiation support, purchase order generation, approval routing, and contract management. They combine document understanding with workflow automation.',
+      'Where it is used': 'They are used in purchasing departments, vendor management, and any organization with significant procurement volume.',
+      'What it unlocks': 'It unlocks faster, more consistent procurement. Routine purchases are automated while complex purchases are prepared with AI-assisted analysis.',
+      'Human analogy': 'The human analogy is a procurement specialist who can compare vendors, prepare purchase orders, and manage the approval process.',
+      'Without it': 'Without procurement agents, every purchase requires manual vendor comparison, order preparation, and approval routing.',
+      'With it': 'With procurement agents, routine purchasing is automated and complex purchases are prepared more quickly with AI-assisted vendor analysis.'
+    },
+    'Research agents': {
+      'What it is': 'Research agents conduct multi-step investigations: formulating search strategies, gathering information from multiple sources, synthesizing findings, and producing structured reports. They combine web search, document analysis, and reasoning into a coherent research workflow.',
+      'Where it is used': 'They are used in competitive intelligence, market research, academic literature review, due diligence, and any task requiring systematic information gathering and synthesis.',
+      'What it unlocks': 'It unlocks scalable research capability. Tasks that would take a human researcher hours can be completed in minutes with AI-gathered and synthesized information.',
+      'Human analogy': 'The human analogy is a research analyst who searches multiple sources, reads and synthesizes the findings, and delivers a structured report.',
+      'Without it': 'Without research agents, every research task requires manual searching, reading, and synthesis — limiting research throughput to human speed.',
+      'With it': 'With research agents, organizations can conduct more research, faster, on more topics than human researchers alone could cover.'
+    },
+    'Scientific discovery agents': {
+      'What it is': 'Scientific discovery agents assist with hypothesis generation, experiment design, literature synthesis, data analysis, and result interpretation. They accelerate the scientific method by handling information-intensive tasks at AI speed.',
+      'Where it is used': 'They are used in pharmaceutical research, materials science, biology, and any scientific discipline where the volume of literature and data exceeds what human researchers can process.',
+      'What it unlocks': 'It unlocks AI-accelerated scientific research. Literature reviews, hypothesis generation, and data analysis happen faster, enabling scientists to focus on creative and experimental work.',
+      'Human analogy': 'The human analogy is a highly capable research assistant who can review thousands of papers, suggest hypotheses, and analyze experimental data.',
+      'Without it': 'Without scientific agents, researchers spend much of their time on literature review and data processing rather than on experimental design and creative insight.',
+      'With it': 'With scientific agents, the information-processing bottleneck in research is reduced, accelerating the pace of discovery.'
+    },
+    'Healthcare agents': {
+      'What it is': 'Healthcare agents assist with clinical decision support, medical documentation, patient communication, administrative workflows, and health information management. They must meet strict accuracy, privacy, and regulatory requirements.',
+      'Where it is used': 'They are used in clinical settings, health systems, telemedicine, patient engagement, and healthcare administration — always with human oversight for clinical decisions.',
+      'What it unlocks': 'It unlocks AI-assisted healthcare workflows with appropriate safety controls. Administrative burden is reduced while clinical quality is maintained.',
+      'Human analogy': 'The human analogy is a medical assistant who can prepare patient summaries, draft documentation, answer routine questions, and triage administrative tasks.',
+      'Without it': 'Without healthcare agents, clinicians spend significant time on documentation and administrative tasks that could be AI-assisted.',
+      'With it': 'With healthcare agents, clinicians spend more time on patient care and less on documentation and administrative overhead.'
+    },
+    'Education agents': {
+      'What it is': 'Education agents provide personalized tutoring, adaptive learning paths, assessment generation, and educational content creation. They adapt to each learner\'s pace, knowledge level, and learning style.',
+      'Where it is used': 'They are used in online learning platforms, corporate training, K-12 education, and any context where personalized instruction at scale is valuable.',
+      'What it unlocks': 'It unlocks one-on-one tutoring at scale. Every learner gets personalized instruction adapted to their level and pace.',
+      'Human analogy': 'The human analogy is a personal tutor who knows exactly where you are in the material and adjusts their teaching accordingly.',
+      'Without it': 'Without education agents, personalized instruction is limited by tutor availability. Most learners get one-size-fits-all content.',
+      'With it': 'With education agents, personalized learning is available to every student, not just those who can afford private tutors.'
+    },
+    'Drug discovery agents': {
+      'What it is': 'Drug discovery agents accelerate pharmaceutical research: analyzing molecular structures, predicting drug-target interactions, designing clinical trials, and synthesizing literature on drug candidates. They combine domain expertise with AI reasoning at scale.',
+      'Where it is used': 'They are used in pharmaceutical companies, biotech startups, and academic drug research — anywhere the volume of chemical, biological, and clinical data exceeds human processing capacity.',
+      'What it unlocks': 'It unlocks faster drug candidate identification and screening. The vast chemical and biological search space is explored more efficiently with AI assistance.',
+      'Human analogy': 'The human analogy is a team of computational chemists who can screen millions of compounds and predict interactions faster than lab experiments alone.',
+      'Without it': 'Without drug discovery agents, candidate screening and literature synthesis are rate-limited by human researcher throughput.',
+      'With it': 'With drug discovery agents, the research pipeline accelerates from target identification through candidate optimization.'
+    },
+    'Materials science agents': {
+      'What it is': 'Materials science agents assist with materials design, property prediction, synthesis planning, and literature synthesis. They accelerate the discovery of new materials by exploring the vast space of possible compositions and structures.',
+      'Where it is used': 'They are used in materials research laboratories, manufacturing, semiconductor development, and any field where discovering materials with specific properties is the core challenge.',
+      'What it unlocks': 'It unlocks faster materials discovery by exploring more of the compositional space than traditional experimental methods allow.',
+      'Human analogy': 'The human analogy is a materials researcher with encyclopedic knowledge who can suggest promising compositions based on vast literature review.',
+      'Without it': 'Without materials agents, materials discovery relies on expensive trial-and-error experimentation guided by limited human intuition.',
+      'With it': 'With materials agents, the search for new materials is guided by AI analysis of the vast existing knowledge base.'
+    },
+    'Climate & environmental agents': {
+      'What it is': 'Climate and environmental agents assist with environmental monitoring, climate data analysis, sustainability reporting, and ecological modeling. They process large environmental datasets and synthesize findings for decision-makers.',
+      'Where it is used': 'They are used in environmental research, corporate sustainability programs, government environmental agencies, and climate science.',
+      'What it unlocks': 'It unlocks AI-assisted environmental analysis at the scale needed for climate and sustainability challenges.',
+      'Human analogy': 'The human analogy is an environmental analyst who can process satellite data, monitor ecosystems, and prepare sustainability reports.',
+      'Without it': 'Without environmental agents, environmental data analysis is bottlenecked by the volume of data that exceeds human processing capacity.',
+      'With it': 'With environmental agents, organizations can analyze environmental data at the scale required for meaningful climate and sustainability action.'
+    },
+    'Academic writing & literature review agents': {
+      'What it is': 'Academic writing and literature review agents assist researchers with systematic literature reviews, citation management, writing assistance, and paper formatting. They process large bodies of academic literature and help organize findings.',
+      'Where it is used': 'They are used in academic research, thesis writing, systematic reviews, and any scholarly work that requires processing large volumes of academic literature.',
+      'What it unlocks': 'It unlocks faster, more thorough literature review. Researchers can cover more papers and identify more relevant work than manual review allows.',
+      'Human analogy': 'The human analogy is a research librarian who can search databases, organize findings, and help prepare literature review sections.',
+      'Without it': 'Without literature review agents, systematic reviews are time-consuming and inevitably miss relevant papers due to human search limitations.',
+      'With it': 'With literature review agents, researchers cover more of the relevant literature and organize it more systematically.'
+    },
+    'Personal assistants': {
+      'What it is': 'Personal assistant agents manage individual productivity: scheduling, reminders, email management, information lookup, task management, and personal knowledge management. They learn user preferences and adapt their behavior over time.',
+      'Where it is used': 'They are used by individuals for daily productivity: managing calendars, drafting communications, organizing information, and automating personal workflows.',
+      'What it unlocks': 'It unlocks AI-augmented personal productivity. Routine tasks are handled automatically, and information is organized and accessible.',
+      'Human analogy': 'The human analogy is a capable executive assistant who knows your preferences, manages your schedule, and handles routine tasks proactively.',
+      'Without it': 'Without personal agents, individuals manage all routine tasks manually, consuming time that could be spent on higher-value work.',
+      'With it': 'With personal agents, routine productivity tasks are automated and personalized, freeing time for creative and strategic work.'
+    },
+    'Multi-modal agents': {
+      'What it is': 'Multi-modal agents process and produce content across multiple modalities: text, images, audio, video, and code. They can analyze an image, discuss it in text, generate related images, and explain concepts through voice — all in one interaction.',
+      'Where it is used': 'They are used in creative workflows, accessibility tools, education, and any application where interaction naturally spans multiple modalities.',
+      'What it unlocks': 'It unlocks naturally multi-modal interaction. Users communicate in whatever modality is most natural for each part of the conversation.',
+      'Human analogy': 'The human analogy is a colleague who can sketch diagrams, explain verbally, analyze photos, and write text — adapting their communication to what the situation requires.',
+      'Without it': 'Without multi-modal agents, each modality requires a separate tool or pipeline, creating fragmented user experiences.',
+      'With it': 'With multi-modal agents, interactions flow naturally across modalities in a single conversation.'
+    },
+    'Voice agents & assistants': {
+      'What it is': 'Voice agents interact through spoken conversation, combining speech recognition, language understanding, reasoning, and speech synthesis into a natural verbal interface. They handle phone calls, voice commands, and conversational interactions.',
+      'Where it is used': 'They are used in call centers, voice-first devices, accessibility interfaces, and any context where voice is the primary or preferred interaction modality.',
+      'What it unlocks': 'It unlocks AI assistance through the most natural human communication modality: speech. No typing required.',
+      'Human analogy': 'The human analogy is a helpful colleague you can talk to: you describe your need verbally and they respond in conversation.',
+      'Without it': 'Without voice agents, AI assistance requires text input, excluding voice-first contexts and users who prefer spoken interaction.',
+      'With it': 'With voice agents, AI assistance is available through natural conversation, making it accessible in hands-free and voice-first contexts.'
+    },
+    'Browser / computer-use agents': {
+      'What it is': 'Browser and computer-use agents operate software through visual interfaces — clicking, typing, and navigating — as a human would. They can use any software with a GUI, bridging the gap between AI capability and the visual interfaces that most software presents.',
+      'Where it is used': 'They are used for web automation, legacy system interaction, and any task involving software that lacks APIs but has a visual interface.',
+      'What it unlocks': 'It unlocks AI automation of any visual interface. If a human can see and click it, a computer-use agent can too.',
+      'Human analogy': 'The human analogy is a remote worker who can see your screen and operate your computer on your behalf.',
+      'Without it': 'Without computer-use agents, AI cannot interact with the vast majority of software that was designed for human visual interaction.',
+      'With it': 'With computer-use agents, any software with a visual interface becomes automatable, regardless of whether it has an API.'
+    },
+    'Shopping & comparison agents': {
+      'What it is': 'Shopping and comparison agents help users find, compare, and purchase products by searching across retailers, comparing prices and features, reading reviews, and managing the purchase process.',
+      'Where it is used': 'They are used in consumer e-commerce, B2B procurement, and any purchasing decision that benefits from systematic comparison across options.',
+      'What it unlocks': 'It unlocks informed purchasing decisions at scale. The agent does the comparison work that would take a human hours.',
+      'Human analogy': 'The human analogy is a personal shopper who researches options, compares prices, reads reviews, and presents the best choices.',
+      'Without it': 'Without shopping agents, consumers must manually search and compare across multiple retailers, often settling for suboptimal choices due to research fatigue.',
+      'With it': 'With shopping agents, purchasing decisions are informed by thorough comparison that would be impractical to do manually.'
+    },
+    'Travel planning agents': {
+      'What it is': 'Travel planning agents research and organize trips: finding flights and hotels, creating itineraries, managing bookings, and handling travel logistics. They combine search, comparison, and scheduling into a coherent travel plan.',
+      'Where it is used': 'They are used for personal travel planning, corporate travel management, and any travel workflow that involves multi-step research and coordination.',
+      'What it unlocks': 'It unlocks personalized travel planning at the thoroughness of a dedicated travel agent, without the cost.',
+      'Human analogy': 'The human analogy is a travel agent who knows your preferences, researches options, and builds a complete trip plan.',
+      'Without it': 'Without travel agents, trip planning requires manual research across multiple booking sites, which is time-consuming and easy to do suboptimally.',
+      'With it': 'With travel agents, trip planning is thorough and personalized, considering preferences and constraints across all travel components.'
+    },
+    'Lifestyle & productivity agents': {
+      'What it is': 'Lifestyle and productivity agents assist with personal organization, habit tracking, meal planning, fitness guidance, and daily routine optimization. They provide personalized recommendations based on user goals and preferences.',
+      'Where it is used': 'They are used in personal productivity apps, health and wellness platforms, and any consumer application that helps users manage their daily lives more effectively.',
+      'What it unlocks': 'It unlocks personalized life management assistance. Routine planning and organization are handled by AI adapted to individual preferences.',
+      'Human analogy': 'The human analogy is a personal assistant who knows your schedule, preferences, and goals, helping optimize your daily routine.',
+      'Without it': 'Without lifestyle agents, personal organization relies entirely on individual discipline and manual planning.',
+      'With it': 'With lifestyle agents, personal optimization is AI-assisted, providing consistent support for habits and routines.'
+    },
+    'Creative / content generation agents': {
+      'What it is': 'Creative and content generation agents produce text, images, video, music, and other creative content. They assist with copywriting, design, video production, and any creative workflow that benefits from AI-generated or AI-assisted content.',
+      'Where it is used': 'They are used in marketing, media, entertainment, design, and any field that produces creative content at scale.',
+      'What it unlocks': 'It unlocks scalable content creation. High-quality creative content can be produced faster and in greater volume with AI assistance.',
+      'Human analogy': 'The human analogy is a creative team on demand: writers, designers, and producers available to generate content from briefs.',
+      'Without it': 'Without creative agents, content production is limited by the speed of human creators, creating bottlenecks in content-heavy workflows.',
+      'With it': 'With creative agents, content production scales to meet demand while maintaining quality standards.'
+    },
+    'Gaming & NPC agents': {
+      'What it is': 'Gaming and NPC agents power non-player characters and game systems with AI reasoning, creating more dynamic, responsive, and believable game experiences. NPCs can engage in natural dialogue, adapt to player behavior, and make contextual decisions.',
+      'Where it is used': 'They are used in video games, interactive fiction, simulation, and any interactive entertainment that benefits from intelligent, adaptive characters.',
+      'What it unlocks': 'It unlocks dynamic, responsive game characters that react to player behavior rather than following scripted dialogue trees.',
+      'Human analogy': 'The human analogy is a skilled improv actor who can play any character, react to whatever the audience does, and maintain a coherent role.',
+      'Without it': 'Without AI-powered NPCs, game characters follow scripted paths, breaking immersion when players deviate from expected behavior.',
+      'With it': 'With gaming agents, game characters become genuinely interactive, creating more engaging and replayable experiences.'
+    },
+    'Vision-Language-Action models (VLAs)': {
+      'What it is': 'VLAs are models that take visual observations and language instructions as input and produce physical actions as output. They bridge the gap between perception (seeing), understanding (language), and action (physical movement), enabling robots that can follow natural language commands in visual environments.',
+      'Where it is used': 'They are used in robotics research, warehouse automation, manufacturing, and any physical AI application that needs to understand visual scenes and execute physical actions based on language instructions.',
+      'What it unlocks': 'It unlocks language-instructable physical AI. Robots can be commanded in natural language rather than requiring specific programming for each task.',
+      'Human analogy': 'The human analogy is a worker who can look at a situation, understand verbal instructions, and physically carry out the task.',
+      'Without it': 'Without VLAs, physical AI requires separate vision, language, and action systems with complex integration between them.',
+      'With it': 'With VLAs, physical AI systems can be instructed in natural language, dramatically simplifying the interface between humans and robots.'
+    },
+    'Sim-to-real transfer & domain randomization': {
+      'What it is': 'Sim-to-real transfer trains physical AI agents in simulation and deploys them in the real world. Domain randomization varies simulation parameters (textures, lighting, physics) during training so the agent learns to handle real-world variability.',
+      'Where it is used': 'It is used in robotics, autonomous vehicles, and any physical AI where real-world training is too expensive, slow, or dangerous.',
+      'What it unlocks': 'It unlocks safe, scalable physical AI training. Agents train in simulation at thousands of times real-world speed without risk.',
+      'Human analogy': 'The human analogy is flight simulator training: pilots train on diverse simulated scenarios so they can handle real-world variability.',
+      'Without it': 'Without sim-to-real, physical AI must be trained in the real world, which is slow, expensive, and potentially dangerous.',
+      'With it': 'With sim-to-real transfer, physical AI agents are trained safely and efficiently in simulation before real-world deployment.'
+    },
+    'JEPA (Joint Embedding Predictive Architecture)': {
+      'What it is': 'JEPA learns representations by predicting latent embeddings of future observations rather than predicting raw pixels or tokens. It builds a world model in embedding space, enabling more efficient learning of physical dynamics and spatial relationships.',
+      'Where it is used': 'It is used in research on world models, physical AI, and self-supervised learning of visual and physical representations.',
+      'What it unlocks': 'It unlocks efficient world-model learning. By predicting in embedding space rather than pixel space, JEPA learns useful representations more efficiently.',
+      'Human analogy': 'The human analogy is predicting what will happen conceptually (the ball will fall) rather than imagining every pixel of the future scene.',
+      'Without it': 'Without JEPA-style approaches, world models must predict raw observations, which is computationally expensive and focuses on irrelevant visual details.',
+      'With it': 'With JEPA, world models learn efficient, abstract representations of dynamics, focusing on what matters for prediction rather than pixel-level detail.'
+    },
+    'Teleoperation data collection pipelines': {
+      'What it is': 'Teleoperation data collection uses human operators controlling robots to generate training data for physical AI. The operator performs tasks while the system records observations, actions, and outcomes, creating demonstration data for imitation learning.',
+      'Where it is used': 'It is used in robot manipulation research, autonomous vehicle data collection, and any physical AI system that learns from human demonstrations.',
+      'What it unlocks': 'It unlocks efficient collection of real-world demonstration data. Human operators generate the examples that physical AI systems learn from.',
+      'Human analogy': 'The human analogy is an experienced craftsperson demonstrating techniques while an apprentice records every movement for future study.',
+      'Without it': 'Without teleoperation data, physical AI must learn from scratch through trial-and-error, which is much slower and more data-hungry.',
+      'With it': 'With teleoperation data, physical AI systems learn from human expertise, dramatically accelerating training on complex manipulation tasks.'
+    },
+    'Single-model vs dual-system VLA design': {
+      'What it is': 'This design choice determines whether a physical AI system uses a single end-to-end model for perception-to-action, or separates it into a high-level reasoning system (language model) and a low-level action system (motor controller). Each approach has different tradeoffs for capability, latency, and training.',
+      'Where it is used': 'It is a core architecture decision in physical AI and robotics. The choice affects how the system trains, what it can learn, and how fast it can react.',
+      'What it unlocks': 'It unlocks informed architectural choices for physical AI. Single-model approaches are simpler; dual-system approaches offer modularity.',
+      'Human analogy': 'The human analogy is the difference between instinctive reaction (single system) and deliberate planning followed by execution (dual system).',
+      'Without it': 'Without understanding this tradeoff, teams may commit to an architecture that does not match their latency, capability, or training data requirements.',
+      'With it': 'With this tradeoff understood, teams choose the architecture that best matches their physical AI system\'s specific requirements.'
+    },
+    'Trust calibration in human-AI teams': {
+      'What it is': 'Trust calibration ensures that humans trust AI agents at the right level — neither too much (automation complacency) nor too little (underutilization). Well-calibrated trust means humans rely on the agent when it is reliable and verify when it is uncertain.',
+      'Where it is used': 'It is used in every human-agent team deployment. Trust calibration determines whether the team achieves complementary performance or suffers from misplaced trust.',
+      'What it unlocks': 'It unlocks effective human-AI collaboration. Teams perform best when trust matches actual reliability.',
+      'Human analogy': 'The human analogy is calibrating trust in a new colleague: initially verifying their work, gradually trusting more as they prove reliable, and knowing when to double-check.',
+      'Without it': 'Without trust calibration, humans either over-trust (missing agent errors) or under-trust (not leveraging agent capability).',
+      'With it': 'With calibrated trust, human-AI teams achieve complementary performance where each party contributes what they do best.'
+    },
+    'Oversight fatigue & automation complacency': {
+      'What it is': 'Oversight fatigue occurs when humans monitoring AI become less vigilant over time because the AI is usually correct. Automation complacency is the related tendency to stop checking AI outputs altogether. Both reduce the safety value of human oversight.',
+      'Where it is used': 'It is a concern in every human-on-the-loop system, especially those with high AI accuracy where errors are rare but consequential.',
+      'What it unlocks': 'Understanding this risk unlocks countermeasures: varied oversight tasks, attention-maintaining UX, periodic spot checks, and automation that actively engages human attention.',
+      'Human analogy': 'The human analogy is a security guard who stops paying attention because nothing ever happens — until it does.',
+      'Without it': 'Without addressing oversight fatigue, human oversight becomes a rubber stamp that provides false assurance of safety.',
+      'With it': 'With fatigue countermeasures, human oversight remains effective over time rather than degrading into passive acceptance.'
+    },
+    'Role complementarity (human + agent skill mapping)': {
+      'What it is': 'Role complementarity maps which tasks are best handled by humans versus agents, designing workflows that leverage each party\'s strengths. Humans excel at judgment, creativity, and empathy; agents excel at speed, consistency, and scale.',
+      'Where it is used': 'It is used in workflow design, team composition decisions, and any system where the goal is optimal human-agent collaboration rather than full automation.',
+      'What it unlocks': 'It unlocks optimal task allocation. Each task goes to whichever party handles it best, rather than defaulting to full automation or full human control.',
+      'Human analogy': 'The human analogy is a team where each member handles what they do best rather than everyone trying to do everything.',
+      'Without it': 'Without role mapping, task allocation is arbitrary. Agents handle tasks better suited for humans, and vice versa.',
+      'With it': 'With role complementarity, human-agent teams achieve performance neither could match alone.'
+    },
+    'Cognitive load management with AI assistants': {
+      'What it is': 'Cognitive load management designs AI assistance to reduce rather than increase the mental burden on humans. Poorly designed AI tools can add complexity, require attention management, and create decision fatigue that offsets their benefits.',
+      'Where it is used': 'It is used in UX design for AI tools, in configuring agent output formatting, and in designing human-AI workflows that respect human cognitive limits.',
+      'What it unlocks': 'It unlocks AI assistance that genuinely helps rather than adding complexity. The tool reduces mental burden rather than creating new burdens.',
+      'Human analogy': 'The human analogy is the difference between a helpful assistant who simplifies your work and a chatty colleague who adds more to your plate.',
+      'Without it': 'Without cognitive load awareness, AI tools generate more information, options, and decisions than the human can effectively process.',
+      'With it': 'With cognitive load management, AI assistance simplifies human work rather than complicating it.'
+    },
+    'Shared mental models between humans and agents': {
+      'What it is': 'Shared mental models mean the human and agent have compatible understanding of the task, the plan, and each other\'s capabilities. When mental models align, coordination is smooth; when they diverge, errors and misunderstandings follow.',
+      'Where it is used': 'It is a concern in every human-agent collaboration: the human must understand what the agent is doing and why, and the agent must understand human expectations.',
+      'What it unlocks': 'It unlocks smooth human-agent coordination. Both parties have compatible expectations about what will happen next and why.',
+      'Human analogy': 'The human analogy is a well-coordinated team where everyone understands the plan, their role, and what their teammates are doing.',
+      'Without it': 'Without shared mental models, humans and agents act on incompatible assumptions, leading to coordination failures and unmet expectations.',
+      'With it': 'With shared mental models, human-agent collaboration is coordinated and predictable because both parties share the same understanding.'
+    },
+    'Explainability requirements for team trust': {
+      'What it is': 'Explainability requirements define what the agent must explain to human team members to maintain trust: why it took an action, what it is uncertain about, what it plans to do next, and what evidence supports its conclusions.',
+      'Where it is used': 'They are used in human-agent team design, in regulated workflows requiring explanation, and anywhere team trust depends on understanding agent reasoning.',
+      'What it unlocks': 'It unlocks informed human oversight. Team members understand agent reasoning well enough to catch errors and maintain calibrated trust.',
+      'Human analogy': 'The human analogy is requiring team members to explain their reasoning for important decisions rather than just announcing conclusions.',
+      'Without it': 'Without explainability, human team members cannot assess whether agent decisions are well-reasoned, undermining trust or creating blind trust.',
+      'With it': 'With explainability requirements, agent reasoning is visible to the team, enabling informed trust and effective oversight.'
+    },
+    'Handoff protocols (agent-to-human escalation)': {
+      'What it is': 'Handoff protocols define how work transitions from agent to human: what context is transferred, how the handoff is signaled, what the human needs to know to continue, and how the human\'s work is integrated back into the agent workflow.',
+      'Where it is used': 'They are used in every system with agent-to-human escalation: customer support, medical triage, complex analysis, and any workflow where the agent handles routine cases and escalates exceptions.',
+      'What it unlocks': 'It unlocks seamless agent-to-human transitions. The human picks up with full context rather than starting from scratch.',
+      'Human analogy': 'The human analogy is a shift handoff: the outgoing worker briefs the incoming one with current status, pending issues, and important context.',
+      'Without it': 'Without handoff protocols, escalated cases arrive without context. The human must re-gather information the agent already collected.',
+      'With it': 'With handoff protocols, agent-to-human transitions are seamless and no accumulated context is lost.'
+    },
+    'Anti-patterns: over-reliance, learned helplessness, automation bias': {
+      'What it is': 'These anti-patterns describe dysfunctional human responses to AI: over-reliance (trusting AI even when wrong), learned helplessness (losing skills because AI handles everything), and automation bias (preferring AI output over human judgment). All undermine the human-AI team.',
+      'Where it is used': 'They are concerns in every human-AI deployment, especially those where humans gradually cede decision-making to AI tools.',
+      'What it unlocks': 'Understanding these anti-patterns unlocks preventive design: skill-maintaining tasks, forced engagement, and workflows that preserve human capability.',
+      'Human analogy': 'The human analogy is how reliance on GPS can erode navigation skills: the tool helps in the moment but may weaken the underlying capability.',
+      'Without it': 'Without anti-pattern awareness, organizations gradually lose human expertise as AI handles more tasks, creating brittleness when the AI fails.',
+      'With it': 'With anti-pattern awareness, teams design human-AI workflows that leverage AI without degrading human capability.'
+    },
+    'Mixed-initiative interaction design': {
+      'What it is': 'Mixed-initiative interaction allows both the human and agent to take initiative during a task: the agent can suggest actions, ask questions, or proceed autonomously, while the human can redirect, correct, or take over at any point.',
+      'Where it is used': 'It is used in collaborative tools, creative workflows, and any system where the optimal division of initiative varies throughout the task.',
+      'What it unlocks': 'It unlocks flexible human-AI collaboration where either party can lead or follow as the situation requires.',
+      'Human analogy': 'The human analogy is a collaborative working session where either person can suggest direction, and leadership shifts naturally based on who has the relevant insight.',
+      'Without it': 'Without mixed initiative, the interaction is either human-driven (agent only responds to commands) or agent-driven (human only reviews output). Neither captures the best collaboration dynamic.',
+      'With it': 'With mixed initiative, human-AI collaboration adapts fluidly, with each party contributing when they have the most to offer.'
+    },
+    'Team situational awareness with AI members': {
+      'What it is': 'Team situational awareness ensures that all team members — both human and AI — have appropriate awareness of the current situation: what has been done, what is in progress, what problems have been encountered, and what is planned next.',
+      'Where it is used': 'It is used in operations teams with AI support, military/emergency contexts, and any high-stakes team where coordinated action depends on shared understanding of the situation.',
+      'What it unlocks': 'It unlocks coordinated human-AI action based on shared understanding. All team members, human and AI, work from the same picture.',
+      'Human analogy': 'The human analogy is a situation room where everyone has access to the same status board and briefings.',
+      'Without it': 'Without shared situational awareness, humans and agents act on different understandings of the situation, leading to uncoordinated and potentially contradictory actions.',
+      'With it': 'With shared situational awareness, human-AI teams coordinate effectively because everyone has the same operational picture.'
+    },
+    'Workforce redesign for human-agent collaboration': {
+      'What it is': 'Workforce redesign restructures roles, processes, and team compositions to effectively integrate AI agents. It goes beyond adding AI to existing workflows to rethinking how work is organized when AI capability is a core team resource.',
+      'Where it is used': 'It is used in organizational transformation, enterprise AI adoption, and any context where AI agents are changing the fundamental nature of work.',
+      'What it unlocks': 'It unlocks organizational structures optimized for human-AI collaboration rather than bolted-on AI in human-designed processes.',
+      'Human analogy': 'The human analogy is redesigning a factory for automation rather than just adding robots to existing assembly lines — the whole process is rethought.',
+      'Without it': 'Without workforce redesign, AI is added to processes designed for humans alone, achieving only incremental improvement rather than transformative change.',
+      'With it': 'With workforce redesign, organizations achieve the full benefit of human-AI collaboration by designing processes around combined capability.'
     }
   });
 }());
