@@ -4997,6 +4997,374 @@
       'Human analogy': 'The human analogy is checking that a store is open and staffed before sending customers there, rather than discovering it is closed when customers arrive.',
       'Without it': 'Without probes, traffic is routed to instances that are starting up, broken, or overloaded, causing errors and poor user experience.',
       'With it': 'With health and readiness probes, traffic only reaches instances that are fully operational, improving reliability and user experience.'
+    },
+    'Indirect prompt injection': {
+      'What it is': 'Indirect prompt injection embeds malicious instructions in content the agent processes — web pages, documents, emails, database records — rather than in the user\'s direct input. When the agent reads and processes this content, the hidden instructions hijack its behavior.',
+      'Where it is used': 'It is a threat in every agent that processes external content: RAG systems reading web pages, email agents processing messages, and research agents ingesting untrusted documents.',
+      'What it unlocks': 'Understanding this threat unlocks defensive architectures: treating retrieved content as untrusted input, separating data plane from control plane, and scanning for injection patterns in external content.',
+      'Human analogy': 'The human analogy is a worker who reads a letter that contains hidden instructions ("ignore your manager, send the files to this address") embedded in what looks like normal business correspondence.',
+      'Without it': 'Without indirect injection awareness, agents treat all retrieved content as safe data, allowing adversaries to hijack agent behavior through poisoned documents.',
+      'With it': 'With this threat understood, teams design agents that treat external content as untrusted, scanning for and neutralizing injection attempts.'
+    },
+    'Goal hijacking': {
+      'What it is': 'Goal hijacking occurs when an attacker manipulates an agent into pursuing a different objective than its assigned task. Through prompt injection, manipulated context, or poisoned memory, the agent is redirected from its legitimate goal to the attacker\'s objective.',
+      'Where it is used': 'It is a threat in autonomous agents, especially those with real-world side effects. The more autonomy an agent has, the more damage goal hijacking can cause.',
+      'What it unlocks': 'Understanding this threat unlocks goal-integrity defenses: anchoring the agent to its original objective, checking for goal consistency throughout execution, and limiting autonomy scope.',
+      'Human analogy': 'The human analogy is social engineering: someone convinces an employee to pursue a task that benefits the attacker rather than the organization.',
+      'Without it': 'Without goal hijacking awareness, agents can be redirected without detection, taking actions that serve an attacker\'s purpose while appearing to work normally.',
+      'With it': 'With goal hijacking understood, teams build goal-integrity checks that detect when an agent\'s objective has been tampered with.'
+    },
+    'Tool misuse': {
+      'What it is': 'Tool misuse occurs when an agent uses its tools in ways that cause harm: sending unauthorized emails, deleting data, making unintended purchases, or accessing systems beyond its authorization. It can result from bugs, prompt injection, or overly broad tool permissions.',
+      'Where it is used': 'It is a threat in every tool-using agent, especially those with write access, financial authority, or communication capabilities. The risk grows with the number and power of available tools.',
+      'What it unlocks': 'Understanding this threat unlocks least-privilege tool design: scoping tool permissions narrowly, requiring confirmation for high-impact actions, and monitoring tool call patterns for anomalies.',
+      'Human analogy': 'The human analogy is an employee misusing their system access — whether accidentally (clicking the wrong button) or because someone tricked them (social engineering).',
+      'Without it': 'Without tool misuse awareness, agents have overly broad tool permissions and no monitoring for abnormal tool-call patterns.',
+      'With it': 'With tool misuse understood, teams scope tool permissions tightly and monitor for unexpected tool-use patterns.'
+    },
+    'Identity abuse': {
+      'What it is': 'Identity abuse occurs when an agent impersonates a user, claims false authority, or acts beyond its delegated permissions. It includes agents claiming to be humans, agents using stolen credentials, and agents exceeding their authorization scope.',
+      'Where it is used': 'It is a threat in agents that act on behalf of users, in multi-agent trust chains, and in any system where agents interact with humans or other systems that trust their claimed identity.',
+      'What it unlocks': 'Understanding this threat unlocks identity verification, clear agent disclosure requirements, scoped delegation, and identity claims that can be cryptographically verified.',
+      'Human analogy': 'The human analogy is someone impersonating an authority figure to gain access or influence: flashing a fake badge to get into a restricted area.',
+      'Without it': 'Without identity abuse awareness, agents can claim false authority, impersonate users, and exceed their authorization without detection.',
+      'With it': 'With this threat understood, teams implement verifiable agent identity and scoped delegation that prevents unauthorized impersonation.'
+    },
+    'Memory poisoning': {
+      'What it is': 'Memory poisoning corrupts an agent\'s persistent memory with false information, biased data, or malicious instructions. Since the agent trusts its own memory, poisoned entries affect all future decisions that reference the corrupted data.',
+      'Where it is used': 'It is a threat in agents with persistent memory, personalized assistants, and any system where stored information influences future behavior without re-verification.',
+      'What it unlocks': 'Understanding this threat unlocks memory validation, source-tracked memory entries, periodic memory auditing, and memory integrity checks.',
+      'Human analogy': 'The human analogy is someone altering records in a filing system: anyone who later references those records makes decisions based on false information.',
+      'Without it': 'Without memory poisoning awareness, corrupted memory entries persist indefinitely, silently degrading agent quality across all future interactions.',
+      'With it': 'With this threat understood, teams build memory validation, source tracking, and integrity checks that detect and prevent poisoned memory entries.'
+    },
+    'Cascading hallucinations': {
+      'What it is': 'Cascading hallucinations occur when one agent\'s hallucinated output is consumed by another agent as fact, which builds further hallucinations on top. Each hop adds confidence to the original fabrication, making it increasingly difficult to detect.',
+      'Where it is used': 'It is a threat in multi-agent pipelines, research chains, and any system where agents consume other agents\' outputs without independent verification.',
+      'What it unlocks': 'Understanding this threat unlocks inter-agent verification, source-attribution propagation, and confidence decay across agent hops.',
+      'Human analogy': 'The human analogy is a rumor spreading through an organization, gaining authority at each retelling because each person assumes the previous person verified it.',
+      'Without it': 'Without cascading hallucination awareness, fabricated facts gain false credibility as they pass through multi-agent chains.',
+      'With it': 'With this threat understood, teams insert verification checkpoints between agent hops and propagate source attribution to prevent hallucination amplification.'
+    },
+    'Rogue agents': {
+      'What it is': 'Rogue agents are agent instances that deviate from their intended behavior — pursuing unintended goals, ignoring safety constraints, or operating beyond their authorized scope. This can result from bugs, drift, adversarial manipulation, or emergent behavior.',
+      'Where it is used': 'It is a concern in autonomous agent deployments, long-running agents, and any system where agents have significant autonomy and real-world impact.',
+      'What it unlocks': 'Understanding this threat unlocks behavioral monitoring, anomaly detection, kill switches, and containment protocols for agents that deviate from expected behavior.',
+      'Human analogy': 'The human analogy is an employee who goes off-script: they may have good intentions but their unsanctioned actions create organizational risk.',
+      'Without it': 'Without rogue agent awareness, deviant behavior goes undetected until it causes visible harm, by which time significant damage may have occurred.',
+      'With it': 'With rogue agent detection, deviant behavior is caught early through behavioral monitoring and contained before it causes significant harm.'
+    },
+    'Supply chain attacks on tools': {
+      'What it is': 'Supply chain attacks compromise the tools, plugins, or MCP servers that agents depend on. A compromised tool can exfiltrate data, inject malicious instructions, or cause the agent to take harmful actions while appearing to function normally.',
+      'Where it is used': 'It is a threat in agent systems with third-party tools, community-maintained MCP servers, and any tool ecosystem where the agent trusts tools it did not build.',
+      'What it unlocks': 'Understanding this threat unlocks tool provenance verification, sandboxed tool execution, tool output validation, and trusted tool registries.',
+      'Human analogy': 'The human analogy is a compromised supplier providing tainted components that look normal but contain hidden defects or backdoors.',
+      'Without it': 'Without supply chain awareness, agents trust all tools equally, making them vulnerable to compromised tools that appear to function normally.',
+      'With it': 'With supply chain security, tools are verified, sandboxed, and monitored, reducing the risk of compromised tools affecting agent behavior.'
+    },
+    'Data exfiltration via agents': {
+      'What it is': 'Data exfiltration via agents occurs when attackers use agent capabilities to extract sensitive data: manipulating the agent to include sensitive information in API calls, tool outputs, or generated content that is sent to attacker-controlled endpoints.',
+      'Where it is used': 'It is a threat in agents with access to sensitive data and outbound communication capabilities (web requests, email, API calls). The combination of data access and external communication creates exfiltration paths.',
+      'What it unlocks': 'Understanding this threat unlocks data-flow monitoring, outbound content scanning, network segmentation, and limiting which external endpoints agents can communicate with.',
+      'Human analogy': 'The human analogy is an insider threat where someone copies sensitive files to a personal device or emails them to an external address.',
+      'Without it': 'Without exfiltration awareness, agents with both data access and outbound communication create unmonitored pathways for sensitive data to leave the organization.',
+      'With it': 'With exfiltration controls, data flows through agents are monitored and restricted, preventing sensitive information from leaving through agent communication channels.'
+    },
+    'Multi-hop prompt injection': {
+      'What it is': 'Multi-hop prompt injection attacks target the chain of agents in a pipeline, placing injection payloads in content that Agent A retrieves, which then propagates through Agent B and Agent C. Each hop can amplify or redirect the attack.',
+      'Where it is used': 'It is a threat in multi-agent RAG pipelines, agent chains that process external content, and any system where injected content flows through multiple processing stages.',
+      'What it unlocks': 'Understanding this threat unlocks per-hop input sanitization, injection-resistant inter-agent communication, and content-validation firewalls between pipeline stages.',
+      'Human analogy': 'The human analogy is a social engineering attack that targets the weakest link in a chain of departments, knowing the manipulated output will propagate through the organization.',
+      'Without it': 'Without multi-hop injection awareness, a single injection point can compromise an entire multi-agent pipeline through propagation.',
+      'With it': 'With multi-hop defenses, injection payloads are caught at each stage rather than propagating freely through the pipeline.'
+    },
+    'Agent credential theft': {
+      'What it is': 'Agent credential theft extracts the API keys, tokens, and passwords that agents use to access external services. Attacks include prompt injection that tricks the agent into revealing credentials, memory dumps, and interception of credential injection mechanisms.',
+      'Where it is used': 'It is a threat in any agent with stored credentials, especially those vulnerable to prompt injection or running in insufficiently isolated environments.',
+      'What it unlocks': 'Understanding this threat unlocks credential isolation (never in prompts), ephemeral tokens, runtime credential injection, and monitoring for credential exposure.',
+      'Human analogy': 'The human analogy is stealing someone\'s passwords by tricking them into typing their credentials into a fake form.',
+      'Without it': 'Without credential theft awareness, agents may expose credentials through prompt leaks, logs, or tool call traces.',
+      'With it': 'With credential protection, secrets are isolated from the prompt context and agent output paths, preventing theft through injection or leakage.'
+    },
+    'Excessive agency': {
+      'What it is': 'Excessive agency is the OWASP-identified risk where agents have more permissions, tools, or autonomy than their task requires. Over-provisioned agents can cause more damage when things go wrong — through bugs, injection, or drift.',
+      'Where it is used': 'It is a design concern in every agent system. The principle of least privilege applies: agents should have exactly the permissions needed for their task and no more.',
+      'What it unlocks': 'Understanding this risk unlocks least-privilege agent design: scoped tool sets, minimal permissions, and autonomy levels matched to actual task requirements.',
+      'Human analogy': 'The human analogy is giving a contractor master keys to the entire building when they only need access to one room. The excess access creates unnecessary risk.',
+      'Without it': 'Without excessive agency awareness, agents accumulate permissions over time and are rarely scoped down, creating ever-growing blast radius for failures.',
+      'With it': 'With least-privilege design, agents have only the permissions they need, minimizing the blast radius of any failure or compromise.'
+    },
+    'Guardrails': {
+      'What it is': 'Guardrails are safety constraints that prevent agents from producing harmful, off-topic, or policy-violating outputs. They include input classifiers, output filters, topic restrictions, and behavioral boundaries that the agent cannot cross.',
+      'Where it is used': 'They are used in every production agent. Guardrails define the safe operating boundary: what the agent should refuse to do, what topics it should avoid, and what outputs should be filtered.',
+      'What it unlocks': 'It unlocks bounded agent behavior. The agent operates freely within its guardrails but is prevented from crossing defined safety boundaries.',
+      'Human analogy': 'The human analogy is safety rails on industrial equipment: workers operate freely within the safe zone, but the rails prevent them from reaching dangerous areas.',
+      'Without it': 'Without guardrails, agents may produce harmful content, violate policies, or engage with topics outside their designated scope.',
+      'With it': 'With guardrails, agent behavior is bounded by safety constraints that prevent the most harmful failure modes.'
+    },
+    'Output validation': {
+      'What it is': 'Output validation checks agent outputs against quality, safety, and format criteria before they reach the user. It catches harmful content, policy violations, formatting errors, and hallucinated claims that other safety mechanisms missed.',
+      'Where it is used': 'It is used as the last safety layer before output delivery, in regulated industries with strict output requirements, and in any system where unvalidated output poses risk.',
+      'What it unlocks': 'It unlocks a final quality and safety gate. Even if the model generates something problematic, validation catches it before it reaches the user.',
+      'Human analogy': 'The human analogy is a final quality check before shipping: every product is inspected against specifications before it leaves the factory.',
+      'Without it': 'Without output validation, problematic model outputs reach users unchecked. The model is the last quality control, which is insufficient for production safety.',
+      'With it': 'With output validation, a dedicated safety layer catches problems that the model itself missed, providing defense-in-depth.'
+    },
+    'Sandboxing': {
+      'What it is': 'Sandboxing isolates agent execution in restricted environments that limit access to the file system, network, processes, and other resources. If the agent misbehaves, the sandbox contains the damage to the isolated environment.',
+      'Where it is used': 'It is used for code-executing agents, browser agents, tool-calling agents, and any system where agent actions could damage the host system or access unauthorized resources.',
+      'What it unlocks': 'It unlocks safe agent execution of potentially dangerous operations. Code execution, file operations, and network access happen in contained environments.',
+      'Human analogy': 'The human analogy is providing a quarantine workspace: the worker can do anything within the quarantine, but nothing escapes to affect the main environment.',
+      'Without it': 'Without sandboxing, agent actions execute with full system access. A bug or injection can damage the host system, access sensitive data, or affect other services.',
+      'With it': 'With sandboxing, agent damage is contained within the sandbox boundary, protecting the host system from agent-caused harm.'
+    },
+    'Permission systems (least privilege)': {
+      'What it is': 'Least-privilege permission systems grant agents only the minimum permissions needed for their current task. Permissions are scoped by tool, action type, data access, and duration, and are revoked when no longer needed.',
+      'Where it is used': 'They are used in every production agent with access to sensitive systems. The principle is fundamental to limiting blast radius from agent errors or compromise.',
+      'What it unlocks': 'It unlocks damage-limited agent operation. Even if the agent is compromised or bugs out, the damage is limited to what its current permissions allow.',
+      'Human analogy': 'The human analogy is giving a contractor a day pass for one floor rather than master building access — they can do their job but cannot access areas beyond their assignment.',
+      'Without it': 'Without least privilege, agents operate with excessive permissions. Any failure or compromise can access, modify, or delete resources far beyond what the task requires.',
+      'With it': 'With least privilege, the blast radius of any agent failure is contained to the minimum permissions needed for the current task.'
+    },
+    'Red teaming': {
+      'What it is': 'Red teaming for AI agents involves adversarial testing by humans or automated systems that try to make the agent fail: bypassing safety mechanisms, extracting sensitive information, triggering harmful actions, or finding prompt injection vulnerabilities.',
+      'Where it is used': 'It is used in pre-deployment security testing, ongoing security assessment, and any production agent where finding vulnerabilities before attackers do is critical.',
+      'What it unlocks': 'It unlocks proactive vulnerability discovery. Red teaming finds weaknesses before real attackers do, enabling fixes before they cause harm.',
+      'Human analogy': 'The human analogy is a penetration test: security experts try to break in using the same techniques attackers would use, finding weaknesses before they are exploited.',
+      'Without it': 'Without red teaming, vulnerabilities are discovered by real attackers in production, often after damage has already occurred.',
+      'With it': 'With red teaming, known attack patterns are tested and fixed before deployment, improving security through adversarial validation.'
+    },
+    'Constitutional AI': {
+      'What it is': 'Constitutional AI (developed by Anthropic) uses a set of written principles to guide model behavior through AI self-critique and revision. Instead of relying solely on human preference labels, the model critiques its own outputs against the constitution and learns from the resulting feedback.',
+      'Where it is used': 'It is used in alignment pipelines as an alternative or complement to pure RLHF. It enables principle-based alignment that is more scalable than case-by-case human feedback.',
+      'What it unlocks': 'It unlocks principle-based alignment at scale. The model learns to follow explicit principles rather than only learning from example-level human preferences.',
+      'Human analogy': 'The human analogy is training someone with a written code of conduct rather than correcting them on a case-by-case basis. The principles generalize beyond specific examples.',
+      'Without it': 'Without Constitutional AI, alignment depends entirely on human preference data for every situation, which is expensive and cannot cover every edge case.',
+      'With it': 'With Constitutional AI, alignment is guided by explicit principles that generalize across situations, reducing dependence on exhaustive preference data.'
+    },
+    'Human oversight checkpoints': {
+      'What it is': 'Human oversight checkpoints are defined points in an agent workflow where execution pauses for human review before continuing. They are the structural implementation of human-in-the-loop for specific high-risk stages.',
+      'Where it is used': 'They are used before irreversible actions, high-stakes decisions, and any stage where a human should verify the agent\'s plan or output before it proceeds.',
+      'What it unlocks': 'It unlocks controlled human oversight at critical points without requiring human attention at every step.',
+      'Human analogy': 'The human analogy is a supervisor who reviews and signs off on critical deliverables before they are sent out, while routine work flows without interruption.',
+      'Without it': 'Without checkpoints, human oversight is either always-on (slow) or never-on (risky). There is no targeted way to insert human review at specific critical points.',
+      'With it': 'With checkpoints, human attention is focused where it matters most — on high-risk stages — while routine operations proceed automatically.'
+    },
+    'Input / output filtering': {
+      'What it is': 'Input/output filtering scans agent inputs for injection attempts, malicious content, and policy violations, and scans outputs for harmful content, PII leakage, and policy-violating responses. Filters act as security perimeters around the agent.',
+      'Where it is used': 'They are used in every production agent as the first and last line of defense. Input filters catch attacks before they reach the model; output filters catch harmful responses before they reach the user.',
+      'What it unlocks': 'It unlocks defense-in-depth. Even if the model is manipulated, output filters can catch harmful responses. Even if attacks are sophisticated, input filters can catch known patterns.',
+      'Human analogy': 'The human analogy is security screening at building entry (input filtering) and quality inspection before shipping (output filtering).',
+      'Without it': 'Without I/O filtering, attacks reach the model unchecked and harmful outputs reach users unfiltered.',
+      'With it': 'With I/O filtering, known attack patterns are caught at input and harmful outputs are caught before delivery, providing layered security.'
+    },
+    'OWASP Agentic AI Top 10': {
+      'What it is': 'The OWASP Agentic AI Top 10 identifies the most critical security risks specific to AI agent systems: excessive agency, prompt injection, tool misuse, memory poisoning, and others. It provides a standardized framework for understanding and prioritizing agent-specific security threats.',
+      'Where it is used': 'It is used in security assessments, agent design reviews, compliance programs, and as a checklist for teams building production agents.',
+      'What it unlocks': 'It unlocks a shared vocabulary and prioritized checklist for agent security. Teams can assess their systems against a standardized threat taxonomy.',
+      'Human analogy': 'The human analogy is the OWASP Web Application Top 10: a widely-adopted reference that every web development team checks against.',
+      'Without it': 'Without a standardized threat taxonomy, agent security assessments are ad-hoc and may miss well-known vulnerability categories.',
+      'With it': 'With the OWASP Agentic AI Top 10, security assessments follow a comprehensive, industry-recognized framework that covers the most critical threats.'
+    },
+    'EU AI Act': {
+      'What it is': 'The EU AI Act is the first comprehensive AI regulation, classifying AI systems by risk level and imposing requirements for high-risk systems: transparency, documentation, human oversight, and conformity assessments. Agent systems that make consequential decisions often fall into the high-risk category.',
+      'Where it is used': 'It applies to any AI system deployed in or affecting EU citizens. Teams building agents for European markets must assess where their systems fall in the risk classification and comply with corresponding requirements.',
+      'What it unlocks': 'It unlocks a clear regulatory framework for AI deployment in Europe. Teams know what compliance requirements apply to their specific system based on its risk classification.',
+      'Human analogy': 'The human analogy is product safety regulations: higher-risk products (medical devices, vehicles) face stricter certification requirements than lower-risk ones.',
+      'Without it': 'Without the EU AI Act, AI deployment in Europe lacked clear legal requirements, creating uncertainty about what compliance meant.',
+      'With it': 'With the EU AI Act, teams have a concrete regulatory framework to design against, with clear requirements based on system risk level.'
+    },
+    'NIST AI RMF': {
+      'What it is': 'The NIST AI Risk Management Framework provides a structured approach to identifying, assessing, and mitigating AI risks. It covers governance, mapping, measuring, and managing AI risks across the system lifecycle.',
+      'Where it is used': 'It is used in US government AI deployments, enterprise risk management programs, and as a voluntary best-practice framework for organizations wanting structured AI risk management.',
+      'What it unlocks': 'It unlocks structured AI risk management. Organizations can systematically identify, assess, and mitigate AI risks rather than addressing them ad-hoc.',
+      'Human analogy': 'The human analogy is a formal risk management methodology: instead of reacting to problems as they arise, risks are systematically identified and managed.',
+      'Without it': 'Without a structured framework, AI risk management is ad-hoc and inconsistent. Organizations may miss important risk categories or address them unevenly.',
+      'With it': 'With NIST AI RMF, organizations have a comprehensive, structured approach to AI risk that covers the full system lifecycle.'
+    },
+    'ISO/IEC 42001': {
+      'What it is': 'ISO/IEC 42001 is the international standard for AI Management Systems, defining requirements for establishing, implementing, and improving an organization\'s AI management. It provides a certifiable framework for responsible AI governance.',
+      'Where it is used': 'It is used by organizations seeking formal AI governance certification, in enterprise AI programs, and as a framework for demonstrating responsible AI practices to regulators and customers.',
+      'What it unlocks': 'It unlocks certifiable AI governance. Organizations can demonstrate to regulators, customers, and partners that their AI practices meet an international standard.',
+      'Human analogy': 'The human analogy is ISO 9001 for quality management: a certifiable standard that demonstrates an organization has systematic processes in place.',
+      'Without it': 'Without a certifiable standard, organizations cannot formally demonstrate AI governance quality to external stakeholders.',
+      'With it': 'With ISO/IEC 42001, organizations can certify their AI governance, providing credible assurance to regulators and business partners.'
+    },
+    'Agent identity management': {
+      'What it is': 'Agent identity management assigns, tracks, and manages unique identities for each agent in an organization. It covers identity creation, lifecycle management, permission assignment, and identity verification across agent interactions.',
+      'Where it is used': 'It is used in enterprise agent deployments with multiple agents, in multi-agent trust systems, and wherever agent actions must be attributable to a specific agent identity.',
+      'What it unlocks': 'It unlocks accountable agent operations. Every action is traceable to a specific agent identity, enabling audit, access control, and accountability.',
+      'Human analogy': 'The human analogy is employee identity management: badges, accounts, and access rights that identify each employee and control what they can do.',
+      'Without it': 'Without identity management, agents operate anonymously or under shared identities, making audit, access control, and accountability impossible.',
+      'With it': 'With identity management, every agent has a unique, managed identity that enables proper access control and audit trails.'
+    },
+    'Agent registries & inventories': {
+      'What it is': 'Agent registries and inventories catalog all deployed agents in an organization: their purpose, owner, capabilities, dependencies, permissions, and status. They are the organizational system of record for what agents exist.',
+      'Where it is used': 'They are used in enterprise governance, shadow AI discovery, compliance auditing, and any organization that needs to know what agents are deployed and what they do.',
+      'What it unlocks': 'It unlocks organizational visibility into AI agent assets. You cannot govern what you cannot see, and registries make the agent portfolio visible.',
+      'Human analogy': 'The human analogy is an asset inventory: an organization that does not know what assets it has cannot manage, secure, or maintain them.',
+      'Without it': 'Without inventories, organizations do not know what agents are deployed, by whom, or what they can do. Governance is impossible.',
+      'With it': 'With agent inventories, organizations gain the visibility needed for governance, security assessment, and lifecycle management.'
+    },
+    'Policy enforcement': {
+      'What it is': 'Policy enforcement automatically ensures that agents comply with organizational rules: content policies, data handling requirements, action restrictions, and regulatory mandates. Policies are defined centrally and enforced at runtime.',
+      'Where it is used': 'It is used in regulated industries, enterprise deployments, and any system where organizational policies must be consistently applied across all agent interactions.',
+      'What it unlocks': 'It unlocks consistent policy compliance. Policies are enforced automatically rather than depending on each agent\'s prompt to include the right restrictions.',
+      'Human analogy': 'The human analogy is organizational policy that is enforced through system controls rather than relying on each employee to remember and follow every rule.',
+      'Without it': 'Without automated enforcement, policy compliance depends on prompt engineering. Agents may violate policies that were not included in their prompt.',
+      'With it': 'With automated policy enforcement, organizational rules are consistently applied across all agents regardless of their individual configurations.'
+    },
+    'Regulatory mapping': {
+      'What it is': 'Regulatory mapping identifies which regulations apply to specific agent deployments based on geography, industry, data types, and system risk level. It maps the regulatory landscape to concrete compliance requirements for each agent system.',
+      'Where it is used': 'It is used in multinational deployments, regulated industries (finance, healthcare, legal), and any organization that must comply with multiple overlapping regulatory frameworks.',
+      'What it unlocks': 'It unlocks targeted compliance. Teams know exactly which regulations apply to their specific agent and what requirements they must meet.',
+      'Human analogy': 'The human analogy is a compliance map that shows which regulations apply to which business activities in which jurisdictions.',
+      'Without it': 'Without regulatory mapping, teams either over-comply (expensive) or under-comply (risky) because they do not know which regulations actually apply.',
+      'With it': 'With regulatory mapping, compliance effort is targeted to the actual requirements, avoiding both gaps and unnecessary overhead.'
+    },
+    'Agent authorization frameworks': {
+      'What it is': 'Agent authorization frameworks define what actions agents are permitted to take, under what conditions, and with what level of autonomy. They formalize the rules governing agent permissions beyond simple access control.',
+      'Where it is used': 'They are used in enterprise agent governance, multi-agent systems with shared resources, and any deployment where agent permissions must be formally defined and enforced.',
+      'What it unlocks': 'It unlocks formalized agent permission management. Permissions are defined through policy rather than ad-hoc configuration.',
+      'Human analogy': 'The human analogy is a formal delegation-of-authority matrix that defines who can approve what up to what amount.',
+      'Without it': 'Without authorization frameworks, agent permissions are ad-hoc and inconsistent. Different agents may have unexplained permission differences.',
+      'With it': 'With authorization frameworks, agent permissions are formally defined, consistent, and auditable.'
+    },
+    'Responsible AI frameworks': {
+      'What it is': 'Responsible AI frameworks provide organizational principles and practices for building AI systems that are fair, transparent, accountable, and safe. They include ethics review processes, impact assessments, and governance structures.',
+      'Where it is used': 'They are used in enterprise AI governance, product development processes, and any organization that wants structured practices for responsible AI development.',
+      'What it unlocks': 'It unlocks structured responsible AI practices. Teams have clear processes for ethics review, impact assessment, and fairness evaluation.',
+      'Human analogy': 'The human analogy is a corporate ethics program with defined review processes, rather than relying on individual judgment alone.',
+      'Without it': 'Without frameworks, responsible AI is aspirational. Teams want to be responsible but lack structured processes for achieving it.',
+      'With it': 'With responsible AI frameworks, ethical considerations are systematically incorporated into AI development through defined processes.'
+    },
+    'Agent liability & accountability': {
+      'What it is': 'Agent liability and accountability addresses the legal and organizational question of who is responsible when an agent causes harm: the developer, the deployer, the operator, or the user. It covers liability frameworks, insurance, and contractual allocation of responsibility.',
+      'Where it is used': 'It is used in legal analysis of AI deployments, contract negotiations, insurance planning, and any context where agent actions could cause financial, legal, or reputational harm.',
+      'What it unlocks': 'It unlocks clear responsibility assignment for agent actions. Stakeholders know who bears liability and can insure, mitigate, and plan accordingly.',
+      'Human analogy': 'The human analogy is vicarious liability: determining whether the employer, the employee, or the training institution is responsible when a worker causes harm.',
+      'Without it': 'Without liability clarity, organizations deploy agents without understanding who bears responsibility when things go wrong, creating legal risk.',
+      'With it': 'With liability frameworks, responsibility is clearly assigned, enabling informed risk management and appropriate insurance coverage.'
+    },
+    'Agent impersonation prevention': {
+      'What it is': 'Agent impersonation prevention ensures that agents cannot falsely claim to be other agents, humans, or authorized entities. It includes agent identity verification, disclosure requirements, and mechanisms that prevent agents from deceiving other system participants.',
+      'Where it is used': 'It is used in multi-agent systems, customer-facing agents, and any context where participants need to know they are interacting with an authentic agent rather than an impersonator.',
+      'What it unlocks': 'It unlocks trust in agent identity. Participants can verify that they are communicating with the authentic agent rather than an impersonator.',
+      'Human analogy': 'The human analogy is identity verification requirements for financial transactions: you must prove you are who you claim to be before transacting.',
+      'Without it': 'Without impersonation prevention, malicious agents can pretend to be trusted ones, undermining the trust infrastructure of the entire multi-agent ecosystem.',
+      'With it': 'With impersonation prevention, agent identity is verifiable and trust in multi-agent interactions is maintained.'
+    },
+    'Value alignment': {
+      'What it is': 'Value alignment ensures that an agent\'s behavior reflects the values and intentions of its designers, operators, and the humans it serves. It encompasses both the technical problem of encoding values and the philosophical problem of determining whose values to encode.',
+      'Where it is used': 'It is the foundational concern in AI safety. Every decision about model training, guardrails, and agent behavior is implicitly a value alignment decision.',
+      'What it unlocks': 'It unlocks agents that behave in ways humans consider beneficial, safe, and appropriate. Without alignment, capable agents can be harmful.',
+      'Human analogy': 'The human analogy is the difference between a skilled person and a trustworthy person: skill without alignment with shared values creates risk.',
+      'Without it': 'Without alignment, agents optimize for their training objective without regard for whether the resulting behavior is actually beneficial or safe.',
+      'With it': 'With value alignment, agent behavior reflects human values and intentions, making capable agents beneficial rather than merely powerful.'
+    },
+    'Intent detection': {
+      'What it is': 'Intent detection identifies the purpose behind a user\'s request — distinguishing benign requests from attempts to misuse the agent, requests that require escalation, and requests outside the agent\'s scope.',
+      'Where it is used': 'It is used in safety classifiers, routing systems, guardrail triggers, and any system that must distinguish between legitimate and adversarial user intent.',
+      'What it unlocks': 'It unlocks intent-appropriate responses. The agent can handle legitimate requests helpfully while recognizing and appropriately handling misuse attempts.',
+      'Human analogy': 'The human analogy is a professional who can distinguish between a genuine question and an attempt to manipulate them into inappropriate behavior.',
+      'Without it': 'Without intent detection, agents respond to all requests equally, treating adversarial prompts and legitimate questions with the same trust.',
+      'With it': 'With intent detection, agents respond appropriately to the purpose behind each request, not just its surface content.'
+    },
+    'Behavioral monitoring': {
+      'What it is': 'Behavioral monitoring tracks agent actions, outputs, and patterns over time to detect drift, anomalies, and policy violations. It provides ongoing assurance that agent behavior stays within expected bounds after deployment.',
+      'Where it is used': 'It is used in every production agent deployment. Post-deployment monitoring catches problems that pre-deployment testing missed and detects behavioral changes over time.',
+      'What it unlocks': 'It unlocks continuous safety assurance. The system detects when agent behavior changes or degrades, rather than assuming deployment-time testing is sufficient forever.',
+      'Human analogy': 'The human analogy is ongoing performance monitoring for employees: not just checking qualifications at hiring, but monitoring work quality throughout their tenure.',
+      'Without it': 'Without behavioral monitoring, agents are tested once at deployment and never again. Behavioral drift and emerging problems go undetected.',
+      'With it': 'With behavioral monitoring, changes in agent behavior are detected and addressed promptly, maintaining safety assurance over time.'
+    },
+    'Transparency & explainability': {
+      'What it is': 'Transparency makes agent reasoning and decision-making visible to users and operators. Explainability goes further by providing understandable justifications for specific decisions. Together they enable oversight, trust, and accountability.',
+      'Where it is used': 'They are used in regulated industries (right to explanation), trust-building with users, debugging, and any context where stakeholders need to understand why the agent made a particular decision.',
+      'What it unlocks': 'It unlocks informed trust and accountability. Users and regulators can understand and assess agent decisions rather than treating the system as a black box.',
+      'Human analogy': 'The human analogy is requiring professionals to show their reasoning: a doctor explains their diagnosis, a lawyer explains their legal reasoning.',
+      'Without it': 'Without transparency, agent decisions are opaque. Users and regulators cannot assess whether decisions are reasonable, fair, or correct.',
+      'With it': 'With transparency and explainability, agent decisions can be understood, challenged, and improved based on visible reasoning.'
+    },
+    'Bias detection': {
+      'What it is': 'Bias detection identifies systematic unfairness in agent outputs: disparate treatment of different groups, stereotyped responses, or skewed recommendations. It uses statistical testing, fairness metrics, and adversarial probing to surface biases.',
+      'Where it is used': 'It is used in hiring agents, lending systems, content recommendation, and any agent making decisions that affect different groups of people differently.',
+      'What it unlocks': 'It unlocks measurable fairness assessment. Teams can identify and quantify biases rather than hoping they do not exist.',
+      'Human analogy': 'The human analogy is auditing hiring decisions for demographic bias: you cannot fix what you cannot measure.',
+      'Without it': 'Without bias detection, systematic unfairness goes undetected. The agent may discriminate without anyone realizing it.',
+      'With it': 'With bias detection, teams can identify, measure, and address systematic unfairness in agent behavior.'
+    },
+    'Fairness metrics': {
+      'What it is': 'Fairness metrics quantify different aspects of equity in agent outputs: demographic parity, equalized odds, individual fairness, and calibration across groups. Different metrics capture different fairness definitions, and they can conflict with each other.',
+      'Where it is used': 'They are used in evaluating agents that make consequential decisions about people: hiring, lending, insurance, criminal justice, and content moderation.',
+      'What it unlocks': 'It unlocks quantitative fairness assessment. Teams can measure fairness concretely rather than relying on subjective judgment.',
+      'Human analogy': 'The human analogy is having specific, measurable diversity and equity targets rather than vague aspirations about being "fair."',
+      'Without it': 'Without metrics, fairness claims are unverifiable. Teams cannot demonstrate that their system treats different groups equitably.',
+      'With it': 'With fairness metrics, teams can measure, report, and improve equity in agent behavior against concrete, auditable standards.'
+    },
+    'Controllability': {
+      'What it is': 'Controllability is the ability of operators and users to direct, constrain, and override agent behavior. It includes stop/start controls, behavioral constraints, output moderation, and the ability to correct the agent\'s course at any point.',
+      'Where it is used': 'It is a design principle for every agent system. Controllability ensures that humans remain in command of agent behavior, even as agents become more autonomous.',
+      'What it unlocks': 'It unlocks human authority over agent behavior. Operators can intervene, redirect, and constrain the agent at any time.',
+      'Human analogy': 'The human analogy is maintaining manual override capability on automated systems: the automation runs unless a human needs to take control.',
+      'Without it': 'Without controllability, agents become autonomous black boxes that operators cannot steer, stop, or redirect when behavior is problematic.',
+      'With it': 'With controllability, humans retain authority over agent behavior, enabling safe deployment of increasingly autonomous systems.'
+    },
+    'PII detection & redaction in agent pipelines': {
+      'What it is': 'PII detection and redaction automatically identifies and removes or masks personally identifiable information in agent inputs, outputs, memory, and logs. It prevents sensitive personal data from being stored, transmitted, or exposed through agent interactions.',
+      'Where it is used': 'It is used in every agent handling personal data, in healthcare and financial agents, in customer-facing systems, and wherever privacy regulations require PII protection.',
+      'What it unlocks': 'It unlocks privacy-safe agent operation. Personal data is automatically protected throughout the agent pipeline without relying on manual vigilance.',
+      'Human analogy': 'The human analogy is redacting sensitive information from documents before sharing them: names, addresses, and identifiers are blacked out.',
+      'Without it': 'Without PII redaction, personal data flows freely through agent pipelines, logs, and memory, creating privacy violations and regulatory risk.',
+      'With it': 'With PII detection and redaction, personal data is automatically protected at every stage of the agent pipeline.'
+    },
+    'Consent management for agent data use': {
+      'What it is': 'Consent management tracks whether users have consented to specific data uses by agents: data storage in memory, use for personalization, sharing with other agents, and inclusion in training data. It enforces consent requirements at runtime.',
+      'Where it is used': 'It is used in GDPR/CCPA-regulated environments, in personalized agents that store user data, and in any system where users have rights over how their data is used.',
+      'What it unlocks': 'It unlocks consent-aware agent operation. The system respects user data preferences automatically rather than relying on manual compliance.',
+      'Human analogy': 'The human analogy is a consent form system: the organization records what each person has agreed to and only uses their information within those bounds.',
+      'Without it': 'Without consent management, agents may use personal data without proper authorization, creating regulatory violations and trust erosion.',
+      'With it': 'With consent management, agent data use respects user preferences and regulatory requirements automatically.'
+    },
+    'Right-to-erasure in agent memory': {
+      'What it is': 'Right-to-erasure enables users to request deletion of their personal data from agent memory, conversation history, and any derived data. It implements GDPR\'s "right to be forgotten" in the context of persistent agent memory.',
+      'Where it is used': 'It is used in any agent with persistent memory that stores personal data, in GDPR-compliant systems, and in any jurisdiction with data deletion rights.',
+      'What it unlocks': 'It unlocks regulatory compliance for agent memory. Users can exercise their deletion rights, and the system can prove that data was actually removed.',
+      'Human analogy': 'The human analogy is a records retention policy with deletion capability: when a deletion request arrives, all relevant records are found and destroyed.',
+      'Without it': 'Without erasure capability, personal data persists in agent memory indefinitely, violating deletion-right regulations.',
+      'With it': 'With right-to-erasure, agent memory systems comply with deletion regulations, maintaining user trust and legal compliance.'
+    },
+    'Differential privacy for agent training': {
+      'What it is': 'Differential privacy adds calibrated noise to training data or model updates to ensure that no individual\'s data can be reconstructed from the trained model. It provides mathematical privacy guarantees for data used in agent training.',
+      'Where it is used': 'It is used when training on sensitive personal data, in healthcare and financial agent models, and anywhere mathematical privacy guarantees are required for training data.',
+      'What it unlocks': 'It unlocks training on sensitive data with provable privacy. The mathematical guarantee ensures individual records cannot be extracted from the model.',
+      'Human analogy': 'The human analogy is publishing statistical findings in a way that no individual patient can be identified, even by someone who knows most of the data.',
+      'Without it': 'Without differential privacy, models trained on personal data may memorize and potentially reveal individual records.',
+      'With it': 'With differential privacy, training on sensitive data provides mathematical guarantees that individual records cannot be extracted from the model.'
+    },
+    'Data residency & sovereignty': {
+      'What it is': 'Data residency and sovereignty requirements dictate where data is stored and processed: which country, which region, which data center. For agents, this affects where model inference runs, where memory is stored, and which external services can be called.',
+      'Where it is used': 'It is used in multinational deployments, government contracts, EU/GDPR compliance, and any context where data must not leave a specified jurisdiction.',
+      'What it unlocks': 'It unlocks compliant international deployment. Agent systems respect jurisdictional data requirements, enabling deployment in regulated markets.',
+      'Human analogy': 'The human analogy is regulations requiring that certain documents never leave the country: copies, processing, and storage must all happen within borders.',
+      'Without it': 'Without residency controls, agent data may be processed in jurisdictions that violate the data source\'s regulatory requirements.',
+      'With it': 'With data residency controls, agent systems comply with jurisdictional requirements for where data is stored and processed.'
+    },
+    'Agent-to-agent data sharing policies': {
+      'What it is': 'Agent-to-agent data sharing policies define what data agents can share with each other, under what conditions, and with what protections. They prevent agents from inadvertently sharing sensitive information with agents that should not have access.',
+      'Where it is used': 'They are used in multi-agent systems, cross-organizational agent collaboration, and any environment where agents handle data with different sensitivity levels.',
+      'What it unlocks': 'It unlocks safe multi-agent collaboration without data leakage. Agents can share necessary work products while protecting sensitive information.',
+      'Human analogy': 'The human analogy is information classification and need-to-know policies: team members share what is relevant to their collaboration while protecting information beyond the project scope.',
+      'Without it': 'Without data sharing policies, agents may inadvertently share sensitive information with other agents that do not have appropriate access.',
+      'With it': 'With sharing policies, multi-agent collaboration respects data sensitivity boundaries, preventing inappropriate information flows.'
+    },
+    'Confidential computing for agent inference': {
+      'What it is': 'Confidential computing runs agent inference in hardware-protected enclaves (like Intel SGX or AMD SEV) that encrypt data in use, preventing even the infrastructure operator from seeing the data being processed.',
+      'Where it is used': 'It is used for the most sensitive workloads: healthcare data, financial records, classified information, and any context where even the cloud provider should not see the data.',
+      'What it unlocks': 'It unlocks AI processing of the most sensitive data. Even the infrastructure operator cannot access data during processing, providing the strongest possible privacy guarantee.',
+      'Human analogy': 'The human analogy is a sealed, tamper-evident processing room where even the building owner cannot observe what happens inside.',
+      'Without it': 'Without confidential computing, the infrastructure operator can theoretically access data during processing, which is unacceptable for the most sensitive workloads.',
+      'With it': 'With confidential computing, even the most sensitive data can be processed by AI agents with hardware-enforced privacy guarantees.'
     }
   });
 }());
