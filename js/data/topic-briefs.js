@@ -2862,5 +2862,333 @@
       'Without it': 'Without LLM-as-judge, quality assessment requires either human evaluation (expensive and slow) or simple heuristic metrics (fast but crude). Neither scales well for nuanced quality judgments.',
       'With it': 'With LLM-as-judge in the loop, agent systems gain a scalable quality gate that catches bad outputs before they reach users, enabling higher autonomy with maintained quality.'
     },
+    'In-context (working) memory': {
+      'What it is': 'In-context memory is everything currently visible in the model\'s context window: the system prompt, conversation history, retrieved documents, and tool results. It is the model\'s working memory — the only information it can reason over directly during this call.',
+      'Where it is used': 'It is the foundation of every model interaction. Every prompt, every conversation turn, and every retrieved chunk occupies in-context memory. Managing what goes in and what stays out is a core agent design decision.',
+      'What it unlocks': 'It unlocks immediate, low-latency access to information. Anything in context can be reasoned over directly without additional retrieval or tool calls.',
+      'Human analogy': 'The human analogy is the papers currently spread on your desk. You can reference them instantly, but desk space is limited and you must choose what stays visible.',
+      'Without it': 'Without managing in-context memory deliberately, the context window fills with stale conversation history, irrelevant details, and repeated information, reducing the space available for useful content.',
+      'With it': 'With deliberate in-context memory management, the model always has the most relevant information available for the current task, making better use of limited context window space.'
+    },
+    'External / long-term memory': {
+      'What it is': 'External memory stores information outside the model\'s context window for retrieval when needed: vector databases, key-value stores, files, and structured databases. It persists across conversations and has no size limit, but requires explicit retrieval to become usable.',
+      'Where it is used': 'It is used in persistent agents, personalized assistants, knowledge-heavy workflows, and any system that must remember information across sessions or handle more data than fits in a context window.',
+      'What it unlocks': 'It unlocks memory that survives beyond a single conversation. The agent can accumulate knowledge, learn user preferences, and maintain state across days or weeks of interaction.',
+      'Human analogy': 'The human analogy is a filing cabinet or reference library. You cannot read it all at once, but you can look up what you need when a relevant question comes up.',
+      'Without it': 'Without external memory, every conversation starts from zero. The agent has no knowledge of prior interactions, accumulated facts, or user preferences.',
+      'With it': 'With external memory, the agent can build persistent knowledge and maintain continuity across interactions, becoming more useful over time.'
+    },
+    'Episodic memory': {
+      'What it is': 'Episodic memory stores records of specific past events, interactions, or task executions — the "what happened" log. Each entry captures a particular episode with its context, actions, and outcomes, allowing the agent to recall and learn from specific experiences.',
+      'Where it is used': 'It is used in Reflexion-style agents, personalized assistants that recall past conversations, debugging systems that reference prior incidents, and any agent that should learn from specific past experiences.',
+      'What it unlocks': 'It unlocks experience-based learning and recall. The agent can say "last time this happened, I did X and it worked" or "I tried this approach before and it failed because Y."',
+      'Human analogy': 'The human analogy is a case log or journal where a professional records what happened on specific days, what they tried, and what the outcome was, so they can learn from past cases.',
+      'Without it': 'Without episodic memory, every task is handled as if it is the first time. The agent cannot reference prior experiences, successful strategies, or past failures.',
+      'With it': 'With episodic memory, the agent accumulates experience over time, making better decisions by referencing relevant past episodes.'
+    },
+    'Semantic memory': {
+      'What it is': 'Semantic memory stores general facts, concepts, and knowledge — the "what I know" layer. Unlike episodic memory (specific events), semantic memory holds abstracted knowledge that applies broadly: definitions, relationships, rules, and domain knowledge.',
+      'Where it is used': 'It is used in knowledge-grounded agents, domain-specific assistants, and systems that need stable factual knowledge beyond what the model learned during training.',
+      'What it unlocks': 'It unlocks a persistent, updateable knowledge layer. The agent can be given new facts, domain knowledge, or corrected information that persists without retraining the model.',
+      'Human analogy': 'The human analogy is a professional\'s accumulated domain knowledge — facts, definitions, and relationships they know from experience, separate from memories of specific events.',
+      'Without it': 'Without semantic memory, the agent\'s factual knowledge is limited to what was in its training data plus whatever fits in the current context window.',
+      'With it': 'With semantic memory, the agent has a persistent, updateable knowledge base that it can consult for facts and relationships beyond its training data.'
+    },
+    'Procedural memory': {
+      'What it is': 'Procedural memory stores how to do things: learned procedures, workflows, and action sequences. It captures not facts (semantic) or events (episodic), but skills and routines that the agent has learned or been taught to execute.',
+      'Where it is used': 'It is used in agents that accumulate skills over time, tool-use optimization (remembering which tool patterns work best), and systems where learned procedures should be reusable across different tasks.',
+      'What it unlocks': 'It unlocks skill accumulation. The agent can store successful procedures and reuse them without re-deriving the approach each time, improving efficiency on recurring task patterns.',
+      'Human analogy': 'The human analogy is muscle memory or standard operating procedures — knowing how to do something without having to think through each step from scratch every time.',
+      'Without it': 'Without procedural memory, the agent re-derives every procedure from scratch. It cannot build a library of proven approaches to reuse on similar tasks.',
+      'With it': 'With procedural memory, the agent builds a repertoire of skills and procedures that improve its efficiency on familiar task patterns over time.'
+    },
+    'Memory compression': {
+      'What it is': 'Memory compression reduces the size of stored memories while preserving their usefulness. Techniques include summarization (replacing full conversation history with summaries), selective retention (keeping only high-value information), and hierarchical compression (progressively summarizing older memories).',
+      'Where it is used': 'It is used in long-running agents, multi-turn conversations that exceed context windows, and persistent memory systems where storing everything verbatim becomes impractical.',
+      'What it unlocks': 'It unlocks longer effective memory horizons. The agent can retain useful information from much further back in time by storing compressed versions rather than discarding old memories entirely.',
+      'Human analogy': 'The human analogy is how people remember the gist of old conversations but not every word. Important details are preserved, routine information fades, and overall the person maintains a usable memory within limited capacity.',
+      'Without it': 'Without compression, memory either fills up and is discarded (losing valuable context) or is kept verbatim (consuming too much storage and retrieval bandwidth).',
+      'With it': 'With memory compression, agents maintain useful memories over long time periods without the storage and retrieval costs of keeping everything at full fidelity.'
+    },
+    'Memory versioning': {
+      'What it is': 'Memory versioning tracks changes to an agent\'s memory over time, maintaining a history of what was known when. It allows the system to understand how knowledge evolved, detect when stale memories were last updated, and roll back to prior memory states if corrupted.',
+      'Where it is used': 'It is used in compliance-sensitive systems (audit trails of what the agent knew when it made a decision), debugging (understanding why the agent acted on outdated information), and multi-agent systems where memory consistency matters.',
+      'What it unlocks': 'It unlocks temporal accountability for agent knowledge. Teams can ask "what did the agent know at the time of this decision?" and get a precise answer.',
+      'Human analogy': 'The human analogy is version control for documents — knowing not just the current state but the full history of changes, who changed what, and the ability to revert to a prior version.',
+      'Without it': 'Without memory versioning, it is impossible to reconstruct what the agent knew at any past point. Debugging decisions made on stale or incorrect information becomes guesswork.',
+      'With it': 'With memory versioning, the system maintains an audit trail of knowledge evolution, making agent decisions more explainable and debuggable over time.'
+    },
+    'Memory pruning': {
+      'What it is': 'Memory pruning actively removes low-value, outdated, or contradicted memories from the agent\'s memory store. It is the counterpart to memory accumulation — without pruning, memory systems grow indefinitely and retrieval quality degrades as noise increases.',
+      'Where it is used': 'It is used in long-lived agents, personalized assistants, and any persistent memory system where stale or incorrect memories can pollute retrieval and lead to wrong decisions.',
+      'What it unlocks': 'It unlocks memory quality maintenance over time. The memory store stays relevant and accurate rather than accumulating noise that degrades retrieval precision.',
+      'Human analogy': 'The human analogy is cleaning out filing cabinets — removing outdated documents, correcting superseded information, and keeping only what is still accurate and useful.',
+      'Without it': 'Without pruning, agent memory becomes a junkyard. Old, contradicted, or irrelevant memories compete with current information during retrieval, degrading the quality of what the agent recalls.',
+      'With it': 'With memory pruning, the agent\'s memory stays clean and relevant, improving retrieval quality and preventing stale information from corrupting current decisions.'
+    },
+    'MemGPT / Letta patterns': {
+      'What it is': 'MemGPT introduced the pattern of treating context window management as an operating system problem: the agent explicitly manages what is loaded into its limited "working memory" (context window) from a larger "virtual memory" (external storage). The project evolved into Letta, an agent-server framework that implements this memory architecture as infrastructure.',
+      'Where it is used': 'It is used in long-running conversational agents, personalized assistants with persistent memory, and any system that must maintain coherent state across more information than fits in a single context window.',
+      'What it unlocks': 'It unlocks context window management as an explicit agent capability. Instead of passively filling the context window, the agent actively manages what to load, summarize, and evict — like an OS managing RAM.',
+      'Human analogy': 'The human analogy is a knowledge worker who keeps their desk organized: pulling relevant files from the cabinet when needed, putting them back when done, and summarizing old notes to save space rather than keeping every document open at once.',
+      'Without it': 'Without explicit context management, agents rely on passive context filling (newest-first or random) and lose access to important older information as the context window fills up.',
+      'With it': 'With MemGPT/Letta patterns, the agent actively curates its own working context, maintaining access to a much larger effective memory than the raw context window would allow.'
+    },
+    'Keyword search (BM25)': {
+      'What it is': 'BM25 is the standard term-frequency-based ranking algorithm for keyword search. It scores documents by how well their words match the query, accounting for term frequency, document length, and corpus statistics. It does not understand meaning — it matches exact words.',
+      'Where it is used': 'It is used as the keyword component of hybrid search systems, as a baseline retrieval method, and as a complement to dense vector search. It excels when queries contain specific technical terms, identifiers, or exact phrases that semantic search might miss.',
+      'What it unlocks': 'It unlocks precise term matching that semantic search alone misses. Error codes, product IDs, proper nouns, and technical jargon are better handled by BM25 than by embedding similarity.',
+      'Human analogy': 'The human analogy is searching a book index by keyword. You find exactly the pages that contain your search term, regardless of meaning or context.',
+      'Without it': 'Without keyword search, retrieval relies entirely on semantic similarity. Specific terms, codes, and identifiers that have no clear semantic meaning in embedding space get missed.',
+      'With it': 'With BM25 alongside vector search, the retrieval system covers both semantic similarity and exact term matching, which is why hybrid search is the standard for production RAG.'
+    },
+    'Query expansion': {
+      'What it is': 'Query expansion enriches the original user query with additional terms, synonyms, or related concepts before retrieval. Techniques include LLM-based query expansion (asking the model to generate related terms), pseudo-relevance feedback, and thesaurus-based expansion.',
+      'Where it is used': 'It is used in RAG pipelines where user queries are too short, ambiguous, or use different vocabulary than the indexed documents. It bridges the vocabulary gap between how users ask and how knowledge is stored.',
+      'What it unlocks': 'It unlocks better recall by bridging vocabulary mismatches. A query about "car problems" can be expanded to also search for "vehicle issues," "automotive defects," and "engine trouble."',
+      'Human analogy': 'The human analogy is a librarian who, when you ask for books about "car problems," also checks under "automotive repair," "vehicle maintenance," and "engine diagnostics."',
+      'Without it': 'Without query expansion, retrieval depends on exact vocabulary overlap between the query and the documents. Different terminology for the same concept causes missed results.',
+      'With it': 'With query expansion, the search covers a broader vocabulary, improving recall on queries where the user\'s words do not exactly match the indexed content.'
+    },
+    'ColBERT / late interaction retrieval': {
+      'What it is': 'ColBERT uses late interaction: instead of compressing query and document into single vectors, it keeps per-token embeddings for both and computes fine-grained similarity at retrieval time. This preserves more information than single-vector search while remaining much faster than full cross-encoder reranking.',
+      'Where it is used': 'It is used as a high-quality first-stage retriever or as an alternative to the two-stage retrieve-then-rerank pipeline. It matters when single-vector search loses too much information but cross-encoder reranking is too slow.',
+      'What it unlocks': 'It unlocks a middle ground between fast-but-coarse single-vector search and accurate-but-slow cross-encoder reranking. Per-token interaction preserves fine-grained matching information at manageable cost.',
+      'Human analogy': 'The human analogy is comparing documents by checking each paragraph against each question point, rather than summarizing both into one sentence and comparing the summaries.',
+      'Without it': 'Without late interaction, teams must choose between single-vector search (fast but lossy) and cross-encoder reranking (accurate but slow). There is no efficient middle ground.',
+      'With it': 'With ColBERT, retrieval quality improves substantially over single-vector search without requiring the full cost of cross-encoder scoring on every candidate.'
+    },
+    'HyDE (Hypothetical Document Embeddings)': {
+      'What it is': 'HyDE generates a hypothetical answer to the query using the LLM, then embeds that hypothetical answer and uses it for retrieval instead of the original query. The insight is that a hypothetical answer is closer in embedding space to real answers than the question itself is.',
+      'Where it is used': 'It is used in RAG pipelines where queries and documents are semantically distant (questions vs. declarative content), in zero-shot retrieval without relevance labels, and when query-document embedding mismatch degrades retrieval quality.',
+      'What it unlocks': 'It unlocks better query-document alignment in embedding space. The generated hypothetical answer bridges the gap between question-format queries and statement-format documents.',
+      'Human analogy': 'The human analogy is imagining what the answer might look like before searching for it. If you can roughly describe what you expect to find, your search through the library becomes more targeted.',
+      'Without it': 'Without HyDE, retrieval must match questions directly against documents, which can be a poor fit in embedding space when queries are phrased very differently from the content they seek.',
+      'With it': 'With HyDE, retrieval searches for documents similar to a plausible answer rather than similar to the question, which often produces better results for knowledge-seeking queries.'
+    },
+    'Contextual retrieval': {
+      'What it is': 'Contextual retrieval (introduced by Anthropic) prepends document-level context to each chunk before embedding it. Instead of embedding an isolated paragraph, the system adds context like the document title, section heading, and surrounding summary so the chunk\'s embedding captures its place in the larger document.',
+      'Where it is used': 'It is used in RAG pipelines where chunks lose important context when separated from their source document. It is especially effective for documents where the same text could mean different things depending on context (e.g. "the policy states..." in different policy documents).',
+      'What it unlocks': 'It unlocks context-aware chunk embeddings. Chunks that would otherwise be ambiguous or generic become distinguishable because their embedding encodes where they came from.',
+      'Human analogy': 'The human analogy is labeling each page torn from a binder with the binder\'s title and section name, so anyone finding the loose page knows which document and section it belongs to.',
+      'Without it': 'Without contextual retrieval, chunks are embedded in isolation and may be retrieved for the wrong reasons because they lack the context that would disambiguate them.',
+      'With it': 'With contextual retrieval, chunk embeddings are enriched with document context, significantly improving retrieval precision for ambiguous or context-dependent content.'
+    },
+    'Learned sparse retrieval (SPLADE)': {
+      'What it is': 'SPLADE and similar learned sparse retrieval models produce sparse, interpretable term-weight vectors using a language model. Unlike BM25 (fixed term statistics) or dense retrieval (opaque vectors), learned sparse models expand queries with semantically relevant terms and weight them using learned importance signals.',
+      'Where it is used': 'It is used as an alternative or complement to dense retrieval, especially in hybrid search systems. It combines the interpretability and efficiency of sparse search with the semantic understanding of neural models.',
+      'What it unlocks': 'It unlocks neural-quality semantic matching in a sparse index format. Teams can use existing inverted index infrastructure (Lucene, Elasticsearch) while getting much better semantic matching than BM25.',
+      'Human analogy': 'The human analogy is an experienced librarian who, given a question, generates a weighted list of search terms ranked by relevance — more sophisticated than keyword matching but still expressed as explicit terms you can inspect.',
+      'Without it': 'Without learned sparse retrieval, teams must choose between interpretable-but-dumb keyword search and powerful-but-opaque dense retrieval. There is no interpretable neural option.',
+      'With it': 'With SPLADE, teams get neural-quality matching in a sparse format that is interpretable, efficient on standard search infrastructure, and complements dense retrieval in hybrid setups.'
+    },
+    'Document hierarchies': {
+      'What it is': 'Document hierarchies organize indexed content at multiple levels: full documents, sections, subsections, and individual chunks. Retrieval can operate at any level and traverse between them, returning the right granularity of context for each query.',
+      'Where it is used': 'It is used in knowledge bases with structured documents (manuals, policies, codebases), legal document collections, and any corpus where the natural document structure contains useful information for retrieval.',
+      'What it unlocks': 'It unlocks multi-granularity retrieval. A query about a specific detail can retrieve a targeted chunk, while a broader question can retrieve an entire section or document summary.',
+      'Human analogy': 'The human analogy is a reference library organized with book-level, chapter-level, and page-level indexes, so you can find information at the right level of detail depending on your question.',
+      'Without it': 'Without document hierarchies, all chunks are treated as flat equals. The system cannot distinguish between a detail query (needs a specific paragraph) and a broad query (needs a section overview).',
+      'With it': 'With document hierarchies, retrieval can serve different query granularities from the same corpus, returning the right amount of context for each question.'
+    },
+    'Late chunking': {
+      'What it is': 'Late chunking first processes the entire document through an embedding model to build token-level representations with full document context, then splits the embeddings into chunks afterward. This preserves cross-chunk context in the embeddings that traditional chunk-then-embed approaches lose.',
+      'Where it is used': 'It is used in RAG pipelines where chunk boundaries create artificial information loss, in documents where sentences reference earlier content ("this policy," "the above method"), and when contextual retrieval is needed but prepending context to every chunk is too expensive.',
+      'What it unlocks': 'It unlocks context-aware chunk embeddings without the overhead of contextual retrieval prepending. Each chunk\'s embedding naturally encodes its relationship to the surrounding document.',
+      'Human analogy': 'The human analogy is reading an entire chapter to understand each paragraph, then filing each paragraph separately — versus reading each paragraph in isolation and filing it without knowing what came before or after.',
+      'Without it': 'Without late chunking, each chunk is embedded in isolation, losing references to surrounding content. Chunks that say "as mentioned above" become meaningless when separated from their context.',
+      'With it': 'With late chunking, chunk embeddings retain document-level context naturally, improving retrieval quality without the explicit context-prepending cost of contextual retrieval.'
+    },
+    'Recursive / semantic chunking': {
+      'What it is': 'Recursive chunking splits documents along natural boundaries (paragraphs, sections, sentences) recursively until chunks reach target size, respecting semantic structure. Semantic chunking goes further by splitting at points where topic or meaning shifts, using embedding similarity to detect boundary points.',
+      'Where it is used': 'It is used in RAG pipelines where fixed-size chunking breaks semantic units (splitting a paragraph mid-sentence, separating a code block from its explanation). It is especially important for documents with irregular structure.',
+      'What it unlocks': 'It unlocks chunks that align with natural content boundaries. Each chunk contains a coherent unit of information rather than an arbitrary slice that may start or end mid-thought.',
+      'Human analogy': 'The human analogy is dividing a book into reading assignments at chapter and section breaks rather than at fixed page counts, so each assignment covers a complete topic.',
+      'Without it': 'Without semantic chunking, chunks are arbitrary text slices that may split sentences, separate questions from answers, or break code from its documentation. Retrieval quality suffers.',
+      'With it': 'With recursive/semantic chunking, each chunk is a coherent information unit, improving both the precision of retrieval and the usefulness of retrieved context.'
+    },
+    'Agentic chunking': {
+      'What it is': 'Agentic chunking uses an LLM to decide how to split documents into chunks. Instead of algorithmic rules, the model reads the document and determines where meaningful boundaries are, what metadata to attach, and how to label each chunk for optimal retrieval.',
+      'Where it is used': 'It is used for complex, heterogeneous documents where rule-based chunking fails: mixed-format documents, documents with embedded tables and figures, and corpora where different sections require different chunking strategies.',
+      'What it unlocks': 'It unlocks intelligent, content-aware chunking that adapts to document structure. The LLM can recognize that a table should stay together, a list should not be split, or a code block needs its preceding explanation.',
+      'Human analogy': 'The human analogy is having a knowledgeable librarian read each document and decide how to file it, rather than running every document through the same mechanical cutting process.',
+      'Without it': 'Without agentic chunking, all documents are chunked by the same rules regardless of content type, leading to broken tables, split code blocks, and incoherent chunks for complex documents.',
+      'With it': 'With agentic chunking, complex documents are split intelligently, producing chunks that preserve the semantic integrity of each content type.'
+    },
+    'Multi-index strategies': {
+      'What it is': 'Multi-index strategies maintain multiple retrieval indexes over the same corpus, each optimized for different query types. Common configurations include separate indexes for summaries and details, for different content types (text, code, tables), or at different chunk granularities.',
+      'Where it is used': 'It is used in enterprise knowledge systems, multi-modal corpora, and RAG pipelines that must handle diverse query types (factual lookups, broad summaries, code search, table queries) from the same document collection.',
+      'What it unlocks': 'It unlocks query-type-aware retrieval. Different questions hit different indexes, each optimized for that query pattern, rather than one index trying to serve all query types equally.',
+      'Human analogy': 'The human analogy is a library with separate catalogs for books, journals, maps, and reference materials — each organized for the way that material is typically searched.',
+      'Without it': 'Without multi-index strategies, one index must serve all query types, which means it is suboptimal for most of them. A summary index is bad for detail queries; a detail index is bad for broad questions.',
+      'With it': 'With multi-index strategies, retrieval quality improves across diverse query types because each index is tuned for the queries it serves.'
+    },
+    'Indexing pipelines & automation': {
+      'What it is': 'Indexing pipelines automate the process of ingesting documents, chunking, embedding, enriching metadata, and loading into retrieval indexes. They handle incremental updates, re-indexing on schema changes, and quality checks on the ingested content.',
+      'Where it is used': 'It is used in any production RAG system where documents change over time. Without automated pipelines, index maintenance becomes a manual bottleneck that causes knowledge to go stale.',
+      'What it unlocks': 'It unlocks a self-maintaining knowledge base. Documents are automatically processed, indexed, and kept fresh without manual intervention, which is essential for production RAG systems.',
+      'Human analogy': 'The human analogy is an automated mail room that receives, sorts, labels, and files incoming documents according to established procedures rather than requiring someone to manually process each document.',
+      'Without it': 'Without indexing automation, knowledge bases go stale because manual re-indexing cannot keep up with document changes. RAG quality degrades as the index falls behind the source material.',
+      'With it': 'With automated indexing pipelines, the knowledge base stays current automatically, and teams can focus on retrieval quality rather than index maintenance.'
+    },
+    'Corrective RAG (CRAG)': {
+      'What it is': 'Corrective RAG evaluates the quality of retrieved documents before using them and takes corrective action when retrieval quality is low. If retrieved documents are irrelevant, CRAG can reformulate the query, try different retrieval sources, or fall back to the model\'s internal knowledge.',
+      'Where it is used': 'It is used in RAG systems where retrieval quality is inconsistent, in multi-source retrieval (where some sources may not have relevant content), and in production systems where returning answers based on irrelevant context is worse than no retrieval at all.',
+      'What it unlocks': 'It unlocks retrieval-quality awareness. Instead of blindly using whatever documents were retrieved, the system evaluates whether they are actually useful and adapts its strategy when they are not.',
+      'Human analogy': 'The human analogy is a researcher who checks whether the references they found are actually relevant before citing them, and goes back to search again or uses their own knowledge if the initial results are off-topic.',
+      'Without it': 'Without corrective retrieval, the system uses whatever documents were retrieved regardless of quality. Irrelevant documents pollute the context and produce worse answers than no retrieval at all.',
+      'With it': 'With CRAG, the system catches bad retrieval before it reaches the generation step, improving reliability by using only high-quality context.'
+    },
+    'Self-RAG': {
+      'What it is': 'Self-RAG trains the model to decide when retrieval is needed, retrieve when it decides to, and then evaluate whether the retrieved content is relevant and whether its own generated answer is faithful to the evidence. These decisions are made by the model itself through special reflection tokens.',
+      'Where it is used': 'It is used in systems that need adaptive retrieval — sometimes the model knows the answer and retrieval is unnecessary; other times it needs evidence. Self-RAG avoids the overhead of always-on retrieval.',
+      'What it unlocks': 'It unlocks on-demand retrieval governed by the model\'s self-assessment. The model retrieves only when it judges that external evidence would improve its answer, and verifies faithfulness after generation.',
+      'Human analogy': 'The human analogy is a professional who knows when they need to look something up versus when they can answer confidently from memory, and who double-checks their answer against sources when they do use references.',
+      'Without it': 'Without Self-RAG, retrieval is either always on (adding latency and noise to queries the model can answer directly) or always off (missing queries that need evidence).',
+      'With it': 'With Self-RAG, retrieval is targeted and self-verified, reducing unnecessary retrieval overhead while ensuring evidence-backed answers when they are needed.'
+    },
+    'Multimodal RAG': {
+      'What it is': 'Multimodal RAG extends retrieval-augmented generation to handle non-text content: images, diagrams, tables, charts, and audio. Retrieved multimodal context is fed to a vision-language or multimodal model alongside text, enabling answers grounded in visual and audio evidence.',
+      'Where it is used': 'It is used in document collections with embedded figures and tables, technical manuals with diagrams, medical imaging with associated reports, and any knowledge base where critical information lives in non-text formats.',
+      'What it unlocks': 'It unlocks grounded answers from visual and multimodal evidence. The agent can point to a chart, reference a diagram, or cite a figure rather than being limited to text-only knowledge.',
+      'Human analogy': 'The human analogy is a researcher who consults both the text and the figures, charts, and diagrams in a reference document rather than only reading the words.',
+      'Without it': 'Without multimodal RAG, agents can only retrieve and reason over text. Critical information in figures, tables, and diagrams is invisible to the retrieval system.',
+      'With it': 'With multimodal RAG, the full information content of documents — including visual elements — becomes available as evidence for grounded answers.'
+    },
+    'RAPTOR (tree-structured RAG)': {
+      'What it is': 'RAPTOR builds a tree of summaries over a document corpus: leaf nodes are original chunks, intermediate nodes are summaries of chunk clusters, and the root summarizes the entire corpus. Retrieval can operate at any tree level, returning detail from leaves or broad context from higher nodes.',
+      'Where it is used': 'It is used in large document collections where queries range from specific details to broad themes. The tree structure naturally handles multi-granularity retrieval without maintaining separate indexes.',
+      'What it unlocks': 'It unlocks hierarchical retrieval from a single structure. Detail queries hit leaf chunks; broad questions hit higher-level summaries that compress many chunks into a coherent overview.',
+      'Human analogy': 'The human analogy is a textbook with chapter summaries, section summaries, and detailed paragraphs. Depending on the question, you read at the appropriate level of detail.',
+      'Without it': 'Without tree-structured indexing, broad questions retrieve many small chunks that must be synthesized at generation time, which is less reliable than retrieving a pre-built summary.',
+      'With it': 'With RAPTOR, the system serves both detail and overview queries efficiently from a single hierarchical index.'
+    },
+    'Modular RAG pipelines': {
+      'What it is': 'Modular RAG breaks the retrieval-augmented generation process into composable stages: query processing, retrieval, reranking, context assembly, and generation. Each stage can be independently configured, swapped, or upgraded without changing the rest of the pipeline.',
+      'Where it is used': 'It is used in production RAG systems that need to evolve over time, in experimentation setups where teams want to A/B test individual components, and in enterprises with different retrieval requirements across use cases.',
+      'What it unlocks': 'It unlocks independent optimization of each RAG stage. Teams can upgrade the reranker without touching the retriever, swap embedding models without changing the generation prompt, or add a new retrieval source without rebuilding the pipeline.',
+      'Human analogy': 'The human analogy is a modular assembly line where each station can be upgraded independently. Improving the quality control station does not require redesigning the assembly station.',
+      'Without it': 'Without modular design, RAG pipelines are monolithic. Changing one component risks breaking others, and experimentation requires modifying tightly coupled code.',
+      'With it': 'With modular RAG, each stage is independently testable and upgradeable, making the system easier to improve, debug, and adapt to new requirements.'
+    },
+    'Adaptive RAG (route by query complexity)': {
+      'What it is': 'Adaptive RAG routes queries through different retrieval strategies based on estimated complexity. Simple factual queries might use direct retrieval; moderate queries might add reranking; complex multi-hop queries might trigger iterative retrieval with query decomposition.',
+      'Where it is used': 'It is used in production RAG systems handling diverse query types, where applying the most expensive strategy to every query wastes resources and applying the cheapest strategy to every query produces poor results on hard questions.',
+      'What it unlocks': 'It unlocks cost-effective quality by matching retrieval effort to query difficulty. Simple queries get fast, cheap retrieval; hard queries get the full multi-stage pipeline.',
+      'Human analogy': 'The human analogy is a help desk that handles simple questions immediately but escalates complex ones to a specialist who takes more time and uses more resources.',
+      'Without it': 'Without adaptive routing, all queries receive the same retrieval treatment regardless of difficulty. Easy queries are over-served; hard queries are under-served.',
+      'With it': 'With adaptive RAG, retrieval resources are allocated proportional to query complexity, optimizing both cost and quality across diverse query loads.'
+    },
+    'Cache-augmented generation': {
+      'What it is': 'Cache-augmented generation stores and reuses previously generated answers or intermediate results for similar or identical queries. Instead of re-running the full retrieval and generation pipeline, the system checks whether a sufficiently similar query has been answered before.',
+      'Where it is used': 'It is used in high-volume RAG systems with repetitive queries, customer support (many users ask similar questions), and any pipeline where latency and cost can be reduced by serving cached answers for common queries.',
+      'What it unlocks': 'It unlocks dramatic latency and cost reduction for common queries. The most frequently asked questions are served from cache at near-zero marginal cost.',
+      'Human analogy': 'The human analogy is an FAQ sheet that answers the most common questions instantly, reserving the full research process for novel questions that the FAQ does not cover.',
+      'Without it': 'Without caching, every query runs the full pipeline regardless of whether an identical or very similar question was answered seconds ago. This wastes compute on repetitive workloads.',
+      'With it': 'With cache-augmented generation, common queries are served instantly while novel queries still receive full retrieval-augmented processing.'
+    },
+    'Relational DBs': {
+      'What it is': 'Relational databases (PostgreSQL, MySQL, etc.) store structured data in tables with defined schemas, relationships, and query languages (SQL). In agent systems, they serve as the primary store for structured knowledge, user data, application state, and any information that has natural tabular structure.',
+      'Where it is used': 'They are used as the backbone of agent application data: user accounts, task records, conversation metadata, tool configuration, and any structured information that benefits from strong consistency, transactions, and SQL queryability.',
+      'What it unlocks': 'It unlocks structured, transactional data management for agent systems. Agents can query, join, filter, and aggregate structured data with the full power of SQL, which is far more precise than semantic search for structured queries.',
+      'Human analogy': 'The human analogy is a well-organized filing system with standardized forms, cross-references, and a reliable cataloging system that lets you find exact records by their properties.',
+      'Without it': 'Without relational databases, structured agent data must be stored in less organized formats. Complex queries involving joins, filters, and aggregations become difficult or impossible.',
+      'With it': 'With relational databases, agent systems have a reliable, mature foundation for structured data that supports the complex queries and transactions production systems require.'
+    },
+    'Document stores': {
+      'What it is': 'Document stores (MongoDB, DynamoDB, Firestore) store semi-structured data as flexible documents (typically JSON) without requiring a fixed schema. In agent systems, they handle varied and evolving data: conversation logs, tool results, memory entries, and any data that does not fit a rigid table structure.',
+      'Where it is used': 'They are used for agent memory storage, conversation history, heterogeneous tool results, and any data where the schema varies between entries or evolves rapidly.',
+      'What it unlocks': 'It unlocks flexible storage for the diverse, evolving data that agent systems produce. Each memory entry or tool result can have a different structure without schema migrations.',
+      'Human analogy': 'The human analogy is a filing system that accepts documents of any format — letters, forms, reports, notes — and organizes them by folder rather than requiring every document to fit the same template.',
+      'Without it': 'Without document stores, varied agent data must either be forced into rigid schemas (losing flexibility) or stored in unstructured blobs (losing queryability).',
+      'With it': 'With document stores, agent systems can store and query diverse data flexibly, accommodating the heterogeneous outputs that agents naturally produce.'
+    },
+    'Conversation history': {
+      'What it is': 'Conversation history is the record of past turns in an agent interaction: user messages, model responses, tool calls, and results. Managing it is a core design decision — how much to keep, when to summarize, what to persist, and how to make it available for future interactions.',
+      'Where it is used': 'It is used in every conversational agent and multi-turn system. Decisions about conversation history management directly affect context window usage, continuity across sessions, and the agent\'s ability to reference prior context.',
+      'What it unlocks': 'It unlocks multi-turn coherence. The agent can reference prior messages, maintain conversational context, and avoid repeating itself or contradicting earlier statements.',
+      'Human analogy': 'The human analogy is meeting notes. Good notes let you pick up where you left off; too many notes overwhelm the desk; too few notes mean starting from scratch each meeting.',
+      'Without it': 'Without conversation history management, either the context fills with raw history (wasting tokens) or past context is lost (breaking conversational coherence).',
+      'With it': 'With deliberate conversation history management, the agent maintains useful context without wasting context window space on stale or redundant history.'
+    },
+    'Episodic logs': {
+      'What it is': 'Episodic logs are structured records of complete agent task executions: what the agent observed, decided, did, and what happened as a result. They capture the full trajectory of an episode for debugging, evaluation, training, and learning from experience.',
+      'Where it is used': 'They are used in agent debugging (replaying what went wrong), evaluation (scoring task performance), training data generation (successful trajectories become fine-tuning data), and Reflexion-style learning from past episodes.',
+      'What it unlocks': 'It unlocks post-hoc analysis and learning from agent behavior. Teams can replay episodes, identify failure points, extract successful patterns, and use episodes as training data.',
+      'Human analogy': 'The human analogy is a detailed case file that records every step of an investigation: what was observed, what decisions were made, what actions were taken, and what the outcomes were.',
+      'Without it': 'Without episodic logs, agent executions are ephemeral. Debugging, evaluation, and learning from past behavior become guesswork because no record of what actually happened exists.',
+      'With it': 'With episodic logs, every agent execution produces a replayable, analyzable record that supports debugging, evaluation, and continuous improvement.'
+    },
+    'Graph databases (Neo4j, Neptune)': {
+      'What it is': 'Graph databases store data as nodes and relationships, making them natural for knowledge graphs, entity networks, and any data model where connections between entities are as important as the entities themselves. Neo4j and Amazon Neptune are the most widely used.',
+      'Where it is used': 'They are used in knowledge graph storage, relationship-heavy domains (fraud detection, supply chain, organizational hierarchies), GraphRAG backends, and any agent system that needs to traverse entity relationships for multi-hop reasoning.',
+      'What it unlocks': 'It unlocks relationship-native data storage and querying. Graph traversals that would require multiple expensive joins in relational databases are natural and fast in a graph database.',
+      'Human analogy': 'The human analogy is an evidence board with strings connecting related items — people, events, and locations — where you can follow the connections to discover relationships.',
+      'Without it': 'Without graph databases, relationship-heavy data is forced into relational tables where multi-hop queries require expensive joins, or into document stores where relationships are implicit and hard to traverse.',
+      'With it': 'With graph databases, relationship traversal and multi-hop queries are first-class operations, enabling efficient knowledge graph storage and graph-based reasoning.'
+    },
+    'Chroma / LanceDB (embedded vector DBs)': {
+      'What it is': 'Chroma and LanceDB are lightweight, embedded vector databases that run in-process without a separate server. They are designed for prototyping, small-scale deployments, and local development where the overhead of a full vector database server is unnecessary.',
+      'Where it is used': 'They are used in rapid prototyping, local development, small-scale RAG systems, notebook environments, and applications where simplicity and ease of setup matter more than production scale.',
+      'What it unlocks': 'It unlocks zero-infrastructure vector search. Teams can add semantic retrieval to a project with a pip install and a few lines of code, without provisioning or managing a database server.',
+      'Human analogy': 'The human analogy is a personal reference folder on your laptop versus a department-wide filing system. The personal folder is instant to set up and use, but it does not scale to the whole organization.',
+      'Without it': 'Without embedded vector databases, even simple prototypes require provisioning a vector database server, adding friction that slows experimentation and development.',
+      'With it': 'With embedded vector databases, teams can start building and testing RAG systems immediately, then migrate to production vector databases when scale requires it.'
+    },
+    'Multi-tenant knowledge isolation': {
+      'What it is': 'Multi-tenant knowledge isolation ensures that different users, organizations, or agents cannot access each other\'s data in shared knowledge systems. It enforces data boundaries at the retrieval level so that queries only return results from the tenant\'s own data.',
+      'Where it is used': 'It is used in SaaS platforms, shared enterprise deployments, multi-user agent systems, and any knowledge system where multiple organizations share infrastructure but must not see each other\'s data.',
+      'What it unlocks': 'It unlocks shared infrastructure with data privacy. Multiple tenants can use the same vector database, retrieval pipeline, and agent system without risking data leakage between them.',
+      'Human analogy': 'The human analogy is a shared office building where each company has its own locked filing cabinets. They share the building infrastructure but cannot access each other\'s documents.',
+      'Without it': 'Without tenant isolation, shared knowledge systems risk returning another tenant\'s data in retrieval results — a serious privacy and compliance violation.',
+      'With it': 'With multi-tenant isolation, organizations can share AI infrastructure costs while maintaining strict data boundaries between tenants.'
+    },
+    'Hallucination detection': {
+      'What it is': 'Hallucination detection identifies when a model generates claims that are not supported by its input context, retrieved evidence, or verifiable facts. Techniques include cross-referencing outputs against retrieved sources, NLI-based faithfulness scoring, and self-consistency checks.',
+      'Where it is used': 'It is used in RAG pipelines (did the answer stay faithful to the retrieved documents?), fact-critical applications (medical, legal, financial), and any system where fabricated information is harmful.',
+      'What it unlocks': 'It unlocks trustworthy generation. The system can flag or filter outputs that contain unsupported claims before they reach the user, dramatically reducing the risk of presenting fabricated information as fact.',
+      'Human analogy': 'The human analogy is a fact-checker who reviews an article and marks any claim that is not supported by the cited sources or known facts.',
+      'Without it': 'Without hallucination detection, fabricated information passes through unchecked and is presented to users with the same confidence as well-grounded facts.',
+      'With it': 'With hallucination detection, the system can catch and flag unsupported claims, giving users and downstream systems a reason to trust verified outputs and question flagged ones.'
+    },
+    'Grounding techniques': {
+      'What it is': 'Grounding techniques ensure that model outputs are anchored in verifiable sources rather than generated from parametric memory alone. They include citing retrieved passages, linking claims to specific sources, constraining generation to only use retrieved context, and providing attribution for each statement.',
+      'Where it is used': 'They are used in enterprise search, legal and medical applications, research assistants, and any system where users need to verify the basis for the model\'s claims.',
+      'What it unlocks': 'It unlocks verifiable, traceable generation. Users can check where each claim came from rather than having to trust the model\'s word.',
+      'Human analogy': 'The human analogy is a research analyst who cites their sources for every claim, so the reader can verify the basis for each statement independently.',
+      'Without it': 'Without grounding, model outputs are unverifiable assertions. Users cannot distinguish between claims backed by evidence and claims the model fabricated.',
+      'With it': 'With grounding techniques, every claim comes with a traceable source, making the output verifiable and trustworthy.'
+    },
+    'Freshness & staleness': {
+      'What it is': 'Freshness and staleness management tracks how current the knowledge in an agent\'s memory and retrieval system is. It involves monitoring when data was last updated, detecting when stored information has been superseded, and triggering re-ingestion when sources change.',
+      'Where it is used': 'It is used in knowledge bases built from changing sources (documentation, news, databases), production RAG systems, and any agent that answers questions where the correct answer changes over time.',
+      'What it unlocks': 'It unlocks temporal awareness in knowledge systems. The agent knows which information is current and which may be outdated, and can caveat or refresh stale knowledge appropriately.',
+      'Human analogy': 'The human analogy is checking the publication date on a reference before citing it. A tax law guide from 2020 may not reflect current regulations.',
+      'Without it': 'Without freshness management, the agent confidently serves outdated information because it has no concept of when its knowledge was last updated.',
+      'With it': 'With freshness tracking, the system can flag stale knowledge, prioritize re-ingestion of changed sources, and provide appropriately caveated answers when using older information.'
+    },
+    'Data pipelines & ingestion': {
+      'What it is': 'Data pipelines and ingestion handle the flow of information from source systems into the agent\'s knowledge stores. They extract content from diverse sources (APIs, databases, files, web scraping), transform it (cleaning, structuring, enriching), and load it into retrieval-ready formats.',
+      'Where it is used': 'They are used in every production knowledge system. The quality of ingested data directly determines the quality of retrieval and generation. Pipelines must handle diverse formats, incremental updates, and quality validation.',
+      'What it unlocks': 'It unlocks automated knowledge maintenance. Source data flows into the agent\'s knowledge stores without manual intervention, keeping the system current as upstream sources change.',
+      'Human analogy': 'The human analogy is a news wire service that continuously receives, edits, categorizes, and distributes incoming reports so analysts always have current information.',
+      'Without it': 'Without ingestion pipelines, knowledge bases are manually maintained, go stale quickly, and cannot handle the volume or variety of sources that production systems require.',
+      'With it': 'With automated pipelines, knowledge stays current and comprehensive, and the system can ingest from diverse sources without manual processing.'
+    },
+    'Source attribution': {
+      'What it is': 'Source attribution links each claim in the model\'s output to the specific source document, passage, or data point that supports it. It goes beyond general grounding to provide precise citations that users can verify.',
+      'Where it is used': 'It is used in research assistants, legal and compliance tools, enterprise search, and any application where users need to verify claims against their original sources.',
+      'What it unlocks': 'It unlocks full traceability of generated claims. Users can click through to the exact source passage that supports each statement, enabling independent verification.',
+      'Human analogy': 'The human analogy is footnotes in an academic paper. Every claim is linked to its source, so readers can verify each assertion independently.',
+      'Without it': 'Without source attribution, users must trust the model\'s claims without the ability to check where each fact came from. This is unacceptable in professional, legal, and regulated contexts.',
+      'With it': 'With source attribution, every generated claim is traceable to its evidence, making the system trustworthy enough for professional use where verification matters.'
+    },
+    'Fact-checking agents': {
+      'What it is': 'Fact-checking agents automatically verify claims by retrieving evidence, cross-referencing multiple sources, and assessing whether a statement is supported, contradicted, or unverifiable. They combine retrieval, reasoning, and judgment into a verification pipeline.',
+      'Where it is used': 'They are used in content moderation, news verification, output validation for other agents, and any system where claims need to be checked against evidence before being presented as fact.',
+      'What it unlocks': 'It unlocks automated claim verification at scale. Instead of manual fact-checking (slow and expensive), the system can verify claims programmatically using retrieval and reasoning.',
+      'Human analogy': 'The human analogy is a research librarian who, given a claim, searches the reference materials, finds supporting or contradicting evidence, and reports whether the claim holds up.',
+      'Without it': 'Without fact-checking agents, claims pass through unverified. Human fact-checking cannot scale to the volume of content that AI systems produce.',
+      'With it': 'With fact-checking agents, claims are systematically verified against evidence, providing a scalable quality layer for content that requires factual accuracy.'
+    },
   });
 }());
