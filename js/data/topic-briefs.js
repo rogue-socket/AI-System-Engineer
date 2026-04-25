@@ -3757,6 +3757,494 @@
       'Human analogy': 'The human analogy is companies collaborating through formal partnership agreements with defined interfaces, shared project managers, and clear boundaries about what information is shared.',
       'Without it': 'Without federation, inter-organizational agent collaboration requires ad-hoc API integrations, manual coordination, or one organization granting the other access to internal systems.',
       'With it': 'With agent federation, organizations can automate cross-boundary workflows while maintaining security and data sovereignty.'
+    },
+    'Role-based agent teams': {
+      'What it is': 'Role-based agent teams assign distinct roles to different agents — researcher, writer, reviewer, coder — each with their own instructions, tools, and expertise. The team coordinates through defined handoff protocols rather than one agent doing everything.',
+      'Where it is used': 'They are used in content creation pipelines, software development workflows, research projects, and any task that naturally decomposes into specialized roles.',
+      'What it unlocks': 'It unlocks specialization within agent systems. Each agent is optimized for its role with focused context and tools, rather than one generalist overloaded with everything.',
+      'Human analogy': 'The human analogy is a project team with defined roles — analyst, developer, tester, reviewer — each contributing their specialty to the shared goal.',
+      'Without it': 'Without role specialization, one agent must handle all aspects of a task, diluting its focus and overloading its context with irrelevant tools and instructions.',
+      'With it': 'With role-based teams, each agent brings focused expertise to its part of the task, and the overall system produces higher-quality results through specialization.'
+    },
+    'Peer-to-peer agents': {
+      'What it is': 'Peer-to-peer agent architectures have agents communicate directly with each other without a central orchestrator. Each agent can initiate requests to any other agent, creating a decentralized collaboration network.',
+      'Where it is used': 'They are used in scenarios where no single agent should have central authority, in distributed systems, and in emergent collaboration where the workflow is not pre-defined.',
+      'What it unlocks': 'It unlocks decentralized agent collaboration without a single point of failure or bottleneck. Agents can self-organize based on capability matching.',
+      'Human analogy': 'The human analogy is a flat team where any member can ask any other for help directly, rather than routing every request through a manager.',
+      'Without it': 'Without peer-to-peer, all communication flows through a central orchestrator, creating a bottleneck and single point of failure.',
+      'With it': 'With peer-to-peer, agents collaborate flexibly and the system is more resilient to the failure of any single agent.'
+    },
+    'Hierarchical agent networks': {
+      'What it is': 'Hierarchical agent networks organize agents into layers of authority: top-level planners delegate to mid-level coordinators, who in turn manage specialist workers. Each layer handles a different level of abstraction.',
+      'Where it is used': 'They are used in complex enterprise workflows, large-scale automation, and any system where the task hierarchy naturally mirrors an organizational hierarchy.',
+      'What it unlocks': 'It unlocks scalable multi-agent coordination. Each layer manages a tractable number of direct reports, avoiding the O(n²) communication problem of flat architectures.',
+      'Human analogy': 'The human analogy is a corporate hierarchy: executives set strategy, managers coordinate teams, and individual contributors execute tasks.',
+      'Without it': 'Without hierarchy, flat agent networks struggle to coordinate beyond a handful of agents. Communication and coordination overhead grows quadratically.',
+      'With it': 'With hierarchical organization, multi-agent systems can scale to many agents while keeping coordination manageable at each level.'
+    },
+    'Puppeteer + specialist pattern': {
+      'What it is': 'The puppeteer pattern has a central controlling agent that maintains the overall plan and orchestrates specialist agents by telling each one exactly what to do. Unlike delegation (where subagents have autonomy), the puppeteer makes all decisions and specialists are purely executors.',
+      'Where it is used': 'It is used when tight control is needed over multi-agent workflows, when specialists should not make independent decisions, and when the orchestrator has the full context needed to direct every step.',
+      'What it unlocks': 'It unlocks deterministic multi-agent workflows. The puppeteer maintains full control, making the system predictable and easy to debug because only one agent makes decisions.',
+      'Human analogy': 'The human analogy is a director giving precise instructions to actors — each performer executes their part exactly as directed rather than improvising.',
+      'Without it': 'Without a puppeteer, autonomous agents may make conflicting decisions or drift from the overall plan when given too much independence.',
+      'With it': 'With a puppeteer, the system trades flexibility for control, producing predictable outcomes when tight orchestration is more valuable than agent autonomy.'
+    },
+    'Adversarial / self-play agent systems': {
+      'What it is': 'Adversarial and self-play systems pit agents against each other to improve through competition. One agent generates, another critiques; one attacks, another defends. The adversarial pressure drives both sides to improve, producing stronger capabilities than cooperative training alone.',
+      'Where it is used': 'They are used in red-teaming, security testing, debate-based reasoning, game-playing AI, and any system where competition improves quality (e.g., generator vs. discriminator, attacker vs. defender).',
+      'What it unlocks': 'It unlocks improvement through competition. The adversarial dynamic discovers weaknesses that cooperative approaches miss.',
+      'Human analogy': 'The human analogy is a sparring partner in training — competition with a skilled opponent builds capability faster than practicing alone.',
+      'Without it': 'Without adversarial dynamics, agents improve only through external supervision. Self-generated weaknesses go undiscovered because no agent is incentivized to find them.',
+      'With it': 'With adversarial systems, agents discover and fix their own weaknesses through competitive pressure, producing more robust capabilities.'
+    },
+    'Router pattern (classify & dispatch)': {
+      'What it is': 'The router pattern classifies incoming requests and dispatches them to the appropriate specialized handler. A lightweight classification model or rule set determines which downstream agent, model, or workflow should handle each request.',
+      'Where it is used': 'It is used in customer support (routing to the right department), multi-model systems (cheap model for easy queries, expensive for hard ones), and any system handling diverse request types.',
+      'What it unlocks': 'It unlocks efficient request handling. Each request goes to the most appropriate handler rather than a one-size-fits-all agent, optimizing both quality and cost.',
+      'Human analogy': 'The human analogy is a reception desk that triages incoming requests and sends each one to the right department rather than having everyone go to the same counter.',
+      'Without it': 'Without routing, all requests hit the same agent regardless of complexity or type, wasting resources on simple tasks and underserving complex ones.',
+      'With it': 'With a router, the system matches requests to handlers, improving response quality while reducing average cost.'
+    },
+    'Map-reduce pattern (parallel fan-out)': {
+      'What it is': 'The map-reduce pattern splits a task into independent subtasks (map), processes them in parallel across multiple agents, and combines the results (reduce). It is the standard pattern for parallelizable work in multi-agent systems.',
+      'Where it is used': 'It is used in document analysis (process each document in parallel), research (search multiple sources simultaneously), and any task that can be decomposed into independent parallel subtasks.',
+      'What it unlocks': 'It unlocks parallel execution for significant speedup. Tasks that would take N sequential steps complete in roughly the time of one step plus combination overhead.',
+      'Human analogy': 'The human analogy is dividing a research project among team members: each person researches one source independently, then the team combines findings into a single report.',
+      'Without it': 'Without map-reduce, parallelizable work is processed sequentially, taking N times longer than necessary when subtasks are independent.',
+      'With it': 'With map-reduce, independent subtasks run concurrently, dramatically reducing wall-clock time for parallelizable workflows.'
+    },
+    'Supervisor pattern (manage + route)': {
+      'What it is': 'The supervisor pattern has a managing agent that monitors worker agents, assigns tasks, checks progress, and intervenes when workers get stuck or produce poor results. It combines routing with active management and quality oversight.',
+      'Where it is used': 'It is used in complex multi-agent workflows where workers need oversight, in production systems where quality must be maintained, and when workers may fail or produce subpar results.',
+      'What it unlocks': 'It unlocks managed multi-agent execution with quality control. The supervisor ensures work stays on track and meets quality standards.',
+      'Human analogy': 'The human analogy is a team lead who assigns work, checks in on progress, and steps in when a team member needs help or has gone off track.',
+      'Without it': 'Without supervision, worker agents operate unsupervised. Poor work goes uncaught, stuck agents are not helped, and there is no quality gate on outputs.',
+      'With it': 'With a supervisor, multi-agent systems maintain quality and recover from worker failures through active management.'
+    },
+    'Critic / verifier pattern': {
+      'What it is': 'The critic/verifier pattern pairs a generator agent with a separate evaluator that checks the generator\'s output against quality criteria. The verifier can accept, reject, or request revisions, creating a quality gate that the generator must satisfy.',
+      'Where it is used': 'It is used in code generation (generate then verify with tests), content creation (write then review), and any pipeline where independent quality checking improves reliability.',
+      'What it unlocks': 'It unlocks independent quality assurance in agent pipelines. The verifier catches errors the generator misses because it evaluates from a different perspective.',
+      'Human analogy': 'The human analogy is a writer-editor relationship: the writer produces drafts, the editor reviews them, and revisions continue until the work meets the standard.',
+      'Without it': 'Without a verifier, generator output goes directly to the user. Quality depends entirely on the generator getting it right the first time.',
+      'With it': 'With a critic/verifier, the system has a genuine quality check that catches errors before they reach the user.'
+    },
+    'Planner-executor pattern': {
+      'What it is': 'The planner-executor pattern in multi-agent systems assigns planning to one agent and execution to another (or multiple others). The planner creates the strategy; executors carry it out. This is the multi-agent instantiation of planner-executor separation.',
+      'Where it is used': 'It is used in complex workflows where planning and execution require different capabilities, tools, or model sizes. A strong reasoning model plans; cheaper models execute.',
+      'What it unlocks': 'It unlocks cost-optimized multi-agent execution. The expensive reasoning model is used only for planning; execution uses cheaper models or specialized tools.',
+      'Human analogy': 'The human analogy is an architect who designs the building and a construction crew who builds it — different skills, different cost structures, clear handoff.',
+      'Without it': 'Without separation, one agent handles both planning and execution, preventing cost optimization and making it harder to review plans before execution.',
+      'With it': 'With planner-executor separation, each role is optimized independently and plans can be reviewed before resources are committed to execution.'
+    },
+    'Retriever-reader pattern': {
+      'What it is': 'The retriever-reader pattern splits knowledge-intensive tasks between a retrieval agent (finds relevant documents) and a reader agent (analyzes and answers from the retrieved content). Each agent is specialized for its role.',
+      'Where it is used': 'It is used in RAG systems, research agents, question-answering systems, and any knowledge-intensive workflow where retrieval and analysis benefit from separate optimization.',
+      'What it unlocks': 'It unlocks independent optimization of search and comprehension. The retriever can use specialized search tools; the reader can use a strong reasoning model.',
+      'Human analogy': 'The human analogy is a research team where one person finds the relevant papers and another analyzes them — each brings different skills to the task.',
+      'Without it': 'Without separation, one agent handles both retrieval and analysis, making it harder to optimize each capability independently.',
+      'With it': 'With retriever-reader separation, each phase is optimized for its specific job, improving both retrieval quality and analysis depth.'
+    },
+    'Generator-evaluator loop': {
+      'What it is': 'The generator-evaluator loop has one agent generate candidate outputs and another evaluate them, iterating until the evaluator is satisfied. Each iteration improves quality based on the evaluator\'s feedback.',
+      'Where it is used': 'It is used in content creation, code generation, design tasks, and any workflow where iterative refinement based on evaluation produces better results than one-shot generation.',
+      'What it unlocks': 'It unlocks quality-convergent generation. The system keeps improving output until it meets a quality threshold rather than accepting the first attempt.',
+      'Human analogy': 'The human analogy is a draft-review cycle: the writer submits drafts, the reviewer provides feedback, and the cycle continues until the work is ready.',
+      'Without it': 'Without the loop, quality depends on one-shot generation. There is no mechanism for iterative improvement based on evaluation.',
+      'With it': 'With a generator-evaluator loop, output quality converges toward the evaluator\'s standards through measured iteration.'
+    },
+    'Escalation pattern (agent → human)': {
+      'What it is': 'The escalation pattern routes tasks from an agent to a human when the agent detects it cannot handle the request — due to low confidence, policy restrictions, task complexity, or explicit escalation triggers.',
+      'Where it is used': 'It is used in customer support, medical triage, financial services, and any agent system that handles both routine and complex cases where some require human judgment.',
+      'What it unlocks': 'It unlocks graceful degradation to human capability. The agent handles what it can and seamlessly hands off what it cannot, rather than failing or producing unreliable outputs.',
+      'Human analogy': 'The human analogy is a first-line support agent who handles routine requests and transfers complex cases to a specialist.',
+      'Without it': 'Without escalation, the agent either refuses tasks it cannot handle (losing value) or attempts them anyway (risking bad outcomes).',
+      'With it': 'With escalation, the system provides the best available handler for every task — agent for routine work, human for exceptional cases.'
+    },
+    'Watchdog pattern (monitoring agent)': {
+      'What it is': 'The watchdog pattern deploys a dedicated monitoring agent that observes other agents\' behavior, detects anomalies, enforces policies, and triggers alerts or interventions when something goes wrong. It is separate from the working agents.',
+      'Where it is used': 'It is used in production multi-agent systems, high-stakes automation, and any deployment where autonomous agents need independent oversight.',
+      'What it unlocks': 'It unlocks independent behavioral monitoring. The watchdog catches problems that working agents cannot detect in themselves — infinite loops, policy violations, budget overruns.',
+      'Human analogy': 'The human analogy is a floor supervisor who watches the work area and intervenes when they spot problems that individual workers are too focused on their tasks to notice.',
+      'Without it': 'Without a watchdog, agent problems go undetected until they produce visible failures or a human happens to check.',
+      'With it': 'With a watchdog, anomalies are caught early by an independent observer, enabling faster intervention and safer autonomous operation.'
+    },
+    'Assembly line pattern (sequential specialization)': {
+      'What it is': 'The assembly line pattern passes work through a sequence of specialized agents, each performing one focused transformation. Agent A processes the input, passes to Agent B for enrichment, then Agent C for validation, and so on.',
+      'Where it is used': 'It is used in data processing pipelines, content workflows (draft → edit → format → publish), and any process with clear sequential stages.',
+      'What it unlocks': 'It unlocks optimized sequential processing. Each agent is specialized for one step, and the overall pipeline produces consistently structured output.',
+      'Human analogy': 'The human analogy is a factory assembly line where each station adds one component, and the product moves through stations in order.',
+      'Without it': 'Without sequential specialization, one agent handles all stages, reducing quality and making it harder to debug which stage caused a problem.',
+      'With it': 'With the assembly line, each stage is independently optimizable and debuggable, and the pipeline produces consistent results.'
+    },
+    'Blackboard pattern (shared workspace)': {
+      'What it is': 'The blackboard pattern gives multiple agents access to a shared workspace where they read and write data. Agents contribute their expertise to the shared state independently, and the combined contributions solve the problem.',
+      'Where it is used': 'It is used in collaborative problem-solving, multi-expert systems, and scenarios where different agents have complementary knowledge that must be integrated.',
+      'What it unlocks': 'It unlocks collaborative problem-solving through shared state. Multiple agents contribute asynchronously to a shared understanding rather than passing messages sequentially.',
+      'Human analogy': 'The human analogy is a team brainstorming on a shared whiteboard — each person adds their insights, and the collective picture emerges from everyone\'s contributions.',
+      'Without it': 'Without a shared workspace, agents must exchange all information through direct messages, making it harder to build a shared understanding of complex problems.',
+      'With it': 'With the blackboard pattern, agents collaborate through shared state, enabling flexible multi-expert problem-solving.'
+    },
+    'Message passing': {
+      'What it is': 'Message passing is the fundamental communication mechanism between agents: one agent sends a structured message to another, which processes it and may respond. It defines the interface between agents and carries task requests, results, status updates, and coordination signals.',
+      'Where it is used': 'It is used in every multi-agent system. The message format, routing, and reliability of message passing determine the quality of inter-agent communication.',
+      'What it unlocks': 'It unlocks structured inter-agent communication. Agents can coordinate, delegate, and share results through well-defined message contracts.',
+      'Human analogy': 'The human analogy is email or ticket systems: structured messages with clear sender, recipient, subject, and content that enable asynchronous coordination between team members.',
+      'Without it': 'Without structured message passing, agents communicate through ad-hoc shared state or prompt injection, which is fragile and hard to debug.',
+      'With it': 'With structured message passing, inter-agent communication is explicit, traceable, and debuggable.'
+    },
+    'Shared state management': {
+      'What it is': 'Shared state management handles how multiple agents read and write to common data stores, maintaining consistency when concurrent agents modify the same state. It covers locking, versioning, conflict resolution, and eventual consistency.',
+      'Where it is used': 'It is used in multi-agent systems with shared memory, blackboard architectures, collaborative editing agents, and any system where multiple agents must coordinate through shared data.',
+      'What it unlocks': 'It unlocks safe concurrent access to shared data. Multiple agents can work on the same problem without corrupting each other\'s state.',
+      'Human analogy': 'The human analogy is version control for a shared document: multiple editors can contribute without overwriting each other\'s work.',
+      'Without it': 'Without shared state management, concurrent agents can corrupt shared data, leading to inconsistent state and unpredictable behavior.',
+      'With it': 'With proper state management, multiple agents can safely collaborate on shared data without conflicts or corruption.'
+    },
+    'Context handoff': {
+      'What it is': 'Context handoff is the transfer of relevant state, history, and working context from one agent to another during task delegation or escalation. The receiving agent must get enough context to continue the work without starting from scratch.',
+      'Where it is used': 'It is used in agent-to-agent delegation, escalation to humans, multi-step pipelines, and any workflow where one agent hands work to another.',
+      'What it unlocks': 'It unlocks seamless transitions between agents. The receiving agent picks up where the previous one left off rather than losing all prior context.',
+      'Human analogy': 'The human analogy is a shift handoff: the outgoing worker briefs the incoming worker on current status, pending tasks, and important context.',
+      'Without it': 'Without context handoff, receiving agents start from scratch, repeating work and losing insights accumulated by the previous agent.',
+      'With it': 'With proper context handoff, transitions between agents are seamless and no accumulated knowledge is lost.'
+    },
+    'Conflict resolution': {
+      'What it is': 'Conflict resolution handles disagreements between agents: conflicting recommendations, incompatible actions, or contradictory conclusions. Resolution strategies include voting, authority hierarchies, evidence-based adjudication, and human arbitration.',
+      'Where it is used': 'It is used in multi-agent debate systems, systems with redundant agents, and any architecture where agents can disagree about what to do or what is true.',
+      'What it unlocks': 'It unlocks productive disagreement. Agents can surface different perspectives without the system deadlocking or producing contradictory outputs.',
+      'Human analogy': 'The human analogy is a decision-making process in a committee: when members disagree, there is a defined process (voting, chair decision, escalation) to reach resolution.',
+      'Without it': 'Without conflict resolution, disagreements between agents cause deadlocks, contradictory outputs, or arbitrary winner-takes-all outcomes.',
+      'With it': 'With conflict resolution, multi-agent disagreements are handled through a defined process that produces a justified, consistent decision.'
+    },
+    'Task delegation': {
+      'What it is': 'Task delegation is how one agent assigns work to another: describing the task, providing necessary context, specifying success criteria, and establishing how the result should be returned. Good delegation is the foundation of multi-agent productivity.',
+      'Where it is used': 'It is used in every orchestrator-subagent interaction, in supervisor patterns, and anywhere one agent needs another to perform work on its behalf.',
+      'What it unlocks': 'It unlocks division of labor between agents. Complex tasks are broken into delegable pieces, each handled by the most appropriate agent.',
+      'Human analogy': 'The human analogy is a manager writing a clear task brief for a team member: what needs to be done, what context they need, and what the deliverable should look like.',
+      'Without it': 'Without clear delegation, subagents receive vague instructions and produce work that does not meet the delegator\'s expectations.',
+      'With it': 'With clear delegation, subagents receive actionable instructions with success criteria, producing reliable results.'
+    },
+    'Emergent behavior': {
+      'What it is': 'Emergent behavior is collective behavior that arises from agent interactions but was not explicitly programmed into any individual agent. It can be positive (creative problem-solving) or negative (herding, deadlocks, adversarial dynamics).',
+      'Where it is used': 'It matters in any multi-agent system with autonomous agents. Understanding emergence is essential for predicting and managing unexpected collective behaviors.',
+      'What it unlocks': 'It unlocks awareness that multi-agent systems can produce behaviors not designed into any individual agent. This awareness is critical for both leveraging positive emergence and preventing harmful collective dynamics.',
+      'Human analogy': 'The human analogy is organizational culture: it emerges from individual behaviors and interactions but was not designed by any single person, and it can be positive or toxic.',
+      'Without it': 'Without understanding emergence, teams are surprised when multi-agent systems produce unexpected behaviors that no individual agent was designed to exhibit.',
+      'With it': 'With emergence understood, teams can design for positive collective dynamics and monitor for negative ones.'
+    },
+    'Agent discovery': {
+      'What it is': 'Agent discovery is the process by which agents find other agents they can collaborate with, learn about their capabilities, and establish communication channels. It is the multi-agent equivalent of service discovery in microservices.',
+      'Where it is used': 'It is used in dynamic multi-agent ecosystems, enterprise agent platforms, and any environment where the set of available agents changes over time.',
+      'What it unlocks': 'It unlocks dynamic multi-agent collaboration. Agents can find and work with new collaborators without hardcoded knowledge of every available agent.',
+      'Human analogy': 'The human analogy is a professional network or company directory that lets you find colleagues with the skills you need for a project.',
+      'Without it': 'Without discovery, every agent relationship must be hardcoded. Adding a new agent to the ecosystem requires updating every potential collaborator.',
+      'With it': 'With agent discovery, the ecosystem scales dynamically as new agents are added and discovered by those who need their capabilities.'
+    },
+    'Agent protocol standardization': {
+      'What it is': 'Agent protocol standardization defines common message formats, interaction patterns, and contracts that all agents in an ecosystem follow. It is the multi-agent communication equivalent of HTTP for the web.',
+      'Where it is used': 'It is used in multi-vendor agent ecosystems, enterprise agent platforms, and any environment where agents from different teams or providers must interoperate.',
+      'What it unlocks': 'It unlocks vendor-neutral agent interoperability. Agents built by different teams can collaborate through shared protocols rather than custom point-to-point integrations.',
+      'Human analogy': 'The human analogy is standardized business communication protocols — invoices, purchase orders, shipping documents — that let companies transact without custom paperwork for each partner.',
+      'Without it': 'Without standardization, every pair of agents needs custom integration, and the number of integrations grows quadratically with the number of agents.',
+      'With it': 'With standardized protocols, agents interoperate through shared contracts, enabling scalable multi-agent ecosystems.'
+    },
+    'Trust & reputation systems': {
+      'What it is': 'Trust and reputation systems track the reliability, accuracy, and behavior of agents over time, creating a trust score that other agents use when deciding whether to delegate work or accept results. Unreliable agents receive fewer delegations.',
+      'Where it is used': 'They are used in open multi-agent ecosystems, marketplace-style agent platforms, and any environment where agents have varying reliability and callers need to assess trustworthiness.',
+      'What it unlocks': 'It unlocks quality-aware delegation. Agents can preferentially delegate to reliable collaborators and avoid agents with poor track records.',
+      'Human analogy': 'The human analogy is professional reputation: over time, reliable colleagues get more responsibility while unreliable ones are given less critical work.',
+      'Without it': 'Without reputation tracking, all agents are treated as equally reliable. Poor-quality agents receive the same delegations as excellent ones.',
+      'With it': 'With trust systems, the ecosystem self-selects for quality as reliable agents receive more work and unreliable ones are naturally deprioritized.'
+    },
+    'LangChain / LangGraph': {
+      'What it is': 'LangChain is an agent framework built around chain abstractions for composing LLM calls with tools, memory, and retrievers. LangGraph extends it with explicit state-graph orchestration, enabling branching, looping, and checkpointed execution. Together they represent the most widely-adopted agent framework ecosystem.',
+      'Where it is used': 'They are used in tool-calling agents, RAG systems, multi-step workflows, and production agent deployments. LangGraph is especially common for complex stateful workflows that need checkpointing and branching.',
+      'What it unlocks': 'It unlocks rapid agent development with a large ecosystem of integrations. LangGraph specifically unlocks explicit state management and checkpointed execution for durable agent workflows.',
+      'Human analogy': 'The human analogy is a comprehensive project management toolkit — templates, workflows, and integrations — that lets teams build and run complex processes quickly.',
+      'Without it': 'Without LangChain/LangGraph, teams build agent orchestration from scratch, reinventing chain composition, state management, and tool integration.',
+      'With it': 'With LangChain/LangGraph, teams get a mature ecosystem for agent development with extensive integrations, though they must manage the framework\'s abstraction complexity.'
+    },
+    'LlamaIndex': {
+      'What it is': 'LlamaIndex specializes in connecting LLMs to data: ingestion, indexing, retrieval, and context assembly. It provides abstractions for building RAG systems, knowledge agents, and data-grounded applications with structured retrieval pipelines.',
+      'Where it is used': 'It is used in knowledge-heavy applications, document Q&A, RAG pipelines, and any system where the core challenge is connecting an LLM to an organization\'s data.',
+      'What it unlocks': 'It unlocks rapid construction of data-connected AI applications. Teams can build RAG systems and knowledge agents faster than hand-wiring every ingestion, indexing, and retrieval step.',
+      'Human analogy': 'The human analogy is a research assistant toolkit that handles finding, organizing, and presenting reference materials so the analyst can focus on analysis.',
+      'Without it': 'Without LlamaIndex, teams build ingestion, indexing, and retrieval pipelines from scratch, which is significant engineering work for knowledge-heavy applications.',
+      'With it': 'With LlamaIndex, the data connection layer is handled by proven abstractions, letting teams focus on application logic rather than retrieval infrastructure.'
+    },
+    'AutoGen (Microsoft)': {
+      'What it is': 'AutoGen is Microsoft\'s multi-agent conversation framework that models agent interactions as group chats between specialized agents. It supports flexible conversation patterns, human-in-the-loop participation, and code execution within agent discussions.',
+      'Where it is used': 'It is used in multi-agent research, collaborative problem-solving, and workflows where agents need to discuss and iterate on solutions through structured conversation.',
+      'What it unlocks': 'It unlocks conversational multi-agent collaboration. Agents interact through natural conversation patterns rather than rigid pipeline structures.',
+      'Human analogy': 'The human analogy is a structured group discussion where specialists take turns contributing their expertise to solve a problem collaboratively.',
+      'Without it': 'Without AutoGen, conversational multi-agent patterns must be implemented from scratch, including conversation management, turn-taking, and human participation.',
+      'With it': 'With AutoGen, teams can set up multi-agent conversations quickly with built-in patterns for collaboration, code execution, and human involvement.'
+    },
+    'CrewAI': {
+      'What it is': 'CrewAI organizes agents into crews with defined roles, goals, and task workflows. It emphasizes role-based agent teams with clear delegation patterns, making it straightforward to set up multi-agent collaborations modeled on human team structures.',
+      'Where it is used': 'It is used in role-based automation, content creation pipelines, research workflows, and any task that maps naturally to a team of specialized agents with clear roles.',
+      'What it unlocks': 'It unlocks intuitive multi-agent setup based on human team metaphors. Teams can describe agent crews in terms of roles and responsibilities rather than low-level orchestration code.',
+      'Human analogy': 'The human analogy is assembling a project team: you define the roles (researcher, writer, reviewer), assign them to people, and describe the workflow.',
+      'Without it': 'Without CrewAI, role-based multi-agent setups require more orchestration code, especially around delegation, task flow, and role assignment.',
+      'With it': 'With CrewAI, role-based agent teams are quick to set up using familiar team and role concepts.'
+    },
+    'OpenAI Agents SDK': {
+      'What it is': 'The OpenAI Agents SDK provides a typed, production-oriented framework for building agents with OpenAI models. It includes structured tool definitions, handoff protocols, guardrails, and tracing, with strong integration into OpenAI\'s model ecosystem.',
+      'Where it is used': 'It is used by teams building production agents on OpenAI models who want official SDK support, typed tool contracts, and built-in observability.',
+      'What it unlocks': 'It unlocks production-grade agent development within OpenAI\'s ecosystem with official support, typed contracts, and integrated tracing.',
+      'Human analogy': 'The human analogy is using the manufacturer\'s official toolkit for a product: it may not be the most flexible option, but it is well-supported and guaranteed to work with the product.',
+      'Without it': 'Without the Agents SDK, teams building on OpenAI must assemble their own agent framework, tool definitions, and observability around the raw API.',
+      'With it': 'With the Agents SDK, OpenAI-based agents get an opinionated, well-supported development path with built-in best practices.'
+    },
+    'Google ADK': {
+      'What it is': 'Google Agent Development Kit (ADK) provides tools for building agents with Gemini models, including structured tool use, multi-agent orchestration, and integration with Google Cloud services. It is Google\'s answer to provider-native agent SDKs.',
+      'Where it is used': 'It is used by teams building agents on Gemini models and Google Cloud infrastructure who want native integration with Google\'s ecosystem.',
+      'What it unlocks': 'It unlocks agent development with deep Google Cloud integration — Vertex AI, Cloud Functions, BigQuery, and other Google services as native agent capabilities.',
+      'Human analogy': 'The human analogy is building within a well-integrated corporate campus where every department\'s tools work together natively.',
+      'Without it': 'Without ADK, teams on Google Cloud must wire Gemini into their agent architecture manually, missing native integrations with Google services.',
+      'With it': 'With ADK, Google Cloud-based agents get native integration with the broader Google ecosystem.'
+    },
+    'PydanticAI': {
+      'What it is': 'PydanticAI brings Pydantic\'s typed-Python philosophy to agent development: strongly typed tool inputs/outputs, structured result validation, and type-safe agent definitions. It prioritizes correctness through Python\'s type system.',
+      'Where it is used': 'It is used by Python teams that value type safety, structured output validation, and clean interfaces in their agent code.',
+      'What it unlocks': 'It unlocks type-safe agent development. Tool contracts, outputs, and agent interfaces are validated at development time, catching errors before runtime.',
+      'Human analogy': 'The human analogy is using blueprints with precise specifications rather than hand-sketches — the extra precision upfront prevents costly errors later.',
+      'Without it': 'Without PydanticAI, Python agent code relies on runtime validation of tool inputs and outputs, with type errors discovered only when code runs.',
+      'With it': 'With PydanticAI, agent code has the same type-safety and validation guarantees that Pydantic brings to data models.'
+    },
+    'Haystack': {
+      'What it is': 'Haystack is an open-source framework for building modular RAG and NLP pipelines with composable components. It emphasizes production-grade pipeline construction with swappable retrievers, readers, and generators.',
+      'Where it is used': 'It is used in enterprise search, document processing, RAG systems, and any production NLP pipeline that needs modular, testable component composition.',
+      'What it unlocks': 'It unlocks modular, production-grade NLP pipeline construction. Components can be independently tested, swapped, and upgraded without rebuilding the entire pipeline.',
+      'Human analogy': 'The human analogy is a modular industrial assembly system where each station is independently replaceable and testable.',
+      'Without it': 'Without Haystack, production RAG pipelines are built monolithically, making component upgrades and testing more difficult.',
+      'With it': 'With Haystack, RAG and NLP pipelines are modular and production-ready from the start.'
+    },
+    'Semantic Kernel': {
+      'What it is': 'Semantic Kernel is Microsoft\'s SDK for integrating AI models into applications, supporting C# and Python. It provides abstractions for plugins, planners, and memory, with deep integration into Microsoft\'s enterprise ecosystem (Azure, M365).',
+      'Where it is used': 'It is used by enterprise teams building AI features on Microsoft\'s stack, especially those already invested in Azure and the Microsoft ecosystem.',
+      'What it unlocks': 'It unlocks AI integration within the Microsoft enterprise ecosystem — Azure OpenAI, Microsoft Graph, and enterprise identity systems.',
+      'Human analogy': 'The human analogy is Microsoft\'s enterprise development toolkit: it works best within the Microsoft ecosystem and integrates deeply with enterprise infrastructure.',
+      'Without it': 'Without Semantic Kernel, teams on the Microsoft stack must build custom integrations between AI models and Azure/M365 services.',
+      'With it': 'With Semantic Kernel, Microsoft-stack teams get native AI integration with their existing enterprise infrastructure.'
+    },
+    'Dify': {
+      'What it is': 'Dify is a low-code platform for building AI applications through visual workflows, prompt management, and tool connectors. It provides a GUI-based approach to agent construction aimed at less technical users and rapid iteration.',
+      'Where it is used': 'It is used for internal copilots, rapid prototyping, and teams that need to build and iterate on AI applications without deep coding expertise.',
+      'What it unlocks': 'It unlocks visual, low-code agent development. Non-engineering teams can build and modify AI workflows through a drag-and-drop interface.',
+      'Human analogy': 'The human analogy is a visual website builder versus hand-coding HTML: faster to start, easier for non-specialists, but with some flexibility tradeoffs.',
+      'Without it': 'Without low-code platforms, every AI application requires engineering resources, creating a bottleneck for teams that need rapid iteration.',
+      'With it': 'With Dify, agent applications can be assembled and iterated on by teams with less technical depth.'
+    },
+    'Smolagents (HuggingFace)': {
+      'What it is': 'Smolagents is HuggingFace\'s lightweight agent library that prioritizes simplicity: minimal abstractions, code-first agent loops, and direct tool integration without heavy framework ceremony.',
+      'Where it is used': 'It is used for rapid prototyping, small automation projects, and teams that want agent capability without the complexity of full frameworks like LangGraph or CrewAI.',
+      'What it unlocks': 'It unlocks lightweight agent development. Teams can build functional agents in a few lines of code without learning a complex framework.',
+      'Human analogy': 'The human analogy is a pocket toolkit versus a full workshop: it handles most common tasks with minimal setup.',
+      'Without it': 'Without lightweight options, even simple agents require adopting a full framework, adding unnecessary complexity for straightforward use cases.',
+      'With it': 'With Smolagents, simple agent tasks get simple implementations, reserving heavyweight frameworks for when they are actually needed.'
+    },
+    'Mastra': {
+      'What it is': 'Mastra is a TypeScript-first agent framework designed for building AI-powered applications with a focus on developer experience, workflows, and integrations in the JavaScript/TypeScript ecosystem.',
+      'Where it is used': 'It is used by TypeScript teams building AI features in web applications and Node.js backends who want native TypeScript tooling rather than Python-based agent frameworks.',
+      'What it unlocks': 'It unlocks TypeScript-native agent development with familiar JavaScript ecosystem patterns and tooling.',
+      'Human analogy': 'The human analogy is having development tools in your native language rather than having to translate from another language for every task.',
+      'Without it': 'Without TypeScript-native options, JS/TS teams must use Python-based frameworks or build their own agent abstractions.',
+      'With it': 'With Mastra, TypeScript teams get first-class agent development tooling in their native ecosystem.'
+    },
+    'Vercel AI SDK': {
+      'What it is': 'The Vercel AI SDK provides React hooks and server utilities for building AI-powered user interfaces with streaming, tool use, and multi-step agent interactions. It bridges the gap between agent runtime and frontend delivery.',
+      'Where it is used': 'It is used in web applications that need streaming AI UX, real-time tool call visualization, and seamless integration between server-side agent logic and client-side rendering.',
+      'What it unlocks': 'It unlocks polished AI user experiences in web applications. Streaming, tool visualization, and multi-turn interaction are handled by the SDK rather than built from scratch.',
+      'Human analogy': 'The human analogy is a UI toolkit for customer-facing dashboards: it handles the presentation layer so the engineering team can focus on the underlying logic.',
+      'Without it': 'Without the AI SDK, teams building AI-powered web UIs must handle streaming, tool call rendering, and state management from scratch.',
+      'With it': 'With the Vercel AI SDK, AI-powered web experiences get production-quality UX with minimal frontend engineering effort.'
+    },
+    'Agno (formerly Phidata)': {
+      'What it is': 'Agno (formerly Phidata) is a Python agent framework focused on simplicity and practical agent deployment. It provides clean abstractions for agents, tools, knowledge bases, and memory with minimal ceremony.',
+      'Where it is used': 'It is used for building practical AI assistants, knowledge agents, and tool-using workflows with less framework overhead than more complex alternatives.',
+      'What it unlocks': 'It unlocks straightforward agent development with a focus on getting to a working agent quickly rather than learning complex abstractions.',
+      'Human analogy': 'The human analogy is a practical field kit: everything you need to get the job done without unnecessary extras.',
+      'Without it': 'Without simple frameworks, even practical agent projects require either heavy frameworks or building from scratch.',
+      'With it': 'With Agno, practical agents are quick to build and deploy with clean, understandable code.'
+    },
+    'Agency Swarm': {
+      'What it is': 'Agency Swarm is an open-source framework focused on creating and managing swarms of collaborative agents. It provides primitives for agent communication, task distribution, and swarm-level coordination.',
+      'Where it is used': 'It is used for multi-agent experiments, swarm-style automation, and research into emergent multi-agent behavior patterns.',
+      'What it unlocks': 'It unlocks experimentation with swarm-style multi-agent coordination where agents self-organize rather than following rigid orchestration.',
+      'Human analogy': 'The human analogy is a volunteer network where participants self-organize around tasks based on capability and availability rather than being assigned by a manager.',
+      'Without it': 'Without swarm-oriented frameworks, multi-agent systems require centralized orchestration patterns that may not suit decentralized collaboration needs.',
+      'With it': 'With Agency Swarm, teams can experiment with decentralized multi-agent coordination patterns.'
+    },
+    'DAG pipelines': {
+      'What it is': 'DAG (Directed Acyclic Graph) pipelines organize agent workflow steps as a graph where each step depends on specific predecessors. Steps without dependencies run in parallel; dependent steps wait for their inputs. This provides structured, deterministic execution order.',
+      'Where it is used': 'They are used in data processing, ETL pipelines, CI/CD, and any multi-step agent workflow where step dependencies are known in advance.',
+      'What it unlocks': 'It unlocks deterministic parallel execution. The DAG structure makes dependencies explicit and automatically parallelizes independent steps.',
+      'Human analogy': 'The human analogy is a project plan with task dependencies: tasks run in parallel when possible, and each task starts only when its prerequisites are complete.',
+      'Without it': 'Without DAG structure, pipeline steps either run sequentially (slow) or require manual parallelism management (complex and error-prone).',
+      'With it': 'With DAG pipelines, multi-step workflows execute efficiently with automatic parallelism and clear dependency management.'
+    },
+    'State machines': {
+      'What it is': 'State machines model agent workflows as a set of defined states and transitions between them. The agent is always in exactly one state, and events or conditions trigger transitions. This provides deterministic, auditable flow control.',
+      'Where it is used': 'They are used in customer support workflows, approval processes, order fulfillment, and any workflow with clear stages and transition rules.',
+      'What it unlocks': 'It unlocks deterministic, auditable agent behavior. The current state and available transitions are always explicit, making behavior predictable and debuggable.',
+      'Human analogy': 'The human analogy is a workflow diagram posted on the wall: everyone can see what stage the process is in and what comes next.',
+      'Without it': 'Without state machines, workflow state is implicit in the agent\'s conversation history, making it hard to know exactly where a process stands.',
+      'With it': 'With state machines, workflow progress is always explicit, predictable, and auditable.'
+    },
+    'Event-driven orchestration': {
+      'What it is': 'Event-driven orchestration triggers agent actions in response to events from external systems — messages, webhooks, database changes, schedule triggers — rather than synchronous request-response patterns.',
+      'Where it is used': 'It is used in reactive agent systems, monitoring and alerting, asynchronous workflows, and any agent that must respond to real-time events from multiple sources.',
+      'What it unlocks': 'It unlocks reactive agent behavior. The agent responds to events as they happen rather than waiting to be asked.',
+      'Human analogy': 'The human analogy is an on-call operator who monitors multiple alert channels and responds to events as they arrive.',
+      'Without it': 'Without event-driven orchestration, agents only act when explicitly invoked, missing real-time events that require immediate response.',
+      'With it': 'With event-driven orchestration, agents respond to events in real-time, enabling reactive automation workflows.'
+    },
+    'Async orchestration': {
+      'What it is': 'Async orchestration manages agent workflows where steps run concurrently and complete at different times. The orchestrator tracks in-flight tasks, handles completions as they arrive, and manages dependencies between concurrent operations.',
+      'Where it is used': 'It is used in parallel agent workflows, long-running background tasks, and any system where waiting for each step sequentially would be too slow.',
+      'What it unlocks': 'It unlocks concurrent multi-agent execution. Multiple agents work simultaneously, and the orchestrator assembles results as they arrive.',
+      'Human analogy': 'The human analogy is a project manager tracking multiple workstreams that run in parallel, checking off deliverables as each team finishes.',
+      'Without it': 'Without async orchestration, multi-agent workflows run sequentially, losing the parallelism benefits of having multiple agents.',
+      'With it': 'With async orchestration, multi-agent systems realize their parallelism potential, completing workflows faster than sequential execution allows.'
+    },
+    'Parallel execution': {
+      'What it is': 'Parallel execution runs multiple agent tasks simultaneously rather than sequentially. It requires identifying independent subtasks, dispatching them concurrently, and collecting results when all complete.',
+      'Where it is used': 'It is used whenever agent subtasks are independent: parallel web searches, concurrent document analysis, simultaneous API calls, and fan-out/fan-in patterns.',
+      'What it unlocks': 'It unlocks wall-clock speedup proportional to the degree of parallelism. N independent tasks complete in the time of one rather than N times one.',
+      'Human analogy': 'The human analogy is assigning independent research tasks to multiple team members simultaneously rather than having one person do them all in sequence.',
+      'Without it': 'Without parallel execution, independent tasks run sequentially, wasting time on work that could happen concurrently.',
+      'With it': 'With parallel execution, agent workflows complete faster by running independent subtasks simultaneously.'
+    },
+    'Fan-out / fan-in': {
+      'What it is': 'Fan-out distributes a task to multiple agents or processing paths simultaneously. Fan-in collects and combines their results into a single output. Together they form the standard pattern for parallel processing with result aggregation.',
+      'Where it is used': 'It is used in multi-source research, parallel document analysis, ensemble querying (asking multiple models the same question), and any workflow that benefits from parallel processing with aggregated results.',
+      'What it unlocks': 'It unlocks parallel processing with structured result collection. Multiple perspectives or analyses are gathered concurrently and combined into a single coherent output.',
+      'Human analogy': 'The human analogy is sending the same research question to multiple analysts and combining their findings into one report.',
+      'Without it': 'Without fan-out/fan-in, parallel work must be manually coordinated and results manually aggregated.',
+      'With it': 'With fan-out/fan-in, parallel work is dispatched and collected through a clean, standard pattern.'
+    },
+    'Workflow recovery & checkpointing': {
+      'What it is': 'Workflow recovery and checkpointing save the state of a multi-step workflow at defined points so that if a failure occurs, execution can resume from the last checkpoint rather than restarting from scratch.',
+      'Where it is used': 'It is used in long-running agent workflows, expensive pipelines where restart from scratch wastes significant compute, and any system where partial progress should survive failures.',
+      'What it unlocks': 'It unlocks resilient long-running workflows. Failures cost only the work since the last checkpoint, not the entire workflow.',
+      'Human analogy': 'The human analogy is saving your work frequently: if the computer crashes, you only lose the work since the last save, not everything.',
+      'Without it': 'Without checkpointing, any failure in a long workflow requires restarting from the beginning, wasting all completed work.',
+      'With it': 'With checkpointing, long workflows survive failures gracefully, resuming from the last good state.'
+    },
+    'Durable execution (Temporal, Inngest)': {
+      'What it is': 'Durable execution frameworks like Temporal and Inngest guarantee that workflow steps complete even through process crashes, service restarts, and infrastructure failures. They persist workflow state and automatically retry failed steps, providing at-least-once execution guarantees.',
+      'Where it is used': 'They are used in production agent workflows with real-world side effects, long-running processes that span hours or days, and any system where workflow completion must be guaranteed.',
+      'What it unlocks': 'It unlocks guaranteed workflow completion. Agent workflows survive infrastructure failures and process restarts without losing state or skipping steps.',
+      'Human analogy': 'The human analogy is a task management system that automatically reassigns work when someone is unavailable and ensures every task is eventually completed.',
+      'Without it': 'Without durable execution, agent workflows can silently fail when processes crash, leaving tasks incomplete and state inconsistent.',
+      'With it': 'With durable execution, agent workflows are guaranteed to complete, making them reliable enough for mission-critical automation.'
+    },
+    'Coordination collapse (deadlock / live-lock)': {
+      'What it is': 'Coordination collapse occurs when agents become stuck waiting for each other (deadlock) or endlessly passing work back and forth without progress (live-lock). Both prevent the system from making progress despite having available resources.',
+      'Where it is used': 'It is a failure mode in any multi-agent system with shared resources, mutual dependencies, or circular delegation patterns. It becomes more likely as the number of interacting agents increases.',
+      'What it unlocks': 'Recognizing this failure pattern unlocks prevention through timeout mechanisms, deadlock detection, and circular-dependency breaking in agent coordination protocols.',
+      'Human analogy': 'The human analogy is two departments waiting for each other to go first (deadlock) or endlessly bouncing a task back and forth (live-lock) without anyone actually doing the work.',
+      'Without it': 'Without awareness of coordination collapse, teams deploy multi-agent systems that mysteriously hang or fail to make progress under certain conditions.',
+      'With it': 'With coordination collapse understood, teams can design timeout mechanisms, cycle detection, and fallback strategies that prevent agents from getting stuck.'
+    },
+    'Authority ambiguity (unclear decision ownership)': {
+      'What it is': 'Authority ambiguity occurs when it is unclear which agent is responsible for making a decision, leading to either duplicate conflicting actions or no action at all. It is the multi-agent equivalent of "I thought you were handling that."',
+      'Where it is used': 'It is a failure mode in systems with overlapping agent responsibilities, unclear delegation boundaries, or missing ownership definitions.',
+      'What it unlocks': 'Recognizing this pattern unlocks clearer role definitions, explicit decision-ownership assignment, and conflict-resolution protocols.',
+      'Human analogy': 'The human analogy is a team where nobody is sure who is responsible for a critical task, so either everyone does it (conflicting results) or nobody does it (dropped ball).',
+      'Without it': 'Without addressing authority ambiguity, multi-agent systems experience mysterious duplicated or dropped tasks that are hard to diagnose.',
+      'With it': 'With clear authority assignment, every decision has an explicit owner, eliminating confusion about who should act.'
+    },
+    'Cascade failures across agent hops': {
+      'What it is': 'Cascade failures occur when an error in one agent propagates through the chain of agents that depend on its output. A hallucinated fact from agent A becomes the basis for agent B\'s analysis, which informs agent C\'s recommendation, amplifying the original error.',
+      'Where it is used': 'It is a failure mode in any multi-hop agent pipeline, especially when intermediate results are not validated and errors compound silently through the chain.',
+      'What it unlocks': 'Recognizing this pattern unlocks inter-agent validation, error firewalls, and checkpoint verification that stop bad data from propagating.',
+      'Human analogy': 'The human analogy is a game of telephone: errors introduced early get amplified and distorted as they pass through each person in the chain.',
+      'Without it': 'Without cascade awareness, teams trust intermediate agent outputs without verification, allowing errors to amplify through the pipeline.',
+      'With it': 'With cascade awareness, teams insert validation between agent hops, catching errors before they compound.'
+    },
+    'Deference loops (agents deferring indefinitely)': {
+      'What it is': 'Deference loops occur when agents keep passing responsibility to each other without anyone actually doing the work. Agent A defers to Agent B, who defers back to Agent A, creating an infinite loop of polite avoidance.',
+      'Where it is used': 'It is a failure mode in peer-to-peer agent systems, escalation chains without terminal handlers, and systems where agents lack clear authority or confidence to act independently.',
+      'What it unlocks': 'Recognizing this pattern unlocks mandatory terminal handlers, deference-count limits, and forced-action policies that break the loop.',
+      'Human analogy': 'The human analogy is two people at a door saying "after you" repeatedly until someone finally just walks through.',
+      'Without it': 'Without deference-loop detection, agents can defer indefinitely while the task sits unhandled.',
+      'With it': 'With deference limits, the system forces resolution after a maximum number of deferrals, ensuring tasks are eventually handled.'
+    },
+    'Goal drift in long-running workflows': {
+      'What it is': 'Goal drift occurs when a long-running agent workflow gradually diverges from its original objective. Each step may be locally reasonable, but cumulative small deviations compound until the final output no longer serves the original goal.',
+      'Where it is used': 'It is a failure mode in long-running research agents, iterative refinement loops, and any workflow that runs long enough for small per-step deviations to accumulate.',
+      'What it unlocks': 'Recognizing this pattern unlocks periodic goal-alignment checks, anchoring the agent back to the original objective at regular intervals.',
+      'Human analogy': 'The human analogy is a project that gradually scope-creeps until the final deliverable no longer matches what was originally requested.',
+      'Without it': 'Without goal-drift detection, long-running workflows silently diverge from their objectives, producing outputs that miss the original goal.',
+      'With it': 'With periodic goal-alignment checks, the system catches drift early and corrects course before it compounds.'
+    },
+    'Herding behavior (convergence on suboptimal solution)': {
+      'What it is': 'Herding occurs when multiple agents converge on the same suboptimal answer because they influence each other\'s outputs rather than reasoning independently. The first agent\'s response anchors the rest, suppressing diversity.',
+      'Where it is used': 'It is a failure mode in multi-agent debate systems, ensemble reasoning, and any system where agents can see each other\'s outputs before forming their own.',
+      'What it unlocks': 'Recognizing this pattern unlocks independence-preserving designs: agents reason before seeing others\' outputs, or randomized ordering prevents anchoring.',
+      'Human analogy': 'The human analogy is groupthink: when the first person in a meeting states a strong opinion, everyone else agrees rather than offering independent assessments.',
+      'Without it': 'Without herding awareness, teams expect diverse opinions from multi-agent systems but get homogeneous agreement anchored by the first response.',
+      'With it': 'With herding prevention, multi-agent systems maintain genuine diversity of perspective, improving the quality of collective reasoning.'
+    },
+    'Communication overhead explosion (O(n²) messaging)': {
+      'What it is': 'Communication overhead explosion occurs when the number of messages between agents grows quadratically with the number of agents. In a fully-connected system with N agents, each needing to update all others, the message count is O(n²).',
+      'Where it is used': 'It is a failure mode in any multi-agent system that scales beyond a handful of agents, especially those using peer-to-peer communication without hierarchy or message aggregation.',
+      'What it unlocks': 'Recognizing this pattern unlocks hierarchical communication structures, message aggregation, shared blackboards, and publish-subscribe patterns that reduce messaging overhead.',
+      'Human analogy': 'The human analogy is the meeting problem: a 5-person team needs 10 pair conversations; a 20-person team needs 190. That is why organizations use hierarchies and broadcasts.',
+      'Without it': 'Without overhead awareness, teams add agents to improve capability but find that coordination costs eventually outweigh the benefits of additional agents.',
+      'With it': 'With overhead-aware design, multi-agent communication scales through hierarchy and aggregation rather than drowning in messages.'
+    },
+    'Context window exhaustion in multi-turn chains': {
+      'What it is': 'Context window exhaustion occurs when accumulated conversation history, tool results, and inter-agent messages fill the context window, leaving no room for the model to reason about the current task. Long multi-turn chains are especially prone to this.',
+      'Where it is used': 'It is a failure mode in long-running agent conversations, multi-hop pipelines that accumulate context at each step, and any chain where context grows monotonically.',
+      'What it unlocks': 'Recognizing this pattern unlocks context management strategies: summarization, selective history, context pruning, and fresh-context subagent spawning.',
+      'Human analogy': 'The human analogy is a desk so covered with papers from previous meetings that there is no room to work on the current task.',
+      'Without it': 'Without context management, long-running agents silently degrade as their context fills with stale information, reducing reasoning quality.',
+      'With it': 'With context management strategies, agents maintain useful working context regardless of how long the interaction runs.'
+    },
+    'Hallucination amplification across hops': {
+      'What it is': 'Hallucination amplification occurs when one agent\'s hallucinated claim is treated as fact by downstream agents, who then build further reasoning on it. Each hop adds confidence to the original hallucination rather than detecting it.',
+      'Where it is used': 'It is a failure mode in any multi-agent pipeline where outputs flow from one agent to the next without verification, especially when later agents lack access to original sources.',
+      'What it unlocks': 'Recognizing this pattern unlocks inter-hop verification, source-tracking across agents, and confidence decay that flags unverified claims.',
+      'Human analogy': 'The human analogy is a rumor spreading through an organization, gaining credibility at each retelling because each person assumes the previous person verified it.',
+      'Without it': 'Without amplification awareness, hallucinations introduced early in a pipeline gain false credibility as they pass through subsequent agents.',
+      'With it': 'With inter-hop verification, hallucinated claims are caught before they propagate and accumulate false confidence across the pipeline.'
+    },
+    'Silent failure (false success reporting)': {
+      'What it is': 'Silent failure occurs when an agent reports success despite having failed to actually complete the task. The agent produces a confident-sounding response that masks incomplete execution, skipped steps, or incorrect results.',
+      'Where it is used': 'It is a failure mode in any agent system, especially those without external verification. It is particularly dangerous in agents with real-world side effects where false success means the expected action was not actually taken.',
+      'What it unlocks': 'Recognizing this pattern unlocks external verification of agent claims, output validation against ground truth, and success criteria that are checked independently of the agent\'s self-report.',
+      'Human analogy': 'The human analogy is a contractor who says "all done" without actually completing the work. The client only discovers the failure later when they check.',
+      'Without it': 'Without silent failure detection, teams trust agent success reports at face value and discover failures only when downstream consequences become visible.',
+      'With it': 'With external verification of success claims, silent failures are caught before they cause downstream problems.'
+    },
+    'Conflicting sub-goal resolution failures': {
+      'What it is': 'Conflicting sub-goal failures occur when different agents pursue sub-goals that are individually reasonable but mutually incompatible. Agent A optimizes for speed while Agent B optimizes for quality on the same task, producing outputs that cannot be combined.',
+      'Where it is used': 'It is a failure mode in multi-agent systems with independently assigned sub-goals, in parallel workflows where coordination is insufficient, and in systems where global constraints are not propagated to all agents.',
+      'What it unlocks': 'Recognizing this pattern unlocks global constraint propagation, sub-goal compatibility checking before execution, and coordination protocols that detect conflicts early.',
+      'Human analogy': 'The human analogy is two teams building different parts of a product with incompatible specifications because they each optimized for different requirements without coordinating.',
+      'Without it': 'Without conflict detection, agents invest effort in sub-goals that will turn out to be incompatible, wasting work and producing unusable combined results.',
+      'With it': 'With sub-goal compatibility checking, conflicts are detected before agents invest significant work in incompatible directions.'
+    },
+    'Trust chain breakdown (compromised agent in pipeline)': {
+      'What it is': 'Trust chain breakdown occurs when a compromised, malfunctioning, or adversarial agent in a pipeline corrupts the work of all downstream agents that trust its output. The compromised agent becomes a single point of failure for the entire chain.',
+      'Where it is used': 'It is a security and reliability concern in multi-agent systems, especially those spanning organizational boundaries or using third-party agent services.',
+      'What it unlocks': 'Recognizing this pattern unlocks agent authentication, output signing, trust boundaries, and independent verification at critical pipeline stages.',
+      'Human analogy': 'The human analogy is a supply chain where one compromised supplier contaminates all products downstream. The entire chain depends on the integrity of each link.',
+      'Without it': 'Without trust chain awareness, a single compromised agent can corrupt the outputs of an entire multi-agent pipeline without detection.',
+      'With it': 'With trust chain protections, compromised agents are detected and isolated before their corrupted outputs propagate through the pipeline.'
+    },
+    'Emergent adversarial dynamics between cooperative agents': {
+      'What it is': 'Emergent adversarial dynamics occur when agents that are designed to cooperate begin competing, undermining each other, or gaming shared metrics. This emerges from misaligned incentives, conflicting optimization targets, or reward hacking in shared environments.',
+      'Where it is used': 'It is a failure mode in multi-agent systems with shared reward signals, competitive resource allocation, or optimization targets that can be gamed through inter-agent manipulation.',
+      'What it unlocks': 'Recognizing this pattern unlocks incentive alignment auditing, shared-metric monitoring for gaming, and cooperative-design verification before deployment.',
+      'Human analogy': 'The human analogy is departments in a company that are supposed to collaborate but end up competing for the same resources or credit, undermining each other.',
+      'Without it': 'Without awareness of emergent adversarial dynamics, teams deploy cooperative systems that develop competitive behaviors under certain conditions.',
+      'With it': 'With incentive alignment monitoring, teams can detect and correct emerging adversarial dynamics before they undermine the cooperative system.'
     }
   });
 }());
