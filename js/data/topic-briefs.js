@@ -243,20 +243,20 @@
       'With it': 'With a real loop, the agent can search, inspect, revise, and continue. That is the moment when the system starts to feel less like prompt chaining and more like situated problem solving.'
     },
     'ReAct agents': {
-      'What it is': 'ReAct agents interleave reasoning traces with concrete actions. Instead of first thinking in isolation and only later acting, they continually tie thought to tool use and environment feedback.',
-      'Where it is used': 'This pattern is common in search agents, web agents, coding agents, and troubleshooting workflows where new evidence appears after every step. It became popular because it matches how many real tasks unfold.',
-      'What it unlocks': 'It unlocks a tighter bond between plan and evidence. The model can revise its course as soon as a tool result challenges the current hypothesis.',
-      'Human analogy': 'The human analogy is a researcher or technician who thinks aloud, tries a step, reads the result, and immediately adjusts the next move.',
-      'Without it': 'Without a ReAct-style pattern, an agent often overplans in the abstract or acts with too little reflection. Either way, the work can drift because the reasoning process is not grounded tightly enough in evidence.',
-      'With it': 'With ReAct, the agent becomes more adaptive. Each action creates new information, and the reasoning process uses that information immediately rather than pretending the world stayed still.'
+      'What it is': 'ReAct agents interleave reasoning traces with concrete actions: think, act, observe, repeat. The pattern was originally a prompting technique (thought/action/observation formatting), but by 2026 the same behavior is usually achieved through native tool-calling APIs (OpenAI function calling, Anthropic tool use, Gemini function calling) rather than manual prompt engineering. The concept remains foundational even as the implementation has shifted.',
+      'Where it is used': 'This pattern is the default architecture for tool-using agents: search agents, web agents, coding agents, and troubleshooting workflows where new evidence appears after every step. Most agent frameworks implement a ReAct-style loop as their core execution pattern.',
+      'What it unlocks': 'It unlocks a tighter bond between plan and evidence. The model can revise its course as soon as a tool result challenges the current hypothesis, rather than committing to a full plan before seeing any real-world feedback.',
+      'Human analogy': 'The human analogy is a researcher or technician who thinks aloud, tries a step, reads the result, and immediately adjusts the next move rather than writing a complete plan before touching anything.',
+      'Without it': 'Without a ReAct-style pattern, an agent either overplans in the abstract or acts with too little reflection. The reasoning process is not grounded in evidence from the environment.',
+      'With it': 'With ReAct as the default loop, the agent becomes adaptive. Each action creates new information, and the reasoning process uses it immediately rather than pretending the world stayed still.'
     },
     'RAG vs fine-tuning vs long context (trade-offs)': {
-      'What it is': 'This topic is a decision framework for three very different ways of improving capability. RAG adds external knowledge at inference time, fine-tuning changes model behavior in the weights, and long context keeps more raw material in view during the call.',
-      'Where it is used': 'It comes up in enterprise search, domain adaptation, product planning, platform decisions, and almost every serious conversation about how to make an agent better at a task. It is one of the highest-value trade-off topics in the whole map.',
-      'What it unlocks': 'It unlocks better investment choices. Instead of defaulting to whichever technique is fashionable, a team can ask whether the problem is really about fresh knowledge, stable behavior, or sheer working context.',
-      'Human analogy': 'The human analogy is the difference between looking something up, practicing until the skill becomes internalized, and spreading a huge pile of source material across the desk. Each method helps, but in a different way and at a different cost.',
-      'Without it': 'Without this trade-off lens, teams often fine-tune when retrieval would be cheaper, or stuff enormous prompts into context when the real need is better retrieval and compression. The result is wasted effort and confusing architecture.',
-      'With it': 'With this lens, architecture decisions become sharper. The team can explain why knowledge should stay external, why behavior should move into weights, or why large working context is worth the latency and cost.'
+      'What it is': 'This topic is a decision framework for three ways of improving capability. RAG adds external knowledge at inference time, fine-tuning changes model behavior in the weights, and long context keeps more raw material in view during the call. With 1M+ token context windows now available (Gemini 2.5 Pro, Claude), the long-context option has become a genuine competitor to chunked RAG for many corpora sizes.',
+      'Where it is used': 'It comes up in enterprise search, domain adaptation, product planning, and almost every serious conversation about how to make an agent better at a task. The 2025-2026 shift toward very large context windows has made this tradeoff more nuanced — teams must now consider whether their corpus fits in context directly versus needing retrieval.',
+      'What it unlocks': 'It unlocks better investment choices. Instead of defaulting to whichever technique is fashionable, a team can ask whether the problem is really about fresh knowledge, stable behavior, or sheer working context — and whether the corpus is small enough to just load into a long-context call.',
+      'Human analogy': 'The human analogy is the difference between looking something up in a reference, practicing until the skill becomes internalized, and spreading the entire source file across a very large desk. With bigger desks now available, the third option works for more cases than it used to.',
+      'Without it': 'Without this trade-off lens, teams often fine-tune when retrieval would be cheaper, build RAG pipelines when the corpus fits in a single long-context call, or miss that fine-tuning is the right answer when behavior needs to change.',
+      'With it': 'With this lens, architecture decisions become sharper. The team can explain why knowledge should stay external, why behavior should move into weights, or when a long-context call is the simplest correct answer.'
     },
     'Agentic RAG': {
       'What it is': 'Agentic RAG is retrieval that is no longer fixed to one static search step. The agent can reformulate the query, branch its search, inspect failures, retrieve again, and decide how evidence should be assembled.',
@@ -499,12 +499,12 @@
       'With it': 'With multi-hop RAG, the agent can do more than fetch. It can traverse an evidence chain, which makes document-grounded reasoning much closer to the way careful humans actually investigate.'
     },
     'GraphRAG': {
-      'What it is': 'GraphRAG uses graph structure, explicit entity relationships, or graph-enriched retrieval paths to gather context instead of relying only on flat similarity over isolated chunks. The graph can come from a knowledge graph, extracted entity graph, or document-link graph built during ingestion.',
-      'Where it is used': 'It is used in due diligence, root-cause analysis, research, policy interpretation, and enterprise knowledge systems where relationships between people, systems, events, and documents matter as much as the documents themselves.',
-      'What it unlocks': 'It unlocks relation-aware retrieval. The agent can follow links, neighborhoods, and structured paths that would be hard to recover from chunk similarity alone, especially on multi-entity or multi-step questions.',
-      'Human analogy': 'The human analogy is an investigator moving through a case-management graph of people, accounts, incidents, and source files instead of reading one stack of documents in isolation.',
-      'Without it': 'Without graph-aware retrieval, relation-heavy questions often degrade into flat search. The system may find relevant documents but still miss the connecting path that explains why those documents belong together.',
-      'With it': 'With GraphRAG, the evidence set becomes more structured and connected. The agent can retrieve along meaningful links instead of hoping those links were already obvious inside one chunk.'
+      'What it is': 'GraphRAG uses graph structure and entity relationships to gather context instead of relying only on flat similarity over isolated chunks. The term now commonly refers to Microsoft\'s open-source GraphRAG system (2024), which builds entity-relationship graphs from documents using LLM extraction, detects communities, and creates hierarchical summaries for both local (entity-specific) and global (corpus-wide) queries.',
+      'Where it is used': 'It is used in due diligence, root-cause analysis, research, policy interpretation, and enterprise knowledge systems where relationships between entities matter as much as individual documents. Microsoft GraphRAG has become the default starting point, though the broader concept applies to any graph-enriched retrieval approach.',
+      'What it unlocks': 'It unlocks relation-aware and corpus-wide retrieval. Local mode follows entity relationships for specific queries; global mode uses community summaries to answer broad questions that no single chunk could address.',
+      'Human analogy': 'The human analogy is an investigator who both maps relationships between people and events (local queries) and produces executive summaries of major themes across an entire case file (global queries).',
+      'Without it': 'Without graph-aware retrieval, relation-heavy questions degrade into flat chunk search. Corpus-wide summarization questions get no good answer at all because no single chunk contains the full picture.',
+      'With it': 'With GraphRAG, the evidence set becomes structured and connected. The agent can answer both specific entity questions and broad thematic questions that flat RAG cannot handle.'
     },
     'Tool schema design (JSON Schema / provider adapters)': {
       'What it is': 'Tool schema design defines the names, descriptions, arguments, and types that a model sees when deciding how to call a tool. In practice, teams usually express that contract through JSON Schema-like structures and then adapt it to whichever provider or runtime they are using.',
@@ -843,12 +843,12 @@
       'With it': 'With a vector database in place, the agent can search a much larger memory by concept and pull back relevant material quickly enough to stay useful in production settings.'
     },
     'Vector databases (Pinecone, Weaviate, Qdrant, Milvus)': {
-      'What it is': 'Vector databases store embeddings and support fast nearest-neighbor search, filtering, and retrieval across large collections of semantically indexed content.',
-      'Where it is used': 'They are used in RAG systems, long-term memory stores, semantic search, recommendation, and any agent workflow that needs to retrieve related material by meaning instead of exact keyword match.',
-      'What it unlocks': 'It unlocks persistent semantic lookup at scale. The agent can keep a large knowledge base in a form that is searchable by concept fast enough for real workflows.',
-      'Human analogy': 'The human analogy is an indexed reference library or dictionary organized by meaning, so a person can search for related ideas even when they do not know the exact wording used in the source.',
-      'Without it': 'Without a vector database, semantic retrieval tends to stay small, slow, or improvised. Teams either scan documents manually, fall back to keywords, or struggle to keep semantic search responsive as the corpus grows.',
-      'With it': 'With a vector database in place, the agent can search a much larger memory by concept and pull back relevant material quickly enough to stay useful in production settings.'
+      'What it is': 'Dedicated vector databases are purpose-built for storing embeddings and running fast nearest-neighbor search with filtering at scale. Pinecone pioneered the serverless vector DB model; Weaviate offers modular multi-tenancy; Qdrant provides built-in sparse vector and hybrid search support; Milvus handles massive-scale workloads with GPU-accelerated indexing.',
+      'Where it is used': 'They are used in RAG systems, long-term agent memory, semantic search, recommendation, and any workflow that needs to retrieve by meaning at scale. The choice between them depends on scale requirements, hosting preferences (managed vs self-hosted), hybrid search needs, and multi-tenancy requirements.',
+      'What it unlocks': 'It unlocks persistent semantic lookup at scale with production-grade filtering, multi-tenancy, and performance guarantees. Each product makes different tradeoffs: Pinecone optimizes for ease of use, Qdrant for hybrid search, Milvus for massive throughput, and Weaviate for modular extensibility.',
+      'Human analogy': 'The human analogy is choosing between different records management systems for a large organization. Each organizes materials by meaning and supports different access patterns, but they differ in capacity, features, and operational model.',
+      'Without it': 'Without dedicated vector databases, semantic retrieval either stays small (in-memory), slow (brute-force search), or operationally fragile (improvised solutions without proper indexing, filtering, or multi-tenancy).',
+      'With it': 'With a vector database in place, semantic search becomes a production-grade service with the reliability, filtering, and scale guarantees that serious agent systems require.'
     },
     'Operational vector stores (Postgres + pgvector, Elasticsearch / OpenSearch)': {
       'What it is': 'Operational vector stores are general-purpose databases or search systems that also support vector retrieval. They let teams keep semantic search closer to the rest of the application data model instead of always introducing a separate dedicated vector database.',
@@ -1259,12 +1259,12 @@
       'With it': 'With the o-series understood, the team can route genuinely difficult problems to reasoning models and simpler tasks to faster models, optimizing the cost-quality tradeoff.'
     },
     'DeepSeek-R1 / R1-Zero / R1-0528': {
-      'What it is': 'DeepSeek-R1 is an open-weight reasoning model that demonstrated competitive reasoning performance with frontier proprietary models. R1-Zero showed that reasoning behavior could emerge from pure reinforcement learning without supervised chain-of-thought data, and R1-0528 refined the approach further.',
-      'Where it is used': 'It matters in open-weight deployments, reasoning research, and distillation pipelines where teams want reasoning-capable models they can self-host, inspect, and build on without proprietary API dependencies.',
-      'What it unlocks': 'It unlocks open-weight reasoning. Teams can study, distill, and deploy reasoning models locally, which was previously only possible through proprietary APIs.',
-      'Human analogy': 'The human analogy is an open training curriculum that teaches systematic problem-solving, published for any organization to adopt and adapt, rather than being locked inside one consulting firm\'s proprietary methodology.',
-      'Without it': 'Without DeepSeek-R1, reasoning-capable models were entirely proprietary. Teams had no open-weight option to self-host, inspect, or distill reasoning behavior.',
-      'With it': 'With R1 available, teams can bring reasoning capability in-house, distill it into smaller models, and study how reasoning emerges during training.'
+      'What it is': 'DeepSeek-R1 is the open-weight reasoning model that proved competitive reasoning performance was achievable outside proprietary labs. R1-Zero showed reasoning could emerge from pure RL without supervised CoT data, and R1-0528 refined the approach. The R1 family catalyzed a wave of open-weight reasoning development and distillation, and the line has continued to evolve alongside DeepSeek V3.1\'s reasoning-enhanced capabilities.',
+      'Where it is used': 'It matters in open-weight deployments, reasoning research, and distillation pipelines. R1 became the most-distilled reasoning model in the ecosystem, with R1-distilled variants running on everything from data center GPUs to consumer hardware. It is the foundation many teams used to bring reasoning in-house.',
+      'What it unlocks': 'It unlocks open-weight reasoning as an ecosystem, not just a single model. Teams can study, distill, and deploy reasoning models locally. The R1 training methodology became the template for training reasoning into smaller models.',
+      'Human analogy': 'The human analogy is an open training curriculum that teaches systematic problem-solving, published for any organization to adopt, adapt, and teach forward. It did not just produce one cohort of graduates — it created a reproducible method that many other programs adopted.',
+      'Without it': 'Without DeepSeek-R1, the open-weight reasoning ecosystem would have developed far more slowly. R1 proved the approach was viable and provided the concrete artifacts others built on.',
+      'With it': 'With R1 and its descendants understood, teams can trace how open-weight reasoning matured from a single breakthrough into a crowded and practical design space.'
     },
     'Claude with extended thinking (Anthropic)': {
       'What it is': 'Claude\'s extended thinking mode lets the model explicitly deliberate in a visible thinking trace before producing its final answer. Anthropic exposes a thinking budget parameter that controls how much inference-time compute the model can spend on internal reasoning.',
@@ -1291,12 +1291,12 @@
       'With it': 'With Qwen\'s hybrid approach, one model endpoint serves both modes, which simplifies routing and reduces infrastructure overhead.'
     },
     'Grok 3 (xAI) with reasoning': {
-      'What it is': 'Grok 3 is xAI\'s large language model, which includes reasoning capabilities and was trained with access to real-time data from the X platform. It represents xAI\'s approach to combining large-scale pretraining with reasoning behavior.',
-      'Where it is used': 'It matters in the reasoning model landscape as an additional competitor. Teams evaluating frontier models should understand its positioning, particularly its real-time data access and reasoning performance claims.',
-      'What it unlocks': 'It unlocks a broader competitive evaluation for reasoning tasks. Grok 3\'s real-time data access and distinct training approach give teams another concrete option to benchmark against when the top three providers do not fully cover their needs.',
-      'Human analogy': 'The human analogy is a new consulting firm entering an established market with a different data advantage and approach, offering teams another option to evaluate alongside incumbents.',
-      'Without it': 'Without awareness of Grok 3, model selection may over-focus on a small set of frontier providers and miss alternatives that could offer better fit for certain tasks.',
-      'With it': 'With Grok 3 in the evaluation set, teams have a broader view of the reasoning model landscape and can make more informed competitive comparisons.'
+      'What it is': 'Grok 3 is xAI\'s reasoning-capable model trained with massive compute on the Colossus cluster, with access to real-time data from the X platform. The Grok line has rapidly iterated through 3.5 and toward Grok 4, establishing xAI as a genuine frontier competitor rather than a niche entrant.',
+      'Where it is used': 'It matters as a frontier reasoning option with distinct advantages in real-time data access and rapid iteration speed. Teams evaluating reasoning models now include Grok alongside OpenAI, Anthropic, and Google as a serious contender, especially for tasks benefiting from current-event awareness.',
+      'What it unlocks': 'It unlocks a broader competitive field for reasoning tasks. Grok\'s real-time data integration, aggressive scaling approach, and rapid version cadence offer teams an alternative with different strengths than the established providers.',
+      'Human analogy': 'The human analogy is a fast-growing firm that entered an established market with a different data advantage, rapidly scaled to match incumbents, and now competes on its own terms rather than just being an alternative.',
+      'Without it': 'Without awareness of the Grok family\'s trajectory from version 3 through 3.5 and beyond, model selection may underestimate a provider that has quickly become frontier-competitive.',
+      'With it': 'With Grok understood, teams have a fuller picture of the reasoning model landscape including a provider known for rapid iteration and unique data access.'
     },
     'Phi-4-reasoning (Microsoft)': {
       'What it is': 'Phi-4-reasoning is Microsoft\'s small reasoning model that demonstrates strong performance on reasoning benchmarks despite being much smaller than frontier models. It extends the Phi line\'s emphasis on high capability per parameter into the reasoning domain.',
@@ -1307,36 +1307,36 @@
       'With it': 'With Phi-4-reasoning, cost-constrained teams can access reasoning capability without frontier infrastructure costs.'
     },
     'Llama 4 Maverick / Scout reasoning': {
-      'What it is': 'Llama 4 Maverick and Scout are Meta\'s latest open-weight models with reasoning capabilities. Maverick is a larger MoE model; Scout is optimized for longer contexts. Both extend the Llama line into competitive reasoning territory with open weights.',
-      'Where it is used': 'They matter for teams committed to open-weight infrastructure who want reasoning capability without proprietary dependencies. They are especially relevant in self-hosted enterprise deployments and community fine-tuning ecosystems.',
-      'What it unlocks': 'It unlocks open-weight reasoning at scale from Meta. Teams can self-host, fine-tune, and deploy reasoning models within their own infrastructure using the Llama ecosystem.',
-      'Human analogy': 'The human analogy is a well-resourced public institution releasing professional-grade training materials and methodologies that any organization can adopt, instead of those methods remaining proprietary.',
-      'Without it': 'Without Llama 4 reasoning variants, open-weight reasoning options are limited primarily to DeepSeek, which may not meet every team\'s licensing or deployment requirements.',
-      'With it': 'With Llama 4 reasoning models, teams have a broader set of open-weight reasoning options to evaluate for their specific infrastructure and licensing needs.'
+      'What it is': 'Llama 4 is Meta\'s open-weight model family with a three-tier architecture: Scout (optimized for long context with efficient attention), Maverick (a larger MoE model for general reasoning), and Behemoth (the largest variant with strongest reasoning, partially released). All three extend the Llama line into competitive reasoning territory with open weights.',
+      'Where it is used': 'They matter for teams committed to open-weight infrastructure who want reasoning capability without proprietary dependencies. The three-tier structure lets teams choose between context length, general capability, and maximum reasoning depth depending on the task.',
+      'What it unlocks': 'It unlocks tiered open-weight reasoning from Meta. Teams can match model size and capability to task requirements: Scout for long-context work, Maverick for general reasoning, and Behemoth for the hardest problems.',
+      'Human analogy': 'The human analogy is a public institution offering three levels of professional certification — a fast-track for routine work, a standard program for general capability, and an advanced track for the most complex problems — all using the same curriculum framework.',
+      'Without it': 'Without the Llama 4 family, open-weight reasoning options are limited primarily to DeepSeek, which may not meet every team\'s licensing or deployment requirements.',
+      'With it': 'With the full Llama 4 lineup understood, teams can select the right tier for their reasoning needs while staying within one open-weight ecosystem.'
     },
     'Mistral Large with reasoning': {
-      'What it is': 'Mistral Large is Mistral AI\'s frontier model, which includes reasoning capabilities. Mistral\'s models are notable for strong European data governance, efficient architectures, and competitive performance relative to their size.',
-      'Where it is used': 'It matters for teams that need European-headquartered AI providers for regulatory reasons, or that value Mistral\'s traditionally efficient architectures and strong coding performance.',
-      'What it unlocks': 'It unlocks a European-origin reasoning option. For teams with data-sovereignty requirements or preferences for European providers, Mistral Large provides an alternative to US and Chinese providers.',
-      'Human analogy': 'The human analogy is a European consulting firm that meets local regulatory requirements while offering competitive analytical capability, giving clients a jurisdictional alternative.',
+      'What it is': 'Mistral Large (now in its second major version) is Mistral AI\'s frontier model with reasoning capabilities. The Mistral lineup has expanded significantly with Mistral Medium 3 often offering a better cost-quality tradeoff for many tasks. Mistral\'s models remain notable for European data governance, efficient architectures, and strong coding performance.',
+      'Where it is used': 'It matters for teams that need European-headquartered AI providers for regulatory reasons, or that value Mistral\'s efficient architectures and strong coding performance. Teams should evaluate both Mistral Large 2 and Mistral Medium 3 as the latter often matches Large on practical tasks at lower cost.',
+      'What it unlocks': 'It unlocks a European-origin reasoning option at multiple price points. For teams with data-sovereignty requirements or preferences for European providers, the Mistral lineup provides alternatives to US and Chinese providers.',
+      'Human analogy': 'The human analogy is a European consulting firm that has grown from a single strong offering to a tiered service, where the mid-tier often handles most client needs at lower cost while the premium tier remains available for the hardest problems.',
       'Without it': 'Without Mistral in the picture, teams with European data-governance requirements have fewer frontier-reasoning options to consider.',
-      'With it': 'With Mistral Large, teams needing European-based AI providers can access reasoning capability without compromising on jurisdictional requirements.'
+      'With it': 'With the Mistral lineup understood including Large 2 and Medium 3, teams can access European-based reasoning capability at the right price point for their needs.'
     },
     'Command R7B with reasoning (Cohere)': {
-      'What it is': 'Command R7B is Cohere\'s small reasoning-capable model designed for enterprise RAG and tool-use workflows. It emphasizes grounded generation and structured output, making it oriented toward practical enterprise tasks rather than benchmark performance.',
-      'Where it is used': 'It matters for enterprise teams using Cohere\'s platform for RAG, search, and grounded generation. It is relevant when organizations need a small, enterprise-focused model with reasoning that integrates with Cohere\'s retrieval stack.',
-      'What it unlocks': 'It unlocks reasoning within Cohere\'s enterprise retrieval ecosystem. Teams already invested in Cohere can add reasoning capability without switching providers.',
-      'Human analogy': 'The human analogy is a specialized enterprise analyst who works within the organization\'s existing document management and search system rather than requiring a completely separate workflow.',
-      'Without it': 'Without awareness of Command R7B, teams in the Cohere ecosystem may look outside their existing stack for reasoning capability when an integrated option exists.',
-      'With it': 'With Command R7B, enterprise teams in Cohere\'s ecosystem gain reasoning capability that integrates natively with their existing retrieval and grounding infrastructure.'
+      'What it is': 'Command R7B is the smallest model in Cohere\'s Command R line, designed for lightweight enterprise RAG and grounded generation tasks. It is not a dedicated reasoning model — Cohere\'s agentic strategy centers on Command A, their flagship model for tool use and multi-step workflows. R7B is positioned as a cost-efficient option for simpler retrieval and extraction tasks.',
+      'Where it is used': 'It matters for enterprise teams using Cohere\'s platform who need a compact model for high-volume, lower-complexity tasks like extraction, classification, and simple RAG queries. For reasoning-heavy or agentic work, teams should look at Command A instead.',
+      'What it unlocks': 'It unlocks cost-efficient grounded generation for simpler enterprise tasks within Cohere\'s ecosystem. Teams can route lightweight queries to R7B while sending complex reasoning and tool-use tasks to Command A.',
+      'Human analogy': 'The human analogy is a junior analyst handling routine document lookups and extractions, while complex cases requiring judgment and multi-step investigation go to the senior team.',
+      'Without it': 'Without understanding R7B\'s positioning, teams may expect reasoning-model behavior from a lightweight retrieval model, or miss that Cohere\'s actual reasoning strategy lives in Command A.',
+      'With it': 'With R7B properly positioned, teams can build tiered routing within Cohere\'s ecosystem — R7B for simple tasks, Command A for reasoning and agentic workflows.'
     },
     'Kimi k1.5 (Moonshot AI)': {
-      'What it is': 'Kimi k1.5 is Moonshot AI\'s reasoning model, notable for combining reinforcement learning on long chain-of-thought with strong performance. It demonstrated that a unified training approach across both short and long reasoning can be competitive.',
-      'Where it is used': 'It matters in the reasoning model research landscape and for teams tracking the broader set of reasoning approaches beyond the biggest Western and Chinese labs.',
-      'What it unlocks': 'It unlocks a demonstrated alternative to supervised-CoT distillation. Kimi k1.5\'s unified long-CoT RL method shows that a single training approach across short and long reasoning can be competitive, informing teams building their own reasoning pipelines.',
-      'Human analogy': 'The human analogy is a smaller research group that publishes a novel training method which becomes influential, even if their brand is less well-known than the largest institutions.',
-      'Without it': 'Without tracking Kimi k1.5, teams may miss training insights that apply to their own reasoning model work.',
-      'With it': 'With Kimi k1.5 in the landscape, teams have a richer picture of how reasoning is being trained across different labs and methods.'
+      'What it is': 'Kimi k1.5 was Moonshot AI\'s reasoning model that demonstrated competitive reasoning via unified long-CoT RL training. It has since been superseded by Kimi k2, which substantially outperforms k1.5 and introduces strong agentic tool-use capabilities, representing a significant architectural shift from pure reasoning to reasoning-plus-action.',
+      'Where it is used': 'The k1.5 to k2 progression matters for teams tracking how reasoning models evolve toward agentic capability. k2\'s combination of reasoning with structured tool use reflects a broader industry trend where reasoning and action are trained jointly rather than treated as separate capabilities.',
+      'What it unlocks': 'It unlocks understanding of how smaller labs can iterate rapidly from a reasoning-focused model to an agentic one. The k1.5 unified RL method and k2\'s tool-use extension together show a concrete pathway from pure CoT to practical agent behavior.',
+      'Human analogy': 'The human analogy is a smaller research group that first publishes a novel analytical method, then rapidly extends it to include hands-on operational skills, demonstrating that strong reasoning and strong tool use can be trained together.',
+      'Without it': 'Without tracking the Kimi k1.5 to k2 progression, teams miss a concrete example of how reasoning capability transitions into agentic tool-use capability through continued training investment.',
+      'With it': 'With the Kimi progression understood, teams have a richer picture of how reasoning models evolve toward practical agency across different labs and methods.'
     },
     'Marco-o1 (Alibaba DAMO)': {
       'What it is': 'Marco-o1 is Alibaba DAMO Academy\'s reasoning model focused on open-ended problem solving. It emphasizes chain-of-thought reasoning on problems that lack clear standard answers, extending the reasoning paradigm beyond math and coding benchmarks.',
@@ -1445,12 +1445,12 @@
 
     // ── Multimodal & vision models ─────────────────────────────────────
     'GPT-4o / GPT-4V (OpenAI)': {
-      'What it is': 'GPT-4o is OpenAI\'s natively multimodal model that processes text, images, and audio in a single architecture. GPT-4V was the earlier vision-capable variant. Together they define the reference standard for integrated multimodal reasoning from a proprietary provider.',
-      'Where it is used': 'They are used in document analysis, visual question answering, UI understanding, accessibility tools, and product workflows that combine text and images. They are the benchmark many teams compare against when evaluating multimodal capability.',
+      'What it is': 'GPT-4o is OpenAI\'s natively multimodal model processing text, images, and audio in a single architecture. GPT-4V was the earlier vision-capable variant, now deprecated. The current OpenAI multimodal lineup includes GPT-4o, GPT-4.1, and GPT-4.5, each offering different cost-capability tradeoffs for vision tasks.',
+      'Where it is used': 'They are used in document analysis, visual question answering, UI understanding, accessibility tools, and product workflows that combine text and images. GPT-4o remains the most common reference point for multimodal benchmarking, while GPT-4.1 and 4.5 extend frontier capability.',
       'What it unlocks': 'It unlocks native multimodal interaction through OpenAI\'s API. Teams can send images alongside text prompts and receive responses that reason over both, without managing separate vision pipelines.',
       'Human analogy': 'The human analogy is a senior analyst who can simultaneously read documents, examine photographs, and discuss findings in one seamless conversation rather than requiring separate requests for each format.',
-      'Without it': 'Without GPT-4o/4V awareness, teams evaluating multimodal options lack the most common reference point for proprietary multimodal capability.',
-      'With it': 'With GPT-4o understood, teams have a clear baseline for multimodal performance and can compare other models against it when making selection decisions.'
+      'Without it': 'Without understanding OpenAI\'s multimodal model lineup and its evolution from GPT-4V through GPT-4o to 4.1 and 4.5, teams lack the most common reference point for proprietary multimodal capability.',
+      'With it': 'With the GPT-4o lineage understood, teams have a clear baseline for multimodal performance and can track how OpenAI\'s vision capability has evolved across model generations.'
     },
     'Claude 3.5 / Claude 4 with vision (Anthropic)': {
       'What it is': 'Claude 3.5 and Claude 4 include vision capabilities that allow processing images, charts, screenshots, and documents directly. Anthropic\'s models are notable for combining strong vision understanding with Claude\'s emphasis on safety, instruction following, and extended thinking.',
@@ -1501,28 +1501,28 @@
       'With it': 'With InternVL, teams needing self-hosted visual reasoning have access to one of the strongest available open-weight options.'
     },
     'LLaVA / LLaVA-NeXT': {
-      'What it is': 'LLaVA (Large Language and Vision Assistant) pioneered the approach of connecting a pretrained vision encoder to a language model with a simple projection layer. LLaVA-NeXT improved quality and resolution handling. The architecture became an influential template for building VLMs from existing components.',
-      'Where it is used': 'It matters as a design pattern for building VLMs and for teams that want to construct custom vision-language models by combining their own language model with a vision encoder.',
-      'What it unlocks': 'It unlocks the modular VLM construction pattern. Teams can build vision-language models by connecting components rather than training from scratch, which democratizes multimodal model development.',
-      'Human analogy': 'The human analogy is discovering that you can create a competent visual analyst by pairing an existing language expert with an image reader rather than training a new specialist from scratch.',
+      'What it is': 'LLaVA (Large Language and Vision Assistant) pioneered the influential approach of connecting a pretrained vision encoder to a language model with a simple projection layer. LLaVA-NeXT and later LLaVA-OneVision improved quality and resolution handling. While no longer actively developed or competitive as a deployment choice, the architecture remains the foundational template that most subsequent open VLMs built upon.',
+      'Where it is used': 'It matters primarily as an architectural reference and design pattern. Most modern open VLMs (InternVL, Qwen-VL, and others) descend from or were influenced by the LLaVA approach. Teams studying VLM internals or building custom vision-language models encounter this pattern first.',
+      'What it unlocks': 'It unlocks the modular VLM construction pattern. Teams can build vision-language models by connecting components rather than training from scratch, which democratized multimodal model development.',
+      'Human analogy': 'The human analogy is discovering that you can create a competent visual analyst by pairing an existing language expert with an image reader rather than training a new specialist from scratch. The method became standard practice even as the original team moved on.',
       'Without it': 'Without the LLaVA pattern, building custom VLMs would seem to require full multimodal pretraining from scratch, which is far more expensive.',
-      'With it': 'With LLaVA understood, teams can evaluate modular VLM construction for their own applications instead of treating multimodal models as monolithic products.'
+      'With it': 'With LLaVA understood as a foundational architecture, teams can trace how modern VLMs evolved and evaluate modular VLM construction for their own applications.'
     },
     'Idefics 2/3 (HuggingFace)': {
-      'What it is': 'Idefics 2 and 3 are Hugging Face\'s open multimodal models built for community access and research. They are designed to be easy to fine-tune and deploy through the Hugging Face ecosystem, prioritizing accessibility and reproducibility.',
-      'Where it is used': 'They matter for teams working within the Hugging Face ecosystem, researchers needing easily reproducible VLM baselines, and applications where community model support and fine-tuning infrastructure matter.',
-      'What it unlocks': 'It unlocks community-accessible multimodal models with strong ecosystem support. Teams can fine-tune, evaluate, and deploy using familiar Hugging Face tools.',
-      'Human analogy': 'The human analogy is a community college offering visual analysis training with published curricula and materials, so any student can access and build on the program.',
-      'Without it': 'Without Idefics, the open multimodal ecosystem would lack a well-integrated Hugging Face-native option for researchers and small teams.',
-      'With it': 'With Idefics, multimodal model access through the Hugging Face ecosystem becomes straightforward and well-supported.'
+      'What it is': 'Idefics 2 and 3 were Hugging Face\'s open multimodal models built for community access and research. Idefics 3 has since been succeeded by SmolVLM, Hugging Face\'s current compact multimodal offering, which focuses on efficient on-device VLM deployment at sub-2B parameter scales.',
+      'Where it is used': 'The Idefics lineage matters for understanding Hugging Face\'s multimodal strategy. SmolVLM now serves the role Idefics originally filled: an accessible, well-integrated VLM for researchers and small teams within the Hugging Face ecosystem.',
+      'What it unlocks': 'It unlocks community-accessible multimodal models with strong ecosystem support. The progression from Idefics to SmolVLM shows how the field moved toward smaller, more efficient VLMs that can run on consumer hardware.',
+      'Human analogy': 'The human analogy is a community training program that started as a full classroom course, then evolved into a compact self-study kit that covers the same material in less time with fewer resources.',
+      'Without it': 'Without the Idefics-to-SmolVLM lineage, the open multimodal ecosystem would lack a well-integrated Hugging Face-native pathway for researchers and small teams.',
+      'With it': 'With this lineage understood, teams can trace how Hugging Face\'s multimodal strategy evolved and evaluate SmolVLM as the current compact VLM option in the ecosystem.'
     },
     'CogVLM / CogAgent': {
-      'What it is': 'CogVLM is a vision-language model from Tsinghua/Zhipu with strong visual grounding capabilities. CogAgent extends it to handle GUI understanding and webpage navigation, making it one of the few open models specifically designed for interacting with user interfaces.',
-      'Where it is used': 'They are used in UI automation, web agents, accessibility testing, and research on visual grounding. CogAgent is especially relevant for teams building screen-reading or UI-navigating agents.',
-      'What it unlocks': 'It unlocks GUI-aware visual reasoning in an open-weight model. Teams working on UI automation can study and fine-tune a model designed for screen understanding rather than adapting a general VLM.',
-      'Human analogy': 'The human analogy is a specialist trained specifically to read and navigate computer interfaces, rather than a general analyst who can describe what they see in a photograph.',
-      'Without it': 'Without CogAgent, teams building UI agents must adapt general VLMs that were not optimized for interface understanding, leading to weaker performance on GUI-specific tasks.',
-      'With it': 'With CogAgent, UI automation and web-browsing agents have a purpose-built open-weight foundation.'
+      'What it is': 'CogVLM is a vision-language model from Tsinghua/Zhipu with strong visual grounding capabilities. CogAgent extended it to handle GUI understanding and webpage navigation. Historically significant as one of the first open models designed for UI interaction, though active development has largely stalled and newer models like Qwen2.5-VL and InternVL2 now offer stronger GUI understanding.',
+      'Where it is used': 'Its primary value today is as a historical reference for GUI-aware VLM design. The approach of training specifically for screen understanding and element grounding influenced later models. Researchers studying the evolution of visual grounding and UI agents still reference CogAgent\'s architecture.',
+      'What it unlocks': 'It unlocks understanding of how GUI-specialized VLM training works. The design choices around visual grounding, element-level attention, and screen-navigation training remain instructive even as newer models surpass its performance.',
+      'Human analogy': 'The human analogy is a specialist who pioneered a training approach for reading and navigating computer interfaces. The method caught on widely even though newer graduates have since surpassed the original practitioner.',
+      'Without it': 'Without CogAgent\'s contribution, the idea of training VLMs specifically for GUI tasks would have developed more slowly. Its grounding approach laid groundwork that later models improved upon.',
+      'With it': 'With CogAgent understood as a historical milestone, teams can trace how GUI-aware VLMs evolved and make better-informed decisions when choosing current models for UI automation tasks.'
     },
     'Florence-2 (Microsoft)': {
       'What it is': 'Florence-2 is Microsoft\'s compact vision foundation model designed for a wide range of vision tasks including captioning, object detection, grounding, and segmentation using a unified sequence-to-sequence architecture. It is much smaller than most VLMs while covering many vision tasks.',
@@ -1617,28 +1617,28 @@
       'With it': 'With function-calling models, tool use becomes more reliable and standard. The team can trust the model to emit well-formed calls, which simplifies the entire tool integration layer.'
     },
     'DeepSeek-Coder / DeepSeek-Coder-V2': {
-      'What it is': 'DeepSeek-Coder models are open-weight code-specialized models trained on large code corpora with strong performance on coding benchmarks. V2 expanded the architecture and training to compete with much larger proprietary coding models.',
-      'Where it is used': 'They are used in code completion, code review, test generation, refactoring, and self-hosted coding assistants. They matter for teams that want strong code capability without proprietary API dependencies.',
-      'What it unlocks': 'It unlocks self-hosted code intelligence. Teams can run code completion and generation locally with competitive quality, which matters for privacy, latency, and cost at scale.',
-      'Human analogy': 'The human analogy is an in-house development mentor who provides code review and suggestions without any work leaving the building.',
-      'Without it': 'Without open-weight code models, self-hosted code intelligence either does not exist or is significantly weaker than API-based alternatives.',
-      'With it': 'With DeepSeek-Coder, teams gain competitive open-weight code assistance that they can host, fine-tune, and control entirely within their own infrastructure.'
+      'What it is': 'DeepSeek-Coder models are open-weight code-specialized models trained on large code corpora with strong benchmark performance. V2 expanded the architecture to compete with much larger proprietary coding models, and the line continues to evolve alongside DeepSeek V3\'s strong built-in coding capability. The boundary between dedicated code models and code-capable general models has blurred as V3 handles most coding tasks well.',
+      'Where it is used': 'They are used in code completion, code review, test generation, refactoring, and self-hosted coding assistants. Teams choosing between DeepSeek-Coder-V2 (dedicated) and DeepSeek V3 (general with strong coding) should evaluate whether the task benefits from code specialization or whether a single general-purpose model suffices.',
+      'What it unlocks': 'It unlocks self-hosted code intelligence at competitive quality. Teams can run code completion and generation locally, which matters for privacy, latency, and cost at scale. The V2-to-V3 progression also illustrates how general models increasingly absorb specialized code capability.',
+      'Human analogy': 'The human analogy is an in-house development mentor who started as a coding specialist but has since become strong enough as a generalist that the team debates whether to keep the specialist role or let the generalist handle everything.',
+      'Without it': 'Without the DeepSeek-Coder line, self-hosted code intelligence would rely on less capable alternatives, and the practical trend of general models absorbing code specialization would be less visible.',
+      'With it': 'With the DeepSeek-Coder lineage understood, teams can make informed decisions about dedicated code models versus general models with strong coding capability.'
     },
     'OpenAI Codex (CLI agent)': {
-      'What it is': 'OpenAI Codex is a CLI-based coding agent that can execute multi-step coding tasks by reading files, writing code, running tests, and iterating. It goes beyond code completion to act as an autonomous coding assistant that interacts with the file system and terminal.',
-      'Where it is used': 'It is used in automated coding workflows, test generation, codebase exploration, and any development task that benefits from an agent that can iterate through write-run-fix cycles.',
-      'What it unlocks': 'It unlocks agentic coding through OpenAI\'s ecosystem. Instead of just generating code snippets, the system can autonomously execute multi-step coding tasks with feedback from the actual development environment.',
+      'What it is': 'OpenAI Codex (the 2025 CLI agent, not the deprecated 2021 Codex model) is a terminal-based coding agent built on o4-mini that can read files, write code, run tests, and iterate autonomously. It represents OpenAI\'s entry into the agentic coding tool space alongside Claude Code and Cursor.',
+      'Where it is used': 'It is used in automated coding workflows, test generation, codebase exploration, and any development task that benefits from an agent that can iterate through write-run-fix cycles directly in the terminal.',
+      'What it unlocks': 'It unlocks agentic coding through OpenAI\'s ecosystem. Instead of just generating code snippets, the system autonomously executes multi-step coding tasks with feedback from the actual development environment, powered by o4-mini\'s reasoning capability.',
       'Human analogy': 'The human analogy is a junior developer who can be given a task, write code, run it, see the errors, fix them, and keep iterating until the tests pass, rather than just suggesting code for someone else to run.',
       'Without it': 'Without Codex CLI, coding assistance stays at the suggestion level and a human must manually execute, test, and iterate.',
-      'With it': 'With Codex CLI, the coding workflow becomes agentic: the system can close the loop between writing and testing code.'
+      'With it': 'With Codex CLI, the coding workflow becomes agentic: the system can close the loop between writing and testing code within OpenAI\'s model ecosystem.'
     },
     'StarCoder / StarCoder2 (BigCode)': {
-      'What it is': 'StarCoder and StarCoder2 are open-weight code models from the BigCode project, trained on permissively licensed code. They emphasize responsible training data sourcing and provide a transparent, well-documented foundation for code intelligence.',
-      'Where it is used': 'They matter for teams with strict licensing requirements who need to know that the training data was ethically sourced. They are also used as base models for code-specific fine-tuning.',
-      'What it unlocks': 'It unlocks license-clean open-weight code intelligence. Teams can use these models with higher confidence that training data was permissively licensed and transparently documented.',
-      'Human analogy': 'The human analogy is hiring a developer who was trained exclusively on reference materials with clear licensing, so the organization does not face unexpected intellectual property complications.',
-      'Without it': 'Without transparently trained code models, teams using open-weight code models face uncertainty about training data provenance and potential licensing issues.',
-      'With it': 'With StarCoder, teams gain open-weight code capability with better documentation and licensing transparency.'
+      'What it is': 'StarCoder and StarCoder2 are open-weight code models from the BigCode project, trained on permissively licensed code. They emphasize responsible training data sourcing and transparent documentation. While no longer at the performance frontier (Qwen2.5-Coder and DeepSeek-Coder-V2 outperform on most benchmarks), their licensing discipline remains a unique differentiator.',
+      'Where it is used': 'They matter primarily for teams with strict licensing requirements who need provably clean training data provenance. They also serve as base models for code-specific fine-tuning where licensing transparency is non-negotiable, even if raw benchmark scores are lower than newer alternatives.',
+      'What it unlocks': 'It unlocks license-clean open-weight code intelligence. Teams in regulated industries or with IP-sensitive codebases can use StarCoder with higher confidence in training data provenance than most alternatives.',
+      'Human analogy': 'The human analogy is hiring a developer who was trained exclusively on properly licensed reference materials. They may not be the fastest coder on the team, but the organization never faces unexpected intellectual property complications.',
+      'Without it': 'Without transparently trained code models, teams with strict licensing requirements must either accept provenance uncertainty from other open-weight models or use proprietary APIs.',
+      'With it': 'With StarCoder, teams gain code capability where licensing transparency is the primary advantage, trading some benchmark performance for provenance confidence.'
     },
     'Qwen-Coder (Qwen2.5-Coder)': {
       'What it is': 'Qwen-Coder is Alibaba\'s code-specialized model that achieves strong coding performance at various sizes. It is notable for competitive benchmarks at smaller parameter counts, making it useful for cost-efficient code tasks.',
@@ -1665,20 +1665,20 @@
       'With it': 'With Llama code variants, the same fine-tuning pipelines, quantization tooling, and serving infrastructure the team already runs for Llama can cover code tasks without introducing a separate model lineage.'
     },
     'CodeGemma (Google)': {
-      'What it is': 'CodeGemma is Google\'s code-specialized version of the Gemma model family. It is a compact open-weight code model designed for code completion, generation, and understanding, with the Gemma emphasis on efficient and accessible deployment.',
-      'Where it is used': 'It matters for teams wanting a small, efficient code model from Google\'s open-weight family. It serves code completion, infill, and generation use cases at lower compute than larger alternatives.',
-      'What it unlocks': 'It unlocks Google-ecosystem open-weight code intelligence. Teams can deploy code assistance locally using Gemma infrastructure and tools.',
-      'Human analogy': 'The human analogy is a compact toolbox from a trusted manufacturer that handles standard coding tasks efficiently without requiring the full workshop.',
-      'Without it': 'Without CodeGemma, teams wanting compact Google-backed code models must use general Gemma, which underperforms on infill and completion, or adopt a different model family for code work.',
-      'With it': 'With CodeGemma, code completion and infill get a purpose-built model small enough for local and on-device deployment while sharing the same tooling and format as general Gemma.'
+      'What it is': 'CodeGemma was Google\'s code-specialized version of the original Gemma model family, released in April 2024. It has not received major updates since, and Google\'s code-generation strategy has shifted toward Gemini 2.5 Flash for API-based coding tasks and Gemma 3 fine-tunes for open-weight code use. CodeGemma remains usable but is effectively superseded.',
+      'Where it is used': 'Its value today is primarily for teams already running CodeGemma in production or studying the evolution of Google\'s open-weight code strategy. New projects should evaluate Gemma 3 fine-tunes or Gemini 2.5 Flash for coding tasks instead.',
+      'What it unlocks': 'It unlocks understanding of Google\'s early approach to open-weight code intelligence and the trajectory from specialized code models toward general models with strong coding capability.',
+      'Human analogy': 'The human analogy is a specialized tool from a manufacturer that was later replaced by a newer general-purpose tool that handles the same tasks better, making the original valuable mainly as a reference for how the product line evolved.',
+      'Without it': 'Without CodeGemma in the picture, the progression of Google\'s open-weight code strategy from specialized code models to capable general models is less visible.',
+      'With it': 'With CodeGemma understood as a historical step, teams can see how Google\'s code model strategy evolved and make better-informed choices among current Google offerings.'
     },
     'WizardCoder': {
-      'What it is': 'WizardCoder applied the Evol-Instruct methodology to code models, using progressively more complex synthetic coding instructions to improve code generation quality. It demonstrated that instruction complexity scaling significantly improves code model performance.',
-      'Where it is used': 'It matters as a training methodology reference and as an open-weight code model option. Teams interested in synthetic data for code training study WizardCoder\'s approach.',
-      'What it unlocks': 'It unlocks a concrete training recipe for code model improvement. The Evol-Instruct approach of progressively scaling instruction complexity is applicable beyond WizardCoder itself and informs synthetic data strategies for code.',
-      'Human analogy': 'The human analogy is a training curriculum that deliberately increases problem difficulty over time, producing developers who can handle complex tasks because they were trained on progressively harder examples.',
-      'Without it': 'Without WizardCoder\'s contribution, the role of instruction complexity in code model training would be less well-understood in the open-source community.',
-      'With it': 'With WizardCoder\'s approach, teams have a demonstrated recipe for improving code model quality through synthetic instruction scaling.'
+      'What it is': 'WizardCoder applied the Evol-Instruct methodology to code models, using progressively more complex synthetic coding instructions to improve code generation quality. The model itself is no longer competitive or actively developed, but the Evol-Instruct training methodology it pioneered remains influential in synthetic data generation for code.',
+      'Where it is used': 'Its lasting value is as a methodological reference. The Evol-Instruct approach of progressively scaling instruction complexity informed later synthetic data strategies used across the code model ecosystem. Teams designing synthetic training data for code models still study this pattern.',
+      'What it unlocks': 'It unlocks a concrete training recipe for code model improvement through instruction complexity scaling. The core insight — that progressively harder synthetic examples improve code generation — transferred to many subsequent code model training pipelines.',
+      'Human analogy': 'The human analogy is a training curriculum that deliberately increases problem difficulty over time. The specific course may have been retired, but the pedagogical method it demonstrated became standard practice.',
+      'Without it': 'Without WizardCoder\'s contribution, the role of instruction complexity scaling in code model training would be less well-understood in the open-source community.',
+      'With it': 'With WizardCoder\'s Evol-Instruct approach understood as a historical contribution, teams can apply the same training methodology to newer base models and build better synthetic data pipelines.'
     },
     'Codestral (Mistral)': {
       'What it is': 'Codestral is Mistral\'s code-specialized model designed for code generation, completion, and understanding. It inherits Mistral\'s efficient architecture and extends it with code-specific training.',
@@ -1755,20 +1755,20 @@
       'With it': 'With Qwen, multilingual and CJK-heavy workloads have a strong open-weight option with a full range of model sizes.'
     },
     'Gemma / Gemma 2 (Google)': {
-      'What it is': 'Gemma is Google\'s compact open-weight model family, designed for accessibility and efficient deployment. Gemma 2 improved quality significantly at small sizes. The family emphasizes research accessibility and local deployment.',
-      'Where it is used': 'They are used in research, education, on-device applications, and cost-sensitive deployments. They matter for teams that want small, quality models with Google\'s research backing.',
-      'What it unlocks': 'It unlocks compact high-quality open-weight models from Google. Teams that need small, efficient models for local or research use have a well-supported option.',
-      'Human analogy': 'The human analogy is a short-course training program from a top institution that is freely available, letting smaller organizations access quality training without the full-scale commitment.',
-      'Without it': 'Without Gemma, Google\'s open-weight presence would be minimal and teams wanting small, research-friendly models would have fewer well-backed options.',
-      'With it': 'With Gemma, compact deployment and research have a solid, well-documented model from a major lab.'
+      'What it is': 'Gemma is Google\'s compact open-weight model family, designed for accessibility and efficient deployment. Gemma 2 improved quality significantly at small sizes. Gemma 3 (released March 2025) introduced native multimodal support including image understanding, improved multilingual coverage, and sizes up to 27B, making it a substantially more capable family than its text-only predecessors.',
+      'Where it is used': 'They are used in research, education, on-device applications, and cost-sensitive deployments. Gemma 3 expands the use cases to multimodal tasks that previously required larger models. They matter for teams that want compact, efficient models with Google\'s research backing.',
+      'What it unlocks': 'It unlocks compact, high-quality open-weight models from Google including native vision capability. With Gemma 3, teams can run multimodal inference on consumer hardware, which was previously impractical with most open VLMs.',
+      'Human analogy': 'The human analogy is a short-course training program from a top institution that started text-only, then expanded to include visual analysis skills, letting smaller organizations access multimodal capability without the full-scale commitment.',
+      'Without it': 'Without Gemma, Google\'s open-weight presence would be minimal and teams wanting compact, research-friendly models with multimodal capability would have fewer well-backed options.',
+      'With it': 'With the Gemma family understood including Gemma 3\'s multimodal capabilities, teams can deploy efficient open-weight models for both text and vision tasks from a well-supported Google lineage.'
     },
     'Phi-3 / Phi-4 (Microsoft)': {
-      'What it is': 'The Phi series from Microsoft pushes the frontier of what small models can achieve. Phi-3 and Phi-4 demonstrate remarkably strong capability at 3-14B parameters, heavily leveraging synthetic and curriculum-based training data strategies.',
-      'Where it is used': 'They are used in on-device AI, edge deployment, latency-critical applications, and research into efficient model training. They matter for teams proving that small models can handle tasks previously thought to require larger ones.',
-      'What it unlocks': 'It unlocks surprisingly strong capability at very small scale. Teams can deploy AI on devices and at cost points that were previously thought to require much larger models.',
-      'Human analogy': 'The human analogy is discovering that a carefully designed short intensive course produces graduates who perform surprisingly well against peers from much longer and more expensive programs.',
-      'Without it': 'Without Phi, the case for small models would be weaker and teams might default to larger models even when a well-trained small model would suffice.',
-      'With it': 'With Phi, teams have proof that small models can punch above their weight, encouraging more efficient deployment strategies.'
+      'What it is': 'The Phi series from Microsoft pushes the frontier of what small models can achieve. Phi-3 and Phi-4 demonstrate remarkably strong capability at 3-14B parameters, heavily leveraging synthetic and curriculum-based training data strategies. The line has expanded to include Phi-4-reasoning (for small-scale reasoning tasks), Phi-4-mini, and Phi-4-multimodal, which adds native image understanding to the small-model family.',
+      'Where it is used': 'They are used in on-device AI, edge deployment, latency-critical applications, and research into efficient model training. Phi-4-multimodal extends these use cases to vision tasks that previously required much larger VLMs.',
+      'What it unlocks': 'It unlocks surprisingly strong capability at very small scale, now including multimodal and reasoning. Teams can deploy AI with vision and reasoning on devices and at cost points that were previously thought to require models an order of magnitude larger.',
+      'Human analogy': 'The human analogy is discovering that a carefully designed short intensive course produces graduates who perform surprisingly well across multiple skills — analysis, visual interpretation, and problem-solving — against peers from much longer and more expensive programs.',
+      'Without it': 'Without Phi, the case for small models would be weaker and teams might default to larger models even for tasks that a well-trained 3-14B parameter model can handle.',
+      'With it': 'With the full Phi lineup understood including its multimodal and reasoning variants, teams have proof that small models can punch above their weight across text, vision, and reasoning tasks.'
     },
     'Command R / Command R+ (Cohere)': {
       'What it is': 'Command R and R+ are Cohere\'s enterprise-focused models optimized for RAG, tool use, and grounded generation. They are designed for practical enterprise tasks rather than broad benchmark performance, with strong emphasis on retrieval-augmented workflows.',
@@ -1779,12 +1779,12 @@
       'With it': 'With Command R, retrieval-augmented enterprise workflows get a model designed for grounded generation from the start.'
     },
     'Yi series (01.AI)': {
-      'What it is': 'Yi models from 01.AI are open-weight models with strong bilingual (English-Chinese) capability and competitive performance at various sizes. They represent another strong entry from the Chinese open-weight ecosystem.',
-      'Where it is used': 'They matter for teams needing bilingual English-Chinese models or evaluating the breadth of the Chinese open-weight ecosystem.',
-      'What it unlocks': 'It unlocks a broader bilingual evaluation set. Teams comparing English-Chinese open-weight models gain additional data points on quality, licensing, and size tradeoffs.',
-      'Human analogy': 'The human analogy is another strong bilingual professional entering the talent pool, giving hiring teams more options to evaluate.',
-      'Without it': 'Without Yi, the Chinese open-weight ecosystem is less diverse and bilingual options are fewer.',
-      'With it': 'With Yi, teams have a broader set of bilingual open-weight models to compare and choose from.'
+      'What it is': 'Yi models from 01.AI were early entrants in the open-weight bilingual (English-Chinese) model space, competitive at the time of their release. The series has received minimal updates since 2024 and has been comprehensively overtaken by Qwen3 and other Chinese open-weight models for bilingual use cases.',
+      'Where it is used': 'Yi\'s primary value today is historical: it demonstrated that strong bilingual open-weight models were feasible and commercially viable from Chinese labs. Teams with existing Yi deployments may maintain them, but new projects generally choose Qwen3, DeepSeek, or other actively developed alternatives.',
+      'What it unlocks': 'It unlocks understanding of how the Chinese open-weight ecosystem matured. Yi was one of the first credible bilingual open-weight options, and its success helped validate the market that Qwen and DeepSeek now dominate.',
+      'Human analogy': 'The human analogy is an early entrant in a professional market who demonstrated demand and viability, even as larger competitors eventually captured most of the market share.',
+      'Without it': 'Without Yi in the historical picture, the rapid growth of the Chinese open-weight ecosystem appears to start with Qwen and DeepSeek, missing the earlier models that proved the market.',
+      'With it': 'With Yi understood as a historical milestone, teams can trace how the Chinese open-weight ecosystem evolved and make better-informed choices among current options.'
     },
     'Open-weight vs open-source licensing distinctions': {
       'What it is': 'This topic clarifies that open weight does not mean open source. Many models release weights but restrict commercial use, modification, or redistribution. The license terms determine what a team can actually do with the model in practice.',
@@ -2125,6 +2125,142 @@
       'Human analogy': 'The human analogy is the emergency stop button or safety cutoff on industrial equipment: it exists for the moment when continuing to run the process is more dangerous than interrupting it immediately.',
       'Without it': 'Without a kill switch, harmful behavior can continue while the team scrambles for a slower workaround. That increases blast radius exactly when the system is already behaving badly.',
       'With it': 'With a kill switch in place, operators gain a clear containment tool. Unsafe automation can be stopped quickly while the incident is investigated and the safer path is restored.'
-    }
+    },
+    'Speculative decoding': {
+      'What it is': 'Speculative decoding is an inference acceleration technique where a small, fast draft model generates candidate tokens that a larger verifier model then checks in parallel. Because the verifier can validate multiple tokens at once, the system achieves near-large-model quality at closer to small-model latency.',
+      'Where it is used': 'It is used in latency-sensitive serving environments where a large model is too slow for interactive use but quality cannot be sacrificed. It is especially effective when the draft model agrees with the verifier on most tokens, which is common for fluent text and structured output.',
+      'What it unlocks': 'It unlocks faster inference without changing model weights or sacrificing output quality. The key insight is that verification is cheaper than generation, so generating cheaply and verifying in bulk is faster than generating every token with the expensive model.',
+      'Human analogy': 'The human analogy is a junior analyst drafting a report and a senior reviewer approving most paragraphs in bulk rather than writing each one from scratch. The senior only rewrites the sections where they disagree.',
+      'Without it': 'Without speculative decoding, teams must choose between slow-and-accurate (large model) or fast-and-weaker (small model). There is no way to combine both qualities in a single serving path.',
+      'With it': 'With speculative decoding, teams can serve large-model quality at significantly reduced latency, making interactive use of strong models practical without distillation or quality compromise.'
+    },
+    'Structured output / JSON mode': {
+      'What it is': 'Structured output and JSON mode constrain model generation to produce valid, parseable structured data rather than free-form text. This is achieved through constrained decoding, grammar-based sampling, or provider-level JSON mode guarantees that ensure every response conforms to a specified schema.',
+      'Where it is used': 'It is used wherever model output must feed into downstream code: API responses, tool-call argument formatting, data extraction pipelines, form filling, and any system where a malformed response breaks the next step.',
+      'What it unlocks': 'It unlocks reliable programmatic consumption of model output. Teams can parse model responses deterministically instead of writing fragile regex or retry logic to handle free-form text that might not be valid JSON.',
+      'Human analogy': 'The human analogy is requiring a field worker to fill out a structured form with specific fields and validation rules instead of writing a free-text narrative. The form guarantees the information arrives in a shape the processing system can handle.',
+      'Without it': 'Without structured output guarantees, every model call requires defensive parsing, retry logic for malformed responses, and fallback handling that adds complexity and latency to the pipeline.',
+      'With it': 'With structured output in place, the interface between the model and the rest of the system becomes a reliable contract, and the team can treat model responses as typed data rather than unpredictable text.'
+    },
+    'Prompt caching': {
+      'What it is': 'Prompt caching stores the computed key-value (KV) state from a prompt prefix so that subsequent requests sharing the same prefix skip reprocessing those tokens. It reduces both latency and cost for workloads where many requests share common system prompts, few-shot examples, or large context preambles.',
+      'Where it is used': 'It is used in high-volume API serving with shared system prompts, RAG pipelines where the retrieved context is prepended to many queries, multi-turn conversations where earlier turns are stable, and batch processing where the same instructions apply to many inputs.',
+      'What it unlocks': 'It unlocks significant cost and latency reduction for repetitive prompt prefixes. Teams with high-volume workloads can cut input token costs substantially because cached prefixes are processed once and reused across requests.',
+      'Human analogy': 'The human analogy is an analyst who reads a long briefing document once at the start of the day and can then answer many questions about it without rereading the document each time.',
+      'Without it': 'Without prompt caching, every request reprocesses the full prompt from scratch, even when the first 90% is identical to the previous call. That wastes compute on work the system has already done.',
+      'With it': 'With prompt caching, shared context is processed once, and subsequent requests pay only for the new tokens. This makes large system prompts and context preambles much more economical at scale.'
+    },
+    'Retrieval-conditioned architectures (advanced / research)': {
+      'What it is': 'Retrieval-conditioned architectures integrate retrieval directly into the model architecture rather than prepending retrieved text to the prompt at inference time. Examples include RETRO (Retrieval-Enhanced Transformer) where the model learns to attend to a retrieval database during both training and inference, fusing retrieved evidence at the attention layer rather than the prompt layer.',
+      'Where it is used': 'It is used in research on knowledge-intensive generation, factual grounding, and architectures that need to stay current without retraining. It represents a deeper integration of retrieval than standard RAG, where retrieval and generation are trained jointly.',
+      'What it unlocks': 'It unlocks models that treat retrieval as a native capability rather than an inference-time bolt-on. The model learns when and how to use retrieved information during training, potentially producing more coherent and grounded outputs than prompt-prepended RAG.',
+      'Human analogy': 'The human analogy is the difference between a researcher who was trained to consult reference materials as part of their analytical workflow versus one who reads a stack of printouts handed to them before answering a question. The former integrates references more naturally.',
+      'Without it': 'Without retrieval-conditioned architectures, all retrieval-augmented systems rely on prepending retrieved text to the context window, which consumes tokens and does not benefit from joint training between retrieval and generation.',
+      'With it': 'With retrieval-conditioned approaches, the model architecture itself becomes retrieval-aware, opening a path to more efficient and deeply grounded knowledge-intensive generation.'
+    },
+    'Meta-prompting': {
+      'What it is': 'Meta-prompting uses one model call to generate or refine the prompt for a subsequent model call. Instead of hand-crafting every prompt, the system uses the model itself to produce better instructions, decompose tasks into sub-prompts, or select the right prompt template based on the input.',
+      'Where it is used': 'It is used in complex agentic workflows where the appropriate prompt depends on the input, in prompt optimization pipelines, and in systems where a single static prompt cannot cover the range of tasks the model must handle.',
+      'What it unlocks': 'It unlocks dynamic prompt construction. Teams can build systems where the prompt adapts to each input rather than relying on a fixed template, and where the model helps improve its own instructions over time.',
+      'Human analogy': 'The human analogy is a manager who writes the task brief for a specialist based on what the incoming request actually needs, rather than handing every request the same standard operating procedure.',
+      'Without it': 'Without meta-prompting, every prompt must be hand-crafted or selected from a fixed library. The system cannot adapt its instructions to the specific characteristics of each input.',
+      'With it': 'With meta-prompting, the system can tailor its own instructions per task, improving coverage of diverse inputs without maintaining a massive library of hand-written prompt variants.'
+    },
+    'Prompt chaining': {
+      'What it is': 'Prompt chaining breaks a complex task into a sequence of simpler model calls where the output of one call feeds into the prompt of the next. Each step has a focused instruction, making the overall pipeline more controllable and debuggable than a single monolithic prompt.',
+      'Where it is used': 'It is used in multi-step workflows like extract-then-summarize, classify-then-route, draft-then-review, and any pipeline where intermediate outputs need inspection, validation, or branching before the next step.',
+      'What it unlocks': 'It unlocks decomposed, inspectable AI pipelines. Teams can debug each step independently, apply different models or temperatures per step, validate intermediate outputs, and retry individual steps without rerunning the entire chain.',
+      'Human analogy': 'The human analogy is an assembly line where each station performs one focused task and passes work to the next, rather than one worker trying to do everything in a single pass.',
+      'Without it': 'Without prompt chaining, complex tasks are crammed into single prompts that are harder to debug, more prone to failure, and impossible to partially retry or inspect at intermediate stages.',
+      'With it': 'With prompt chaining, complex workflows become a series of manageable steps with clear interfaces between them, making the system easier to build, test, and maintain.'
+    },
+    'Automatic prompt optimization': {
+      'What it is': 'Automatic prompt optimization uses algorithms to improve prompts programmatically rather than through manual iteration. Approaches include DSPy\'s compile-time optimization, gradient-free search methods, LLM-as-optimizer patterns, and evolutionary prompt strategies that generate and test prompt variants against an evaluation set.',
+      'Where it is used': 'It is used in production systems where manual prompt tuning cannot scale, in A/B testing pipelines that need many prompt variants, and in research on making prompt engineering more systematic and reproducible.',
+      'What it unlocks': 'It unlocks programmatic prompt improvement. Teams can optimize prompts against a metric rather than relying on intuition and manual iteration, which is especially valuable when the prompt space is large or when small wording changes have outsized effects.',
+      'Human analogy': 'The human analogy is using structured A/B testing and statistical methods to optimize a hiring questionnaire instead of having one person revise questions by gut feel after each interview round.',
+      'Without it': 'Without automatic optimization, prompt engineering remains a craft skill where quality depends entirely on the engineer\'s intuition and patience for manual iteration.',
+      'With it': 'With automatic prompt optimization, teams can systematically explore the prompt space, find better-performing variants, and make prompt engineering more of an engineering discipline than an art.'
+    },
+    'Prompt compression': {
+      'What it is': 'Prompt compression reduces the token count of a prompt while preserving its semantic content and task effectiveness. Techniques include LLMLingua-style token pruning, summary-based compression, selective context removal, and distilling long prompts into shorter equivalents that maintain performance.',
+      'Where it is used': 'It is used when prompts approach context window limits, when input token costs dominate the budget, in RAG pipelines with large retrieved context, and in multi-turn conversations where history accumulates faster than the context window can accommodate.',
+      'What it unlocks': 'It unlocks fitting more useful information into limited context windows and reducing per-request costs. Teams can maintain prompt quality while spending fewer tokens, or fit more retrieved context into the same window.',
+      'Human analogy': 'The human analogy is an executive summary that condenses a 50-page report into 3 pages without losing the key facts needed for a decision. The recipient gets the same decision-relevant information in less reading time.',
+      'Without it': 'Without prompt compression, teams hit context window limits sooner, pay more for input tokens, and must choose between including important context and staying within budget.',
+      'With it': 'With prompt compression, teams can stretch context windows further and reduce costs without proportionally sacrificing the information quality the model needs to perform well.'
+    },
+    'FlashAttention (memory-efficient attention)': {
+      'What it is': 'FlashAttention is a memory-efficient attention algorithm that computes exact attention without materializing the full N×N attention matrix in GPU memory. By fusing operations and using tiling to keep data in fast SRAM, it achieves significant speedups and memory savings. FlashAttention 2 and 3 improved throughput further with better parallelism and hardware-specific optimizations.',
+      'Where it is used': 'It is used in virtually all modern transformer training and inference. Most production serving frameworks (vLLM, SGLang, TGI) and training libraries use FlashAttention as the default attention implementation. It is as foundational to practical transformer deployment as the attention mechanism itself.',
+      'What it unlocks': 'It unlocks training and serving longer sequences on the same hardware. Without it, attention memory scales quadratically with sequence length, severely limiting context windows. FlashAttention makes million-token contexts practically achievable.',
+      'Human analogy': 'The human analogy is a more efficient filing method that lets a clerk process the same volume of paperwork in a smaller office by working through sections methodically rather than spreading everything across a massive desk at once.',
+      'Without it': 'Without FlashAttention, training and serving long-context models requires substantially more GPU memory, and many practical context lengths would be infeasible on available hardware.',
+      'With it': 'With FlashAttention, teams can train and serve longer sequences on less memory, making it the invisible infrastructure layer that enables modern long-context models.'
+    },
+    'Chunked prefill and disaggregated serving': {
+      'What it is': 'Chunked prefill separates the prompt-processing (prefill) phase into smaller chunks so it does not block token generation for other requests. Disaggregated serving goes further by running prefill and decode on separate hardware, optimizing each for its different compute profile — prefill is compute-bound while decode is memory-bandwidth-bound.',
+      'Where it is used': 'It is used in high-throughput inference serving where many concurrent requests compete for GPU resources. It matters most in multi-tenant serving environments where long prompts from one request should not stall generation for others.',
+      'What it unlocks': 'It unlocks better GPU utilization and lower tail latency in production serving. By not letting one long prefill monopolize the GPU, the system can maintain smooth generation for all concurrent requests.',
+      'Human analogy': 'The human analogy is a service desk that processes large intake forms in sections between serving walk-in customers, rather than making everyone wait while one complex form is processed front-to-back.',
+      'Without it': 'Without chunked prefill, a single long prompt can cause latency spikes for all concurrent requests. Without disaggregation, both phases compete for the same hardware despite having different resource profiles.',
+      'With it': 'With chunked prefill and disaggregated serving, production inference achieves better throughput and more consistent latency, especially under mixed workloads with varying prompt lengths.'
+    },
+    'SGLang and radix attention': {
+      'What it is': 'SGLang is an inference runtime that introduces radix attention, a tree-structured KV cache sharing mechanism. Unlike simple prefix caching (which matches exact prompt prefixes), radix attention organizes cached KV states in a radix tree so multiple requests sharing overlapping prompt segments can reuse computed attention states at any branching point.',
+      'Where it is used': 'It is used in multi-turn serving, agentic workloads with branching tool calls, batch processing with shared instructions, and any scenario where many requests share partial prompt structure. It competes with vLLM as a production inference runtime.',
+      'What it unlocks': 'It unlocks flexible KV cache sharing beyond simple prefix matching. In multi-turn or branching agent workflows where requests diverge at different points, radix attention reuses more cached computation than flat prefix caching can.',
+      'Human analogy': 'The human analogy is a reference library organized by topic tree rather than by document: a researcher looking up a subtopic can reuse all the reading done on parent topics rather than starting from scratch if the exact document has not been read before.',
+      'Without it': 'Without radix attention, KV cache reuse is limited to exact prefix matches. Requests that share substantial overlap but diverge at different points recompute shared work unnecessarily.',
+      'With it': 'With SGLang and radix attention, inference serving becomes more efficient for the branching, multi-turn workloads that are typical in agentic and conversational systems.'
+    },
+    'Process reward models (PRMs) vs outcome reward models': {
+      'What it is': 'Process reward models (PRMs) provide supervision at each reasoning step, rewarding correct intermediate work. Outcome reward models (ORMs) only evaluate the final answer. The distinction determines whether the training signal guides the reasoning process or just the end result, which has major implications for how reliably models learn to reason.',
+      'Where it is used': 'It matters in reasoning model training, RLHF pipelines for chain-of-thought, and any system where the quality of the reasoning path matters as much as the final answer. PRMs are central to how models like o1 and DeepSeek-R1 learn step-level reasoning discipline.',
+      'What it unlocks': 'It unlocks targeted reasoning improvement. PRMs can identify and correct specific reasoning errors mid-chain rather than only punishing wrong final answers, leading to more reliable step-by-step reasoning and fewer lucky-guess correct answers built on flawed logic.',
+      'Human analogy': 'The human analogy is the difference between grading only the final answer on a math exam versus grading each step of the work. Step-level grading catches flawed reasoning that happened to reach the right answer and rewards sound reasoning that made a minor arithmetic error.',
+      'Without it': 'Without the PRM/ORM distinction, teams training reasoning models may unknowingly reward models that reach correct answers through flawed reasoning chains, producing brittle performance that fails on harder problems.',
+      'With it': 'With the distinction understood, teams can choose the right reward signal for their reasoning training and build models whose intermediate reasoning is reliable, not just whose final answers are often correct.'
+    },
+    'Video generation models (Sora, Kling, Veo)': {
+      'What it is': 'Video generation models create video clips from text descriptions, images, or other video. Major entrants include OpenAI Sora, Kuaishou Kling, Google Veo 2, Runway Gen-3, and Luma Dream Machine. These models represent a distinct capability class from video understanding — they synthesize visual content rather than analyzing it.',
+      'Where it is used': 'They are used in content creation, marketing, prototyping, visual effects, synthetic training data generation, and as tools in agent pipelines that need to produce visual content. They are increasingly available as API-callable tools for AI agents.',
+      'What it unlocks': 'It unlocks programmatic video creation. Agent systems can generate visual content as part of a workflow without human production effort, which opens new automation possibilities in marketing, education, and media.',
+      'Human analogy': 'The human analogy is a production team that can create short video clips from a written brief, making visual content production accessible to anyone who can describe what they want rather than requiring camera work and editing skills.',
+      'Without it': 'Without video generation models, AI systems can analyze and describe existing video but cannot create new visual content, limiting their utility in creative and content-production workflows.',
+      'With it': 'With video generation available as a tool, agent pipelines gain the ability to produce visual content, turning text-based workflows into multimedia ones.'
+    },
+    'SmolVLM / efficient on-device VLMs': {
+      'What it is': 'SmolVLM (from Hugging Face) and similar models represent the trend of sub-2B parameter vision-language models designed for on-device and edge deployment. They sacrifice some capability for dramatic efficiency gains, making multimodal AI practical on phones, laptops, and embedded devices without cloud connectivity.',
+      'Where it is used': 'They are used in mobile applications, offline-capable tools, privacy-sensitive image analysis, real-time visual assistants on consumer hardware, and any deployment where sending images to a cloud API is impractical or unacceptable.',
+      'What it unlocks': 'It unlocks multimodal AI on consumer hardware. Teams can run vision-language models locally without GPU servers, enabling privacy-preserving image analysis and offline visual assistants.',
+      'Human analogy': 'The human analogy is a pocket field guide that lets a field worker identify and analyze what they see on-site, rather than needing to photograph everything and send it back to headquarters for analysis.',
+      'Without it': 'Without efficient on-device VLMs, multimodal AI requires cloud connectivity and GPU servers, excluding use cases that need offline operation, real-time response, or strict data privacy.',
+      'With it': 'With SmolVLM and similar models, multimodal capability extends to the edge, making visual AI practical in settings where cloud-based VLMs cannot reach.'
+    },
+    'OLMo 2 (AI2, fully open)': {
+      'What it is': 'OLMo 2 from the Allen Institute for AI is a fully open model that releases not just weights but also training data, training code, evaluation code, and intermediate training checkpoints. It represents a qualitatively different tier of openness from open-weight models that only release final weights under restrictive licenses.',
+      'Where it is used': 'It matters for reproducibility research, training methodology studies, and teams that need to audit exactly how a model was built. It is the reference standard for what fully open model development looks like.',
+      'What it unlocks': 'It unlocks full reproducibility and auditability of model training. Researchers can reproduce experiments, study training dynamics using intermediate checkpoints, and verify claims about training methodology — none of which is possible with weights-only releases.',
+      'Human analogy': 'The human analogy is the difference between a research paper that shares only results versus one that shares all raw data, lab notebooks, and methodology details. The latter enables real replication and deeper understanding.',
+      'Without it': 'Without fully open models like OLMo, the open-weight ecosystem runs on trust: teams download weights but cannot verify training claims, reproduce results, or study the training process itself.',
+      'With it': 'With OLMo as a reference, the community has a concrete standard for full openness and can distinguish between open-weight (just weights) and truly open (weights + data + code + process) model releases.'
+    },
+    'Falcon 2 / 3 (TII)': {
+      'What it is': 'Falcon models from the Technology Innovation Institute (TII, UAE) are open-weight models notable for strong multilingual capability, particularly in Arabic and related languages. Falcon 2 introduced a Mixture-of-Experts variant, and the series has continued with Falcon 3 variants at multiple sizes.',
+      'Where it is used': 'They matter for teams needing Arabic-language or Middle Eastern multilingual capability, sovereign AI deployments in the Gulf region, and evaluating the diversity of the open-weight ecosystem beyond US and Chinese providers.',
+      'What it unlocks': 'It unlocks competitive open-weight capability with strong Arabic-language performance. Teams serving Arabic-speaking markets or working on multilingual deployments in the Middle East gain a purpose-built option.',
+      'Human analogy': 'The human analogy is a regional professional services firm with deep expertise in the local market and languages, competing alongside global firms by offering capabilities they cannot easily match in that specific context.',
+      'Without it': 'Without Falcon, Arabic-language and Middle Eastern multilingual use cases must rely on models where Arabic is a secondary language, often with weaker performance.',
+      'With it': 'With Falcon in the ecosystem, teams serving Arabic-speaking markets have a competitive open-weight option with first-class language support for their primary audience.'
+    },
+    'Gemini for coding (Gemini 2.5 Flash / Pro)': {
+      'What it is': 'Gemini 2.5 Flash and Pro are Google\'s frontier models with strong built-in coding capability, function calling, and code execution. Rather than releasing a separate code model, Google integrated strong code performance into the general Gemini family, making it a major coding platform through both API and Google Cloud.',
+      'Where it is used': 'They are used in coding assistants, function-calling agents, code generation pipelines, and Google Cloud agent workflows. Gemini 2.5 Flash is especially popular for high-volume coding tasks due to its cost-speed tradeoff, while Pro handles the hardest coding challenges.',
+      'What it unlocks': 'It unlocks competitive coding capability within Google\'s ecosystem. Teams using Google Cloud or Vertex AI gain strong code generation and function calling without needing to integrate a separate code-specialized model.',
+      'Human analogy': 'The human analogy is a general-practice consultant who turns out to also be an excellent programmer, so the team does not need to hire a separate coding specialist alongside their general advisor.',
+      'Without it': 'Without Gemini in the coding model picture, teams may not realize that strong code generation is available through Google\'s general-purpose model family rather than requiring a dedicated code model.',
+      'With it': 'With Gemini\'s coding capability understood, teams have another frontier option for code generation and function calling, especially those already invested in Google Cloud infrastructure.'
+    },
   });
 }());
