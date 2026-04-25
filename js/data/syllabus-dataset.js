@@ -49,7 +49,7 @@
       id: 2, title: 'Reasoning & Intelligence', color: '#1D9E75', bg: '#E1F5EE',
       sections: [
         { title: 'Reasoning paradigms', topics: [
-          'Chain-of-Thought (CoT)', 'Least-to-Most prompting', 'ReAct (Reason+Act)', 'Tree-of-Thought (ToT)', 'Graph-of-Thought (GoT)', 'Program-of-Thought (PoT)', 'Self-consistency', 'Debate reasoning', 'Skeleton-of-Thought', 'Tool-assisted reasoning', 'Test-time compute scaling', 'Verifier-guided reasoning', 'Verification & self-verification'
+          'Chain-of-Thought (CoT)', 'Least-to-Most prompting', 'ReAct (Reason+Act)', 'Tree-of-Thought (ToT)', 'Graph-of-Thought (GoT)', 'Program-of-Thought (PoT)', 'Self-consistency', 'Debate reasoning', 'Skeleton-of-Thought', 'Tool-assisted reasoning', 'Test-time compute scaling', 'Verifier-guided reasoning', 'Verification & self-verification', 'Monte Carlo Tree Search (MCTS) for LLM reasoning', 'Latent-space / continuous reasoning'
         ] },
         { title: 'Reflection, critique & repair', topics: [
           'Reflection loops', 'Self-critique', 'Self-evaluation', 'Iterative refinement', 'Reflexion', 'Critique agents', 'Trajectory critique and repair', 'Plan repair after failure', 'Post-action review loops'
@@ -58,7 +58,7 @@
           'Reinforcement Learning from Human Feedback (RLHF)', 'Reinforcement Learning from AI Feedback (RLAIF)', 'Direct Preference Optimization (DPO)', 'Proximal Policy Optimization (PPO)', 'Group Relative Policy Optimization (GRPO)', 'Tool-use fine-tuning', 'Agent trajectory fine-tuning', 'Curriculum learning for agents', 'Bootstrapped self-improvement', 'Multi-task agent training'
         ] },
         { title: 'Agent architectures', topics: [
-          'ReAct agents', 'Plan-and-Execute agents', 'Reflection agents', 'Autonomous agents (AutoGPT-style)', 'Tool-using agents', 'Generalist agents', 'Subagent patterns', 'Mixture-of-Agents (MoA)', 'World models', 'Skeleton planner', 'Compound AI systems', 'Cognitive architectures (ACT-R, SOAR)'
+          'ReAct agents', 'Plan-and-Execute agents', 'Reflection agents', 'Autonomous agents (AutoGPT-style)', 'Tool-using agents', 'Generalist agents', 'Subagent patterns', 'Mixture-of-Agents (MoA)', 'World models', 'Skeleton planner', 'Compound AI systems', 'Cognitive architectures (ACT-R, SOAR)', 'Long-horizon task agents', 'LLM-as-judge / evaluator-in-the-loop'
         ] },
         { title: 'Planning & control', topics: [
           'Task decomposition', 'Hierarchical planning', 'Agent loop design', 'Finite-state / rule-based controllers', 'LLM-based controllers', 'Planner-executor separation', 'Replanning / plan repair', 'Execution monitoring and watchdogs', 'Goal prioritization', 'Constraint satisfaction', 'Stop conditions and escalation criteria', 'Budget-aware planning'

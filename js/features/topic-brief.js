@@ -186,7 +186,7 @@
       }
     },
     {
-      sectionTitle: 'Decision-making & planning',
+      sectionTitle: 'Planning & control',
       pattern: /task decomposition|hierarchical planning|planner-executor separation/i,
       guide: {
         roleLabel: 'a planning and decomposition topic',
@@ -197,7 +197,7 @@
       }
     },
     {
-      sectionTitle: 'Decision-making & planning',
+      sectionTitle: 'Planning & control',
       pattern: /finite-state \/ rule-based controllers|llm-based controllers|agent loop design/i,
       guide: {
         roleLabel: 'a controller-design topic',
@@ -208,7 +208,7 @@
       }
     },
     {
-      sectionTitle: 'Decision-making & planning',
+      sectionTitle: 'Planning & control',
       pattern: /replanning \/ plan repair|execution monitoring and watchdogs|goal prioritization|constraint satisfaction|stop conditions and escalation criteria|budget-aware planning/i,
       guide: {
         roleLabel: 'an execution-monitoring or plan-adaptation topic',
