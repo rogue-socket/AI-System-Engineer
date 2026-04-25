@@ -6117,6 +6117,14 @@
       'Human analogy': 'The human analogy is redesigning a factory for automation rather than just adding robots to existing assembly lines — the whole process is rethought.',
       'Without it': 'Without workforce redesign, AI is added to processes designed for humans alone, achieving only incremental improvement rather than transformative change.',
       'With it': 'With workforce redesign, organizations achieve the full benefit of human-AI collaboration by designing processes around combined capability.'
+    },
+    'Adaptive autonomy levels': {
+      'What it is': 'Adaptive autonomy levels in human-agent teams dynamically adjust how independently the agent operates based on task risk, agent confidence, team trust level, and situational complexity. The agent earns more autonomy on familiar tasks and pulls back to human consultation on novel or high-stakes situations.',
+      'Where it is used': 'It is used in mixed human-AI teams where fixed autonomy levels are too rigid: some tasks warrant full autonomy, others need human confirmation, and the right level changes as the team builds trust and the situation evolves.',
+      'What it unlocks': 'It unlocks natural trust-building in human-AI teams. The agent starts cautious, proves itself on routine tasks, and gradually takes on more responsibility — matching how humans naturally build trust with new colleagues.',
+      'Human analogy': 'The human analogy is a new team member who initially checks every decision with their manager, gradually handles more independently as they prove reliable, and still escalates when they encounter something outside their experience.',
+      'Without it': 'Without adaptive autonomy, the agent operates at a fixed level — either too cautious (requiring confirmation for routine decisions) or too independent (acting without oversight on risky ones).',
+      'With it': 'With adaptive autonomy, the human-agent team naturally calibrates independence to the situation, building trust over time while maintaining safety on edge cases.'
     }
   });
 }());
