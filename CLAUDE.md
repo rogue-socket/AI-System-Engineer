@@ -15,7 +15,7 @@ npx serve -p 5501
 ```
 Open `index.html` (syllabus overview) or `topic.html?topic=<topicId>` (topic detail).
 
-There is no build, lint, or test command. Runtime validation in `syllabus-validation.js` catches structural data issues (duplicate IDs, stale override keys) via console warnings on page load.
+There is no build, lint, or test command. Runtime validation in `syllabus-validation.js` runs on page load and logs console warnings for: duplicate topic IDs, missing topic text, broken `sourceRefs` lineage, and stale keys in `TopicBriefOverrides`/`TopicPromptOverrides` that no longer match any topic ID or visible text.
 
 ## Architecture
 
@@ -27,6 +27,14 @@ Scripts are loaded via `<script>` tags in dependency order. Each file is an IIFE
 - Base: `syllabus-dataset` → `syllabus-helpers` → `syllabus-layout` → `syllabus-core` → `syllabus-startup` → `syllabus-validation` → `syllabus.js` → page controller
 - Topic page inserts before core: `topic-briefs`, `topic-brief-config`, `topic-prompts`, `topic-prompt-rules`; after core: `topic-detail-shared`, `topic-brief`, `topic-prompt`, `topic-resources`, `topic-detail`
 
+### Two-Tier Data Model
+
+Content flows through two layers:
+1. **`syllabus-dataset.js`** — the raw source of truth. Flat list of layers, each with sections and topic strings. All topic text originates here.
+2. **`syllabus-layout.js`** — restructures raw data into pedagogical layers using helpers like `copySection(layerTitle, sectionTitle)` and `syntheticSection(...)`. Adds `prerequisites`, `sourceRefs`, and `idSlug` fields. This is where the learner-facing layer structure is defined.
+
+`syllabus-helpers.js` bridges the two: it provides `copySection`, `copyTopics`, `newTopic`, `syntheticSection`, and topic normalization. To add a topic, add it in `syllabus-dataset.js` then reference it in `syllabus-layout.js`.
+
 ### Directory Layout
 
 - `js/data/` — Raw content and helpers. `syllabus-dataset.js` has the syllabus structure; `topic-briefs.js` and `topic-prompts.js` hold hand-authored overrides.
@@ -37,13 +45,17 @@ Scripts are loaded via `<script>` tags in dependency order. Each file is an IIFE
 ### Key Patterns
 
 - **State**: Mutable module-level vars + `localStorage` for persistence (keys: `ai-agent-syllabus-topic-status-v1`, `ai-agent-syllabus-topic-resources-v1`). Pub/sub via `Set`-based listener lists for reactive re-renders.
-- **Routing**: URL query params (`topic.html?topic=<topicId>`). Topic IDs are deterministic slugs from layer/section/topic position, optionally overridden by `idSlug` fields.
+- **Topic IDs**: Built in `syllabus-core.js:createTopicId` as `{layerId padded 2}--{slugified layer}--{slugified section}--{slugified topic text}--{layerIdx}--{secIdx}--{topicIdx}`. If a topic has an `idSlug` field, that is slugified instead of the visible text — this lets topic labels evolve without breaking stored progress or deep links. (No topics currently use `idSlug`.)
+- **Routing**: URL query params (`topic.html?topic=<topicId>`).
 - **Rendering**: Imperative DOM manipulation (`innerHTML`, `createElement`). No virtual DOM.
 - **Theming**: CSS custom properties (`--page-theme`, `--page-tint`) set at runtime per layer color.
-- **Content generation**: Brief and prompt content uses a fallback chain: hand-authored override → rule-based generated fallback. Override maps are validated at startup against known topic IDs.
+- **Content overrides**: `TopicBriefOverrides` and `TopicPromptOverrides` are keyed by topic ID or visible topic text. Lookup checks `entry.id` first, then `entry.text`. When neither matches, the generated fallback is used.
 
 ## Working With Content
 
-The largest files are content data: `topic-briefs.js` (~369KB), `topic-brief-config.js` (~49KB), `topic-prompts.js` (~20KB). When editing these, read only the relevant topic section rather than the whole file.
+Large files — read only the relevant section, not the whole file:
+- `topic-briefs.js` (~2900 lines) — hand-authored brief overrides
+- `syllabus-core.js` (~1100 lines) — hydration, state, rendering
+- `syllabus-dataset.js` (~500 lines) — raw syllabus content
 
-When adding or modifying topics, ensure the topic ID remains stable (check `idSlug` if present) to avoid breaking localStorage progress data and deep links.
+When adding or modifying topics, ensure the topic ID remains stable. Renaming a topic's visible text changes its ID (and breaks localStorage data and deep links) unless you add an `idSlug` field preserving the old slug.

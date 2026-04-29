@@ -5,237 +5,600 @@
 
   const rawData = [
     {
+      id: 0, title: 'Mental Models', color: '#2DABB1', bg: '#E0F5F5',
+      sections: [
+        { title: 'What a model is', topics: [
+          'A model is a file of numbers, not a program with rules',
+          'What a neural network looks like — layers of simple math that compose into complex behavior',
+          'What a parameter is — one adjustable number; billions of them together encode everything the model "knows"',
+          'What the transformer is — the architecture behind LLMs, where every token can attend to every other token',
+          'What attention does — the model deciding which parts of the input matter for predicting the next piece',
+          'What "large" means in Large Language Model — parameter count, data scale, compute spent',
+          'What a foundation model is — one pretrained model adapted to many downstream tasks',
+          'Open-weight vs closed — you get the file vs you get an API endpoint',
+          'Why a model is frozen after training — the weights don\'t change when you use it, only when you train it again',
+          'Model families and versions — why GPT-4, GPT-4o, and GPT-4 Turbo are different models with different tradeoffs'
+        ] },
+        { title: 'How models learn', topics: [
+          'What training is — showing billions of examples and adjusting weights to reduce prediction error',
+          'What pretraining does — learning language patterns from the internet at massive scale',
+          'The training objective in one sentence — predict the next token, that\'s it, but it\'s enough',
+          'What loss means — a number that goes down when the model gets better at predicting',
+          'Why the dataset matters more than the architecture — garbage in, garbage out, at scale',
+          'What RLHF does — human preference data steers the model from "predict text" to "be helpful"',
+          'What instruction tuning is — teaching the model to follow directions rather than just complete text',
+          'What fine-tuning is — additional training on specific data to specialize a general model',
+          'What distillation is — training a small model to mimic a large one\'s behavior',
+          'What scaling laws say — more data, more parameters, more compute produces predictably better models',
+          'What emergent capabilities are — abilities that appear at scale without being explicitly trained',
+          'Why training and inference are completely different phases — training is rare and expensive, inference is constant and cheap'
+        ] },
+        { title: 'How models generate', topics: [
+          'Generation is next-token prediction — one token at a time, always predicting what comes next',
+          'What autoregressive means — each new token depends on all the tokens before it',
+          'What the output looks like internally — a probability distribution over every possible next token',
+          'What temperature does — controls how spread out or peaked that distribution is',
+          'What top-p and top-k do — different cutoffs for pruning unlikely tokens before sampling',
+          'What greedy decoding is — always picking the most probable token, and why it sounds robotic',
+          'Why generation is inherently slow — the sequential one-at-a-time bottleneck',
+          'What time-to-first-token means — the pause before output starts streaming',
+          'What streaming is — sending tokens to the user as they\'re generated, not waiting for the full response',
+          'What a stop sequence is — how the model knows when it\'s done',
+          'What batching means for inference — processing multiple user requests simultaneously to share GPU compute',
+          'Why the same prompt can give different outputs — sampling is stochastic unless temperature is zero'
+        ] },
+        { title: 'Tokens, context, and the input surface', topics: [
+          'What a token is — a chunk of text, roughly three-quarters of an English word',
+          'Why "count the r\'s in strawberry" fails — the model never sees individual characters, only token chunks',
+          'What a tokenizer does — maps text to integer IDs and back; different models use different tokenizers',
+          'Why code, JSON, and non-English text are expensive — tokenizers are optimized for common English prose',
+          'What context window means — the fixed-size buffer of tokens the model can see in one call',
+          'Why context is not memory — it\'s rebuilt from scratch on every request',
+          'What competes for context space — system prompt, conversation history, retrieved documents, your message, and the model\'s reply all share one budget',
+          'What "lost in the middle" means — models attend more to the beginning and end, less to the center',
+          'Why longer context isn\'t always better — more tokens means more noise, higher cost, slower responses',
+          'Token economics — input tokens and output tokens are priced differently, and the ratio matters'
+        ] },
+        { title: 'Prompting as steering', topics: [
+          'What a prompt actually does — selects which patterns the model will activate and extend',
+          'Why prompting works at all — the model is a pattern completer, and the prompt sets up the pattern',
+          'What a system prompt is — persistent framing that shapes every response in the conversation',
+          'What few-shot examples do — they demonstrate the pattern instead of describing it',
+          'What chain-of-thought prompting is — asking the model to reason step by step before giving the answer',
+          'Why more output tokens before the answer often means better answers — generation is computation',
+          'Why small wording changes cause large output shifts — you\'re navigating a high-dimensional space',
+          'What structured output means — constraining the model to produce JSON, XML, or another machine-readable format',
+          'What prompt injection is — adversarial input that hijacks the model\'s instructions',
+          'Why "just ask clearly" is necessary but not sufficient — the model optimizes for plausible continuation, not correctness'
+        ] },
+        { title: 'Reasoning, planning, and model limitations', topics: [
+          'What "reasoning" means for a model — generating tokens that look like reasoning, not an internal thought process',
+          'What a reasoning model is — specifically trained to produce extended thinking chains before answering',
+          'What thinking tokens are — intermediate steps the model generates that may or may not be visible to the user',
+          'What planning looks like — the model can decompose problems into steps, but can\'t guarantee the plan is executable',
+          'What self-correction looks like — the model critiquing its own output in a follow-up pass',
+          'Why models hallucinate — they complete patterns plausibly, they don\'t verify against a source of truth',
+          'What models are reliably bad at — counting, spatial reasoning, precise arithmetic, consistent negation',
+          'The difference between generating and knowing — the model can produce correct-looking text without "knowing" it\'s correct',
+          'Why confidence and correctness are unrelated — the model sounds equally sure whether it\'s right or wrong'
+        ] },
+        { title: 'Agents, tools, and autonomy', topics: [
+          'What an agent is — a program that calls a model in a loop: observe, decide, act, repeat',
+          'What the agent loop looks like — prompt the model, parse the response, execute an action, feed the result back, repeat',
+          'What separates an agent from a single model call — persistence across steps, actions in the real world, and feedback',
+          'What a tool is — a function the agent can invoke: search, run code, read files, call APIs, query databases',
+          'How tool calling works — the model outputs structured text requesting a function call, your code executes it and returns the result',
+          'What a multi-agent system is — multiple agents coordinating, each with different roles or capabilities',
+          'What autonomy levels mean — from "suggest an action for human approval" to "execute end-to-end without asking"',
+          'What a human-in-the-loop is — a checkpoint where the agent pauses for human review before proceeding',
+          'What guardrails are — programmatic constraints that prevent the agent from taking dangerous or unintended actions',
+          'Why agents fail — compounding small errors, hallucinated actions, infinite loops, losing track of the goal',
+          'What an agent framework is — a library that handles the loop mechanics so you write the decision logic'
+        ] },
+        { title: 'Memory, retrieval, and state', topics: [
+          'Why models have no memory — every API call is independent; the model doesn\'t remember the last one',
+          'What conversation history really is — you rebuild context by resending prior messages every time',
+          'What short-term memory means for agents — whatever fits in the current context window',
+          'What long-term memory means for agents — external storage you build around the model: databases, files, vector stores',
+          'What an embedding is — a fixed-size vector of numbers that captures the meaning of a piece of text',
+          'What vector similarity means — similar meanings produce nearby vectors; you can search by meaning, not keywords',
+          'What a vector database does — stores embeddings and retrieves the closest matches efficiently',
+          'What RAG is — Retrieval-Augmented Generation: look up relevant information, inject it into the prompt, then generate',
+          'Why RAG exists — models can\'t know everything, context windows aren\'t infinite, and information changes',
+          'What a knowledge graph is — facts as structured relationships (entity → relation → entity) rather than raw text'
+        ] },
+        { title: 'The system around the model', topics: [
+          'What an AI system is — model + code + data + infrastructure; the model is one component, not the product',
+          'Why most engineering effort is outside the model — parsing, validation, routing, error handling, storage, UI',
+          'What a pipeline is — multiple model calls chained with code in between, each step feeding the next',
+          'What orchestration means — managing the flow of data and control across multiple components or models',
+          'What multi-model routing looks like — using a small fast model for easy tasks and routing hard ones to an expensive model',
+          'What evaluation means — systematically measuring whether your system does what you intended',
+          'What observability means — the ability to see what happened inside the system when something goes wrong',
+          'What the latency-cost-quality triangle is — every design decision trades between speed, price, and output quality',
+          'What deployment means here — getting from "works on my laptop" to "serves users reliably at scale"',
+          'Why versioning everything matters — the model, the prompt, the retrieval pipeline, and the evaluation all change independently'
+        ] }
+      ]
+    },
+    {
       id: 1, title: 'Foundation Models', color: '#7F77DD', bg: '#EEEDFE',
       sections: [
-        { title: 'Core transformer architecture', topics: [
-          'Attention mechanisms', 'Multi-head attention', 'Positional encoding', 'Feed-forward layers', 'Layer normalization', 'Residual connections', 'Tokenization', 'Byte-pair encoding (BPE)', 'SentencePiece / Unigram tokenization', 'Context windows', 'KV cache'
+        { title: 'Model internals for system design', topics: [
+          'KV cache mechanics and memory scaling',
+          'Context window economics',
+          'Tokenizer behavior and budget planning',
+          'Attention variants that affect serving (GQA, MHA, MLA)',
+          'Mixture of Experts routing and serving implications',
+          'State-space models (Mamba, RWKV) as transformer alternatives'
         ] },
-        { title: 'Architecture extensions', topics: [
-          'Mixture of Experts (MoE)', 'Speculative decoding', 'Structured output / JSON mode', 'Prompt caching', 'Quantization and packaging (GPTQ, AWQ, GGUF)', 'State-space models (Mamba, RWKV)', 'Grouped Query Attention (GQA)', 'Multi-Head Latent Attention (MLA)', 'Sliding window attention', 'Rotary Position Embedding (RoPE)', 'Ring attention / infinite context', 'Retrieval-conditioned architectures (advanced / research)'
-        ] },
-        { title: 'Model families', topics: [
-          'GPT-style (decoder-only)', 'BERT-style (encoder-only)', 'T5-style (encoder-decoder)', 'Multimodal models (LMM/VLM)', 'Small language models (SLM)', 'Open-source vs proprietary', 'Model cards & documentation'
-        ] },
-        { title: 'Embedding & retrieval models', topics: [
-          'Text embedding models (OpenAI, Cohere, Voyage)', 'Open embedding models (BGE, E5, GTE, Nomic)', 'Multimodal embeddings (CLIP, SigLIP)', 'Reranker models (cross-encoders)', 'ColBERT / late interaction models', 'Matryoshka embeddings (variable dimension)', 'Embedding fine-tuning & domain adaptation', 'MTEB benchmark & embedding leaderboards'
-        ] },
-        { title: 'Voice & audio models', topics: [
-          'Text-to-speech (ElevenLabs, OpenAI TTS)', 'Speech-to-text (Whisper, Deepgram, AssemblyAI)', 'Voice cloning & synthesis', 'Real-time voice agents (OpenAI Realtime API)', 'Audio understanding models', 'Voice-first agent architectures'
-        ] },
-        { title: 'Reasoning & thinking models', topics: [
-          'OpenAI o1 / o1-pro / o3 / o4-mini', 'DeepSeek-R1 / R1-Zero / R1-0528', 'Claude with extended thinking (Anthropic)', 'Gemini 2.0 Flash Thinking / Gemini 2.5 Pro', 'Qwen QwQ / Qwen3 thinking mode', 'Grok 3 (xAI) with reasoning', 'Phi-4-reasoning (Microsoft)', 'Llama 4 Maverick / Scout reasoning', 'Mistral Large with reasoning', 'Command R7B with reasoning (Cohere)', 'Kimi k1.5 (Moonshot AI)', 'Marco-o1 (Alibaba DAMO)', 'Skywork-o1 (Kunlun Tech)', 'Open-source reasoning distillation (R1→smaller models)', 'Chain-of-thought tokens / thinking tokens', 'Thinking budget / max_thinking_tokens', 'Test-time compute scaling laws', 'Adaptive compute allocation per query', 'Best-of-N sampling / rejection sampling', 'GRPO (Group Relative Policy Optimization)', 'Hybrid thinking / non-thinking modes', 'Reasoning traces as training signal', 'Supervised fine-tuning on reasoning traces (SFT-on-CoT)', 'RL from verifiable rewards for reasoning', 'Process reward models (PRMs) vs outcome reward models'
-        ] },
-        { title: 'Multimodal & vision models', topics: [
-          'GPT-4o / GPT-4V (OpenAI)', 'Claude 3.5 / Claude 4 with vision (Anthropic)', 'Gemini 2.0 / 2.5 multimodal (Google)', 'Llama 4 multimodal (Meta)', 'Qwen-VL / Qwen2.5-VL (Alibaba)', 'Pixtral (Mistral)', 'InternVL / InternVL2 (Shanghai AI Lab)', 'LLaVA / LLaVA-NeXT', 'Idefics 2/3 (HuggingFace)', 'CogVLM / CogAgent', 'Florence-2 (Microsoft)', 'Image understanding vs generation models', 'Video understanding models', 'Vision-language grounding', 'Video generation models (Sora, Kling, Veo)', 'SmolVLM / efficient on-device VLMs'
-        ] },
-        { title: 'Tool-calling & code models', topics: [
-          'Function-calling fine-tuned models', 'DeepSeek-Coder / DeepSeek-Coder-V2', 'OpenAI Codex (CLI agent)', 'StarCoder / StarCoder2 (BigCode)', 'Qwen-Coder (Qwen2.5-Coder)', 'Claude with tool use', 'Llama Code variants', 'CodeGemma (Google)', 'WizardCoder', 'Codestral (Mistral)', 'Granite Code (IBM)', 'Arctic (Snowflake)', 'Nemotron (NVIDIA)', 'Tool-use fine-tuning datasets (ToolBench, API-Bank)', 'Gemini for coding (Gemini 2.5 Flash / Pro)'
-        ] },
-        { title: 'Open-weight model ecosystem', topics: [
-          'Llama 3 / 3.1 / Llama 4 (Meta)', 'DeepSeek V3 / V3.1 / R1 (MIT license)', 'Mistral / Mixtral / Mistral Large', 'Qwen 2.5 / Qwen3 (Alibaba)', 'Gemma / Gemma 2 (Google)', 'Phi-3 / Phi-4 (Microsoft)', 'Command R / Command R+ (Cohere)', 'Yi series (01.AI)', 'OLMo 2 (AI2, fully open)', 'Falcon 2 / 3 (TII)', 'Open-weight vs open-source licensing distinctions', 'Model distillation from closed models (controversy)', 'Hugging Face Hub as distribution ecosystem', 'Benchmark gaming & evaluation integrity'
+        { title: 'Model selection', topics: [
+          'Reasoning vs speed vs cost trade-off framework',
+          'Open-weight vs API model decision matrix',
+          'Small models that outperform (when 7B beats 70B)',
+          'Model cards — what they tell you and what they hide',
+          'Benchmark gaming and how to read leaderboards honestly',
+          'The distillation question — when to train your own'
         ] },
         { title: 'Inference optimization', topics: [
-          'Speculative decoding (draft + verifier)', 'KV cache compression (MLA)', 'Continuous batching', 'PagedAttention (vLLM)', 'Multi-token prediction', 'Mixed-precision inference (FP8, BF16)', 'Native Sparse Attention', 'MoE inference routing', 'Tensor / pipeline parallelism for serving', 'Prefix caching / prompt caching', 'FlashAttention (memory-efficient attention)', 'Chunked prefill and disaggregated serving', 'SGLang and radix attention'
+          'Speculative decoding (draft + verifier)',
+          'Quantization trade-offs (GPTQ, AWQ, GGUF)',
+          'Continuous batching and PagedAttention (vLLM)',
+          'KV cache compression and eviction',
+          'Prompt caching and prefix sharing',
+          'FlashAttention and memory-efficient serving',
+          'Mixed-precision inference (FP8, BF16)',
+          'Tensor and pipeline parallelism for serving',
+          'Chunked prefill and disaggregated serving'
         ] },
-        { title: 'Prompt engineering', topics: [
-          'Zero-shot prompting', 'Few-shot prompting', 'Instruction tuning', 'System vs user prompts', 'Prompt templates', 'Meta-prompting', 'Prompt chaining', 'Automatic prompt optimization', 'Prompt compression', 'Role prompting', 'Structured output prompting'
+        { title: 'Structured output', topics: [
+          'JSON mode and constrained decoding',
+          'Grammar-guided generation',
+          'Schema validation at the generation boundary',
+          'Structured output failure modes and recovery',
+          'Tool-call output format design'
         ] },
-        { title: 'Production prompt management', topics: [
-          'Prompt versioning and registries', 'Prompt A/B testing and experimentation', 'Prompt libraries and reuse patterns', 'Prompt lifecycle management (draft, review, staging, production)', 'Prompt regression testing', 'Prompt review and approval workflows', 'Prompt templating engines and variable injection', 'Prompt observability and performance tracking', 'Prompt rollback strategies', 'Prompt collaboration across teams', 'Prompt-model co-versioning', 'Prompt catalogs and discoverability'
+        { title: 'Embedding and retrieval models', topics: [
+          'Text embedding model selection (dimensions, cost, quality)',
+          'Matryoshka embeddings for variable-precision retrieval',
+          'Cross-encoder rerankers vs bi-encoder trade-offs',
+          'ColBERT and late interaction models',
+          'Embedding fine-tuning for domain adaptation',
+          'MTEB benchmark and evaluation pitfalls',
+          'Multimodal embeddings (CLIP, SigLIP) for cross-modal retrieval'
+        ] },
+        { title: 'Prompt engineering for production', topics: [
+          'Prompt versioning and registries',
+          'Prompt regression testing',
+          'Prompt A/B testing and experimentation',
+          'Prompt-model co-versioning',
+          'Prompt compression and context budgeting',
+          'System vs user prompt boundary design',
+          'Meta-prompting and prompt chaining',
+          'Prompt rollback and incident response'
+        ] },
+        { title: 'Reasoning models', topics: [
+          'When reasoning models are worth the cost',
+          'Thinking budget and adaptive compute allocation',
+          'Test-time compute scaling laws',
+          'Chain-of-thought token economics',
+          'Hybrid thinking and non-thinking modes',
+          'Process reward models vs outcome reward models'
         ] }
       ]
     },
     {
       id: 2, title: 'Reasoning & Intelligence', color: '#1D9E75', bg: '#E1F5EE',
       sections: [
-        { title: 'Reasoning paradigms', topics: [
-          'Chain-of-Thought (CoT)', 'Least-to-Most prompting', 'ReAct (Reason+Act)', 'Tree-of-Thought (ToT)', 'Graph-of-Thought (GoT)', 'Program-of-Thought (PoT)', 'Self-consistency', 'Debate reasoning', 'Skeleton-of-Thought', 'Tool-assisted reasoning', 'Test-time compute scaling', 'Verifier-guided reasoning', 'Verification & self-verification', 'Monte Carlo Tree Search (MCTS) for LLM reasoning', 'Latent-space / continuous reasoning'
+        { title: 'The agent loop', topics: [
+          'Perceive-reason-act loop mechanics',
+          'Bounded vs unbounded execution',
+          'Deterministic replay and resume-from-failure',
+          'State persistence — why SQLite often beats Redis for single-node agents',
+          'Event sourcing for agent traces',
+          'Stop conditions and escalation criteria',
+          'The ReAct pattern and its degradation past ~10 iterations'
         ] },
-        { title: 'Reflection, critique & repair', topics: [
-          'Reflection loops', 'Self-critique', 'Self-evaluation', 'Iterative refinement', 'Reflexion', 'Critique agents', 'Trajectory critique and repair', 'Plan repair after failure', 'Post-action review loops'
+        { title: 'Planning and decomposition', topics: [
+          'Task decomposition strategies',
+          'Hierarchical planning and replanning',
+          'Plan-and-execute vs reactive agents',
+          'Budget-aware planning (token, cost, and time limits)',
+          'Plan repair after partial failure',
+          'Goal prioritization under constraints'
         ] },
-        { title: 'Training paradigms for agents', topics: [
-          'Reinforcement Learning from Human Feedback (RLHF)', 'Reinforcement Learning from AI Feedback (RLAIF)', 'Direct Preference Optimization (DPO)', 'Proximal Policy Optimization (PPO)', 'Group Relative Policy Optimization (GRPO)', 'Tool-use fine-tuning', 'Agent trajectory fine-tuning', 'Curriculum learning for agents', 'Bootstrapped self-improvement', 'Multi-task agent training'
+        { title: 'Reasoning patterns', topics: [
+          'Chain-of-Thought — when it helps and when it hurts',
+          'Tree-of-Thought vs Graph-of-Thought trade-offs',
+          'Self-consistency via majority voting',
+          'Tool-assisted reasoning',
+          'Verifier-guided reasoning',
+          'Test-time compute vs fine-tuning — the crossover point'
+        ] },
+        { title: 'Reflection and self-correction', topics: [
+          'Reflection loops and their overhead cost',
+          'Self-critique that actually improves output',
+          'Trajectory critique and repair',
+          'Iterative refinement vs single-shot — when each wins',
+          'Post-action review patterns'
+        ] },
+        { title: 'Metacognition', topics: [
+          'Confidence calibration and its limits',
+          'Selective abstention — when to say I don\'t know',
+          'Out-of-distribution detection for agents',
+          'Knowing-when-to-stop (task completion detection)',
+          'Confidence-gated action execution',
+          'Resource-bounded reasoning'
         ] },
         { title: 'Agent architectures', topics: [
-          'ReAct agents', 'Plan-and-Execute agents', 'Reflection agents', 'Autonomous agents (AutoGPT-style)', 'Tool-using agents', 'Generalist agents', 'Subagent patterns', 'Mixture-of-Agents (MoA)', 'World models', 'Skeleton planner', 'Compound AI systems', 'Cognitive architectures (ACT-R, SOAR)', 'Long-horizon task agents', 'LLM-as-judge / evaluator-in-the-loop'
-        ] },
-        { title: 'Planning & control', topics: [
-          'Task decomposition', 'Hierarchical planning', 'Agent loop design', 'Finite-state / rule-based controllers', 'LLM-based controllers', 'Planner-executor separation', 'Replanning / plan repair', 'Execution monitoring and watchdogs', 'Goal prioritization', 'Constraint satisfaction', 'Stop conditions and escalation criteria', 'Budget-aware planning'
-        ] },
-        { title: 'Neuro-symbolic & constraint-guided reasoning (advanced / research)', topics: [
-          'Logic-neural hybrid architectures', 'Solver-backed reasoning (SAT/SMT/planners)', 'Symbolic grounding for LLM reasoning', 'Knowledge graph-grounded reasoning', 'Constraint-guided neural generation'
-        ] },
-        { title: 'Meta-cognition', topics: [
-          'Confidence monitoring & calibration', 'Out-of-distribution (OOD) detection', 'Epistemic vs aleatoric uncertainty', 'Knowing-when-to-stop (task completion detection)', 'Selective prediction / abstention when unsure', 'Self-checking with external verification', 'Confidence-gated action execution', 'Resource-bounded reasoning', 'Planning horizon awareness', 'Confidence signals and calibration proxies', 'Metacognitive prompting strategies', 'Introspective tool-use decisions'
+          'ReAct agents — strengths and breaking points',
+          'Plan-and-execute agents',
+          'Tool-using agents',
+          'Autonomous vs bounded agents — the spectrum',
+          'Compound AI systems as the real architecture',
+          'Cognitive architectures (ACT-R, SOAR) — lessons for LLM agents',
+          'LLM-as-judge in the loop'
         ] }
       ]
     },
     {
       id: 3, title: 'Memory & Knowledge', color: '#378ADD', bg: '#E6F1FB',
       sections: [
-        { title: 'Memory taxonomy', topics: [
-          'In-context (working) memory', 'External / long-term memory', 'Episodic memory', 'Semantic memory', 'Procedural memory', 'Memory compression', 'Memory versioning', 'Memory pruning', 'MemGPT / Letta patterns', 'Context window management'
+        { title: 'Memory architecture', topics: [
+          'Working memory (in-context) and its limits',
+          'Episodic memory — event logs with timestamps',
+          'Semantic memory — facts and relationships',
+          'Procedural memory — learned action patterns',
+          'Memory promotion rules (reactive recall to system prompt by use count)',
+          'Memory compression and summarization trade-offs',
+          'Memory pruning and forgetting policies',
+          'Memory versioning and rollback',
+          'Context window management strategies',
+          'MemGPT and Letta patterns for virtual context'
         ] },
-        { title: 'Retrieval techniques', topics: [
-          'Vector search (ANN / HNSW)', 'Hybrid search', 'Keyword search (BM25)', newTopic('Dense retrieval embeddings', { idSlug: 'Embeddings' }), 'Reranking', newTopic('Reranker APIs / cross-encoders', { idSlug: 'Cohere Rerank / cross-encoders' }), 'Query rewriting', 'Query expansion', 'ColBERT / late interaction retrieval', 'HyDE (Hypothetical Document Embeddings)', 'Contextual retrieval', 'Reciprocal Rank Fusion (RRF)', 'Learned sparse retrieval (SPLADE)'
+        { title: 'Retrieval fundamentals', topics: [
+          'Vector search (ANN, HNSW) and index tuning',
+          'BM25 keyword search — when it beats dense retrieval',
+          'Hybrid search (BM25 + dense) — when it is worth the complexity',
+          'Query rewriting and expansion',
+          'HyDE (Hypothetical Document Embeddings)',
+          'Reciprocal Rank Fusion for multi-signal merging',
+          'Reranking with cross-encoders — latency vs relevance',
+          'ColBERT for late interaction retrieval',
+          'Contextual retrieval (document-level context injection)',
+          'Learned sparse retrieval (SPLADE)'
         ] },
-        { title: 'Chunking & indexing', topics: [
-          'Chunking strategies', 'Sliding window chunking', 'Document hierarchies', 'Late chunking', 'Parent-child retrieval', 'Recursive / semantic chunking', 'Agentic chunking', 'Metadata enrichment & filtering', 'Multi-index strategies', 'Indexing pipelines & automation'
+        { title: 'Chunking and indexing', topics: [
+          'Chunking strategies beyond 512 tokens with 50 overlap',
+          'Semantic chunking vs fixed-size trade-offs',
+          'Parent-child retrieval (chunk-level match, full-doc context)',
+          'Late chunking',
+          'Metadata enrichment and filtering',
+          'Multi-index strategies',
+          'Indexing pipeline automation'
         ] },
         { title: 'RAG architectures', topics: [
-          'Multi-hop RAG', 'Agentic RAG', 'Corrective RAG (CRAG)', 'Self-RAG', 'GraphRAG', 'Multimodal RAG', 'RAPTOR (tree-structured RAG)', 'Modular RAG pipelines', 'Adaptive RAG (route by query complexity)', 'RAG vs fine-tuning vs long context (trade-offs)', 'RAG evaluation (context relevance, faithfulness)', 'Cache-augmented generation'
+          'Single-hop RAG and its ceiling',
+          'Multi-hop RAG for complex questions',
+          'Agentic RAG — retrieve, evaluate, re-retrieve',
+          'Corrective RAG (CRAG)',
+          'Self-RAG',
+          'GraphRAG for relational knowledge',
+          'RAG vs fine-tuning vs long context — decision framework',
+          'RAG evaluation (faithfulness, relevance, coverage)',
+          'Cache-augmented generation'
         ] },
         { title: 'Knowledge stores', topics: [
-          newTopic('Vector databases (Pinecone, Weaviate, Qdrant, Milvus)', { idSlug: 'Vector databases (Pinecone, Weaviate, Qdrant)' }), 'Knowledge graphs', 'Relational DBs', 'Document stores', 'Conversation history', 'Episodic logs', 'Graph databases (Neo4j, Neptune)', 'Chroma / LanceDB (embedded vector DBs)', newTopic('Operational vector stores (Postgres + pgvector, Elasticsearch / OpenSearch)', { idSlug: 'Hybrid stores (Milvus, pgvector)' }), 'Multi-tenant knowledge isolation'
-        ] },
-        { title: 'Knowledge quality', topics: [
-          'Hallucination detection', 'Grounding techniques', 'Freshness & staleness', 'Data pipelines & ingestion', 'Source attribution', newTopic('Calibrated confidence & abstention', { idSlug: 'Confidence scoring' }), 'Fact-checking agents'
+          'sqlite-vec vs Qdrant vs Pinecone vs Milvus — selection criteria',
+          'Chroma and LanceDB for embedded use cases',
+          'pgvector for operational workloads',
+          'Knowledge graphs (Neo4j) vs vector search — when each wins',
+          'Multi-tenant knowledge isolation',
+          'Cache invalidation as the actual hard problem',
+          'Freshness and staleness detection'
         ] }
       ]
     },
     {
       id: 4, title: 'Agency & Tool Use', color: '#EF9F27', bg: '#FAEEDA',
       sections: [
-        { title: 'Tool interfaces', topics: [
-          'Function calling', 'Tool schema design (JSON Schema / provider adapters)', 'Tool selection logic', 'Read-only vs side-effecting tool boundaries', 'Idempotent tool design and retry safety', 'Tool chaining', 'Tool error handling', 'Parallel tool calls', 'Tool result handling', 'Structured output for tool calls', 'Tool-use benchmarks and eval suites'
+        { title: 'Tool design discipline', topics: [
+          'Tools as typed functions — schema-first design',
+          'JSON Schema for tool interfaces',
+          'Read-only vs side-effecting tool boundaries',
+          'Idempotency keys for retry safety',
+          'Schema validation at the boundary',
+          'Error surfaces the model can actually recover from',
+          'Approval gates for paid and destructive actions',
+          'Tool allowlists vs sandboxing',
+          'Parallel tool call design',
+          'Tool result format design'
         ] },
         { title: 'Information tools', topics: [
-          'Web search', 'Web scraping', 'APIs & REST', 'File ingestion (PDF, CSV, DOCX)', 'Code interpreters', 'Database queries', 'Knowledge base Q&A', 'Screenshot / screen capture tools', 'OCR & document AI'
+          'Web search integration patterns',
+          'Web scraping with anti-bot considerations',
+          'API integration and rate limit handling',
+          'File ingestion pipelines (PDF, CSV, DOCX)',
+          'Code interpreter sandboxes',
+          'Database query tools and read-only boundaries'
         ] },
         { title: 'Action tools', topics: [
-          'Code execution (sandboxed)', 'File system operations', 'Shell / CLI automation', 'Browser automation', 'Computer use / GUI agents', 'Email & calendar APIs', 'Form filling', 'Voice & telephony agents', 'Image / video generation tools'
+          'Code execution sandboxing (E2B, Modal, Firecracker)',
+          'File system operations and permission models',
+          'Shell and CLI automation',
+          'Browser automation (Playwright, Puppeteer patterns)',
+          'Computer use and GUI agents',
+          'Voice and telephony agent tooling'
         ] },
         { title: 'Meta tooling', topics: [
-          'Tool discovery', 'Dynamic tool registration', 'Tool ranking & selection', 'Capability descriptors and manifests', 'Provider-specific tool adapters', 'Tool health checks & fallback policies', 'Tool learning from feedback', 'Cost-aware tool selection policies'
+          'Dynamic tool registration and discovery',
+          'Tool ranking and selection strategies',
+          'Capability descriptors and manifests',
+          'Tool health checks and fallback policies',
+          'Cost-aware tool selection',
+          'Tool learning from feedback'
         ] },
-        { title: 'Protocol convergence & standards', topics: [
-          'MCP (Model Context Protocol)', 'A2A protocol', 'Interoperability standards', 'MCP server ecosystem', 'Capability discovery and agent directories', 'Task handoff and status semantics', 'Agent cards / manifest formats', 'OpenAPI / AsyncAPI for agent tool interfaces', 'Protocol bridging / interop layers (MCP↔A2A)', 'Transport & session patterns for agent protocols', 'Cross-vendor agent orchestration standards', 'Emerging formal interoperability standards (IEEE and others)', 'Legacy FIPA concepts in modern protocols'
-        ] },
-        { title: 'Agentic browsers', topics: [
-          'Browser-as-runtime for AI agents', 'Browser-native agent products', 'Operator / computer-use paradigms', 'DOM interaction models for agent navigation', 'Accessibility tree interaction for agent navigation', 'Vision-based web agents (screenshot understanding)', 'Browser sandboxing for agent safety', 'Headless vs visual browser agents', 'Credential & session isolation for browser agents', 'Reusable browser skills / macros', 'Web agent benchmarks (WebArena, Mind2Web)'
+        { title: 'Protocols and standards', topics: [
+          'MCP — what it solves and what it does not',
+          'A2A protocol — agent-to-agent communication',
+          'MCP server ecosystem and hosting',
+          'Agent cards and manifest formats',
+          'OpenAPI for agent tool interfaces',
+          'Protocol bridging (MCP to A2A)',
+          'Transport and session patterns for agent protocols',
+          'When to skip protocols entirely'
         ] },
         { title: 'Interaction patterns', topics: [
-          'Tool-calling loops', 'Human-in-the-loop (HITL)', 'Conversational agents', 'Task-oriented agents', 'Event-driven agents', 'Streaming agents', 'Synchronous vs asynchronous execution', 'Voice / multimodal I/O', 'Webhooks & event triggers', 'Approval workflows', 'Objective -> execution -> validation loops', 'Validation checkpoint architecture', 'Goal decomposition with validation gates', 'Rollback-on-failure / compensating actions', 'Human-in-the-loop vs human-on-the-loop vs full autonomy', 'Adaptive autonomy levels (dynamic delegation)'
+          'Human-in-the-loop vs human-on-the-loop vs full autonomy',
+          'Approval workflows and escalation design',
+          'Streaming agents and partial results',
+          'Event-driven vs polling agents',
+          'Validation checkpoint architecture',
+          'Rollback-on-failure and compensating actions',
+          'Adaptive autonomy levels'
         ] },
-        { title: 'Agent identity & authentication', topics: [
-          'OAuth & authentication for agents', 'Agent credential management', 'Machine / workload identity for agents (mTLS, service identities)', 'Delegated authorization (agent acts on behalf of user)', 'Scoped permission tokens per task', 'Agent identity cards / manifests', 'Multi-agent trust chains', 'Agent signing & provenance verification', 'Credential rotation for long-running agents', 'Cross-organizational agent federation'
+        { title: 'Agent identity and authentication', topics: [
+          'OAuth flows for agents',
+          'Delegated authorization — agent acts as user',
+          'Scoped permission tokens per task',
+          'Credential rotation for long-running agents',
+          'Machine identity for agents (mTLS, service accounts)',
+          'Multi-agent trust chains'
         ] }
       ]
     },
     {
       id: 5, title: 'Multi-Agent Systems', color: '#D4537E', bg: '#FBEAF0',
       sections: [
-        { title: 'Multi-agent architectures', topics: [
-          'Orchestrator-subagent pattern', 'Role-based agent teams', 'Peer-to-peer agents', 'Hierarchical agent networks', 'Debate agents', 'Mixture-of-Agents (MoA)', 'Puppeteer + specialist pattern', 'Governance agents', 'Agents as tools', newTopic('Adversarial / self-play agent systems', { idSlug: 'Competitive agent systems' })
+        { title: 'When multi-agent is wrong', topics: [
+          'Why most multi-agent systems should be one agent with better tools',
+          'The coordination overhead tax',
+          'Single agent with role-switching vs multiple agents',
+          'Complexity budgets for multi-agent',
+          'The just add another agent antipattern'
         ] },
-        { title: 'Agent design patterns', topics: [
-          'Router pattern (classify & dispatch)', 'Map-reduce pattern (parallel fan-out)', 'Supervisor pattern (manage + route)', 'Critic / verifier pattern', 'Planner-executor pattern', 'Retriever-reader pattern', 'Generator-evaluator loop', 'Escalation pattern (agent → human)', 'Watchdog pattern (monitoring agent)', 'Assembly line pattern (sequential specialization)', 'Blackboard pattern (shared workspace)', newTopic('Externalized scratchpad / working-state pattern', { idSlug: 'Inner monologue pattern' })
+        { title: 'Orchestration patterns', topics: [
+          'Coordinator-worker pattern',
+          'Peer mesh vs hierarchical networks',
+          'Capsule and subprocess isolation — trade-offs',
+          'StateGraph vs hand-rolled orchestration — when each wins',
+          'Router pattern (classify and dispatch)',
+          'Map-reduce pattern (parallel fan-out)',
+          'Supervisor pattern',
+          'Critic and verifier pattern',
+          'Assembly line pattern (sequential specialization)',
+          'Blackboard pattern (shared workspace)'
         ] },
-        { title: 'Coordination & communication', topics: [
-          'Message passing', 'Shared state management', 'Context handoff', 'Conflict resolution', 'Task delegation', 'Emergent behavior', 'Termination conditions & handoff criteria', 'Agent discovery', 'Agent protocol standardization', 'Trust & reputation systems'
+        { title: 'Coordination mechanics', topics: [
+          'Message passing design',
+          'Shared state management',
+          'Context handoff protocols',
+          'Conflict resolution strategies',
+          'Task delegation and load balancing',
+          'Termination conditions and handoff criteria',
+          'Agent discovery and registration'
         ] },
         { title: 'Frameworks', topics: [
-          'LangChain / LangGraph', 'LlamaIndex', newTopic('AutoGen (Microsoft)', { idSlug: 'AutoGen' }), 'CrewAI', 'OpenAI Agents SDK', 'Google ADK', 'PydanticAI', 'Haystack', 'Semantic Kernel', 'Dify', 'Smolagents (HuggingFace)', 'Mastra', 'Vercel AI SDK', 'Agno (formerly Phidata)', 'Agency Swarm'
-        ] },
-        { title: 'Workflow systems', topics: [
-          'DAG pipelines', 'State machines', 'Event-driven orchestration', 'Async orchestration', 'Parallel execution', 'Fan-out / fan-in', 'Workflow recovery & checkpointing', 'Long-running agent processes', 'Durable execution (Temporal, Inngest)'
+          'LangGraph — StateGraph and when it fits',
+          'OpenAI Agents SDK',
+          'PydanticAI',
+          'CrewAI trade-offs',
+          'Haystack for pipelines',
+          'Temporal and Inngest for durable execution',
+          'Framework selection criteria'
         ] },
         { title: 'Failure modes at scale', topics: [
-          'Coordination collapse (deadlock / live-lock)', 'Authority ambiguity (unclear decision ownership)', 'Cascade failures across agent hops', 'Deference loops (agents deferring indefinitely)', 'Goal drift in long-running workflows', 'Herding behavior (convergence on suboptimal solution)', 'Communication overhead explosion (O(n²) messaging)', 'Context window exhaustion in multi-turn chains', 'Hallucination amplification across hops', 'Silent failure (false success reporting)', 'Conflicting sub-goal resolution failures', 'Trust chain breakdown (compromised agent in pipeline)', 'Emergent adversarial dynamics between cooperative agents'
+          'Coordination collapse — deadlock and livelock',
+          'Cascade failures across agent hops',
+          'Deference loops — agents deferring indefinitely',
+          'Context window exhaustion in multi-turn chains',
+          'Hallucination amplification across hops',
+          'Silent failure and false success reporting',
+          'Communication overhead explosion',
+          'Goal drift in long-running workflows'
         ] }
       ]
     },
     {
       id: 6, title: 'Infrastructure & Deployment', color: '#888780', bg: '#F1EFE8',
       sections: [
-        { title: 'Model infrastructure', topics: [
-          'API providers (OpenAI, Anthropic, Google)', 'Local inference (Ollama, vLLM, llama.cpp)', 'Model routing', 'Model switching', 'Multi-model ensembles', 'Token streaming', 'Inference providers (Groq, Together, Fireworks)', 'GPU orchestration', 'Model distillation'
+        { title: 'Model serving', topics: [
+          'API providers vs self-hosted — decision framework',
+          'Local inference (Ollama, vLLM, llama.cpp)',
+          'Model routing — cheap-first cascades',
+          'Fallback model chains',
+          'Token streaming implementation',
+          'GPU orchestration and scheduling',
+          'Inference provider selection (Groq, Together, Fireworks)'
+        ] },
+        { title: 'Production hardening', topics: [
+          'Rate limiting strategies for LLM APIs',
+          'Retry policies with exponential backoff and jitter',
+          'Cost ceilings per request',
+          'Timeout design for variable-latency LLM calls',
+          'Backpressure and queue-based request handling',
+          'Circuit breakers for model endpoints',
+          'Health checks and readiness probes for AI services',
+          'Graceful degradation — model fallback and feature flags'
+        ] },
+        { title: 'Caching and performance', topics: [
+          'Semantic caching — when it works and when it poisons',
+          'Redis caching patterns for LLM calls',
+          'Prompt caching economics (KV reuse savings)',
+          'Response caching and invalidation strategies',
+          'Prefix caching for shared system prompts'
         ] },
         { title: 'Data infrastructure', topics: [
-          'Vector databases', 'SQL / NoSQL systems', 'Object storage', newTopic('Lakehouse / data lake platforms', { idSlug: 'Data lakes' }), 'Stream processing (Kafka)', 'Data versioning', 'Feature stores for agents', 'Time-series databases for agent metrics'
-        ] },
-        { title: 'Scaling & operations', topics: [
-          'Horizontal scaling of agent fleets', 'Agent lifecycle management', 'Auto-scaling based on queue depth', 'Multi-region agent deployment', 'Agent health checks & heartbeats', 'Graceful degradation strategies', 'Version management for agent configs', 'Canary deployments for agents', 'Configuration management (prompts, tools, models)', 'Agent dependency management'
-        ] },
-        { title: 'System infrastructure', topics: [
-          'Caching (Redis, semantic cache)', 'Message queues', 'Background workers', 'Rate limiting', 'Load balancing', 'API gateways', 'Agent sandboxing (E2B, Modal, Daytona)', 'MCP server hosting'
+          'Vector database operations at scale',
+          'SQL and NoSQL for agent state',
+          'Message queues for async agents',
+          'Stream processing for real-time agent pipelines',
+          'Feature stores for agent context'
         ] },
         { title: 'Deployment patterns', topics: [
-          'Docker containers', 'Kubernetes', 'Serverless agents', 'Persistent agent processes', 'Edge vs cloud', 'Blue-green deployments', 'Agent registries', 'Shadow AI discovery', 'Agent-as-a-service', 'Hybrid local / cloud agents'
+          'Container strategies for agents',
+          'Serverless agents — cold start trade-offs',
+          'Persistent agent processes (long-running)',
+          'Canary deployments for model changes',
+          'Blue-green for prompt updates',
+          'Agent-as-a-service patterns',
+          'Shadow mode for safe model rollout'
         ] },
-        { title: 'Learning & adaptation', topics: [
-          'Fine-tuning (full, PEFT, LoRA, QLoRA)', 'RLHF', 'Direct Preference Optimization (DPO)', 'Continual learning', 'Online learning', 'Personalization systems', 'Feedback loops', 'Synthetic data generation', 'Model merging (TIES, DARE, SLERP)', 'Preference tuning (KTO, IPO)'
-        ] },
-        { title: 'Synthetic data for agents', topics: [
-          'LLM-generated instruction-following data', 'Rejection sampling for quality filtering', 'Self-play / self-instruct data generation', 'Distillation from frontier models', 'Simulated environment trajectories for tool-use', 'Multi-turn agentic trajectory synthesis', 'Verification-based data quality filtering', 'Contamination & benchmark leakage risks'
-        ] },
-        { title: 'Agent FinOps & cost economics', topics: [
-          'Token budgeting per task', 'Cost-per-task modeling & metering', 'Model routing for cost (cheap-model-first cascades)', 'Multi-step pipeline budget allocation', 'Inference cost vs accuracy trade-off curves', 'Agent ROI frameworks', 'Token-level cost attribution & chargebacks', 'Prompt caching economics (KV reuse savings)', 'Reasoning-token cost accounting', 'Cost-aware tool selection policies', 'Agent spend observability dashboards', 'FinOps governance for autonomous agent pipelines'
-        ] },
-        { title: 'MLOps & LLMOps', topics: [
-          'Model versioning and registries', 'Experiment tracking (Weights & Biases, MLflow, Comet)', 'Model-serving lifecycle (staging, production, retired)', 'A/B testing infrastructure for models', 'Feature flags for model routing', 'Prompt-model co-versioning', 'Artifact management (models, adapters, prompts)', newTopic('LLM gateway patterns (LiteLLM, Portkey, Kong AI Gateway)', { idSlug: 'LLM gateway patterns (LiteLLM, Portkey, Martian)' }), 'Model performance monitoring and drift detection', 'Automated retraining and fine-tuning pipelines', 'Reproducibility and deterministic inference', 'Environment parity (dev, staging, prod)'
+        { title: 'Cost engineering', topics: [
+          'Token budgeting per task',
+          'Cost-per-task modeling and metering',
+          'Multi-step pipeline budget allocation',
+          'Token-level cost attribution and chargebacks',
+          'Reasoning token cost accounting',
+          'Agent ROI frameworks',
+          'FinOps governance for autonomous pipelines'
         ] },
         { title: 'API design for AI services', topics: [
-          'Streaming response design (SSE, WebSockets, chunked transfer)', 'Rate limiting strategies for LLM-backed APIs', 'Token-based rate limiting vs request-based', 'Webhook patterns for async agent execution', 'Long-running task APIs (polling, callbacks, WebSockets)', 'API versioning for prompt and model changes', 'Request and response schemas for structured LLM output', 'Error handling and retry contracts for AI endpoints', 'Idempotency keys for agent actions', 'Authentication and authorization for AI APIs', 'Multi-tenant API isolation', 'API gateway patterns for model routing', 'Backpressure and queue-based request handling', 'Timeout design for variable-latency LLM calls', 'Health check and readiness probes for AI services'
+          'Streaming response design (SSE, WebSocket, chunked transfer)',
+          'Webhook patterns for async agent execution',
+          'Long-running task APIs (polling, callbacks, WebSockets)',
+          'API versioning for prompt and model changes',
+          'Idempotency keys for agent actions',
+          'Multi-tenant API isolation'
+        ] },
+        { title: 'Fine-tuning and adaptation', topics: [
+          'Full fine-tuning vs LoRA vs QLoRA — decision framework',
+          'When to fine-tune vs when to prompt engineer',
+          'Synthetic data generation for agent training',
+          'RLHF and DPO for behavior alignment',
+          'Model merging techniques (TIES, DARE, SLERP)',
+          'Continual learning pitfalls'
         ] }
       ]
     },
     {
       id: 7, title: 'Safety, Security & Governance', color: '#E24B4A', bg: '#FCEBEB',
       sections: [
-        { title: 'Agent-specific threats', topics: [
-          'Prompt injection', 'Indirect prompt injection', 'Goal hijacking', 'Tool misuse', 'Identity abuse', 'Memory poisoning', 'Cascading hallucinations', 'Rogue agents', 'Supply chain attacks on tools', 'Data exfiltration via agents', 'Multi-hop prompt injection', 'Agent credential theft', 'Excessive agency'
+        { title: 'Threat landscape', topics: [
+          'Direct prompt injection',
+          'Indirect prompt injection — data-plane attacks',
+          'Goal hijacking and instruction override',
+          'Tool misuse and excessive agency',
+          'Memory poisoning',
+          'Multi-hop prompt injection',
+          'Data exfiltration via agent tools',
+          'Supply chain attacks on MCP servers',
+          'Agent credential theft'
         ] },
-        { title: 'Safety mechanisms', topics: [
-          'Guardrails', 'Output validation', 'Sandboxing', 'Permission systems (least privilege)', 'Capability gating', 'Red teaming', 'Constitutional AI', 'Kill switches', 'Human oversight checkpoints', 'Input / output filtering', 'Agent boundary testing', 'Canary tokens'
+        { title: 'Defense mechanisms', topics: [
+          'The deterministic shell around stochastic core pattern',
+          'Bounded loops — cap at N steps',
+          'Tool allowlists and deny-by-default',
+          'Output schema validation as a safety layer',
+          'Input and output filtering',
+          'Sandboxing execution environments',
+          'Permission systems and least privilege',
+          'Kill switches and emergency stops',
+          'Human oversight checkpoints',
+          'Canary tokens for data leakage detection',
+          'Red teaming agents'
         ] },
-        { title: 'Governance & compliance', topics: [
-          'OWASP Agentic AI Top 10', 'EU AI Act', 'NIST AI RMF', 'ISO/IEC 42001', 'Agent identity management', 'Agent registries & inventories', 'Audit trails', 'Policy enforcement', 'Zero-trust for agents', 'Regulatory mapping', 'Agent authorization frameworks', 'Responsible AI frameworks', 'Agent liability & accountability', 'Agentic AI Foundation (Linux Foundation governance)', 'Open governance for agent protocols', 'Agent impersonation prevention', 'Non-repudiation for agent actions'
+        { title: 'Governance and compliance', topics: [
+          'OWASP Agentic AI Top 10',
+          'EU AI Act — practical implications for agent builders',
+          'Agent audit trails and structured logging',
+          'Policy enforcement for agents',
+          'Zero-trust for agent architectures',
+          'Agent identity management and inventories',
+          'Responsible AI frameworks that actually work'
         ] },
-        { title: 'Alignment', topics: [
-          'Value alignment', 'Intent detection', 'Behavioral monitoring', 'Transparency & explainability', 'Bias detection', 'Fairness metrics', 'Controllability'
-        ] },
-        { title: 'Privacy & data protection', topics: [
-          'PII detection & redaction in agent pipelines', 'Data minimization for agent context', 'Consent management for agent data use', 'Right-to-erasure in agent memory', 'Differential privacy for agent training', 'Data residency & sovereignty', 'Agent-to-agent data sharing policies', 'Confidential computing for agent inference'
+        { title: 'Privacy and data protection', topics: [
+          'PII detection and redaction in agent pipelines',
+          'Data minimization for agent context',
+          'Right-to-erasure in agent memory systems',
+          'Consent management for agent data use',
+          'Differential privacy for agent training data',
+          'Confidential computing for inference'
         ] }
       ]
     },
     {
       id: 8, title: 'Evaluation, Observability & Applications', color: '#639922', bg: '#EAF3DE',
       sections: [
-        { title: 'Evaluation', topics: [
-          'Automated benchmarks (MMLU, HumanEval, GAIA)', 'Human evaluation', 'Task success rate', 'Hallucination detection', 'Faithfulness scoring', 'Relevance scoring', 'End-to-end agent evals', 'Multi-turn evals', 'Adversarial testing', 'A/B testing agents', 'SWE-bench', 'WebArena', 'AgentBench', 'BFCL (Berkeley Function Calling Leaderboard)', 'ToolBench'
+        { title: 'Evaluation frameworks', topics: [
+          'RAGAs vs DeepEval vs hand-rolled — when each fits',
+          'LLM-as-judge bias and calibration traps',
+          'Golden sets and regression suites',
+          'Adversarial evaluation',
+          'Trajectory evaluation — not just the final answer',
+          'Fuzzy comparison metrics (Levenshtein, token_sort_ratio, WRatio)',
+          'End-to-end agent evaluation',
+          'Multi-turn evaluation',
+          'SWE-bench and AgentBench — what they measure',
+          'BFCL (Berkeley Function Calling Leaderboard)'
         ] },
         { title: 'Observability', topics: [
-          'Distributed tracing (LangSmith, Langfuse)', 'Step-level logging', 'Cost tracking', 'Latency monitoring', 'Token usage dashboards', 'Agent audit logs', 'OpenTelemetry for agents', 'Arize / Phoenix', 'Braintrust'
+          'Structured tracing for agent runs',
+          'Span hierarchies for multi-step agents',
+          'LangSmith vs Langfuse vs Braintrust',
+          'OpenTelemetry for AI agents',
+          'Replay-from-trace debugging',
+          'Prompt versioning in traces',
+          'Cost attribution per turn',
+          'Token usage dashboards and alerting',
+          'Alert design for agent failures'
         ] },
-        { title: 'Debugging & testing', topics: [
-          'Prompt debugging', 'Tool call debugging', 'Deterministic replay', 'Failure analysis', 'Unit tests for agents', 'Integration tests', 'Regression testing', 'Chaos engineering for agents', 'Snapshot testing for prompts', 'Mock tool servers for testing', 'Agent simulation environments'
-        ] },
-        { title: 'Performance engineering', topics: [
-          'Latency optimization', 'Cost optimization', 'Semantic caching', 'Parallel execution', 'Batching', 'Model routing (small→large)', 'Prompt compression', 'Context pruning'
+        { title: 'Debugging and testing', topics: [
+          'Prompt debugging techniques',
+          'Tool call debugging',
+          'Deterministic replay for agent runs',
+          'Failure analysis patterns',
+          'Unit tests for agents',
+          'Integration tests for tool-calling agents',
+          'Regression testing for prompt changes',
+          'Snapshot testing for prompt outputs',
+          'Mock tool servers for testing',
+          'Chaos engineering for agents'
         ] },
         { title: 'CI/CD for AI systems', topics: [
-          'Prompt testing in CI pipelines', 'Model regression checks', 'Eval-gated deployments', 'Prompt diff and review workflows', 'Automated eval suites in pull requests', 'Staging environments for AI features', 'Shadow mode and dark launches for model changes', 'Rollback strategies for model updates', 'Canary releases with eval thresholds', 'Integration testing for tool-calling agents', 'Contract testing for LLM outputs', 'Eval dashboards in CI (pass/fail gates)'
+          'Prompt testing in CI pipelines',
+          'Model regression checks',
+          'Eval-gated deployments',
+          'Shadow mode and dark launches for model changes',
+          'Canary releases with eval thresholds',
+          'Rollback strategies for model updates',
+          'Contract testing for LLM outputs'
         ] },
-        { title: 'Developer & engineering agents', topics: [
-          'Coding agents', 'Agentic coding (Cursor, Copilot, Devin)', 'Code review agents', 'DevOps / SRE agents', 'Testing & QA agents', 'Documentation generation agents', 'Database migration agents', 'Security scanning agents'
+        { title: 'Performance engineering', topics: [
+          'Latency optimization strategies',
+          'Cost optimization patterns',
+          'Parallel execution for independent steps',
+          'Batching LLM calls',
+          'Model routing — small to large cascades',
+          'Context pruning strategies'
         ] },
-        { title: 'Enterprise & business agents', topics: [
-          'Customer support agents', 'Data analysis agents', 'Automation / RPA agents', 'Financial agents', 'Legal agents', 'Sales & marketing agents', 'Supply chain agents', 'HR & recruiting agents', 'Compliance & audit agents', 'Meeting summarization agents', 'Procurement agents'
-        ] },
-        { title: 'Research & domain agents', topics: [
-          'Research agents', 'Scientific discovery agents', 'Healthcare agents', 'Education agents', 'Drug discovery agents', 'Materials science agents', 'Climate & environmental agents', 'Academic writing & literature review agents'
-        ] },
-        { title: 'Consumer & personal agents', topics: [
-          'Personal assistants', 'Multi-modal agents', 'Voice agents & assistants', 'Browser / computer-use agents', 'Shopping & comparison agents', 'Travel planning agents', 'Lifestyle & productivity agents', 'Creative / content generation agents', 'Gaming & NPC agents'
-        ] },
-        { title: 'Physical AI & embodied agents (advanced / research)', topics: [
-          'Vision-Language-Action models (VLAs)', 'Sim-to-real transfer & domain randomization', 'JEPA (Joint Embedding Predictive Architecture)', 'Teleoperation data collection pipelines', 'Single-model vs dual-system VLA design'
-        ] },
-        { title: 'Human-agent teaming', topics: [
-          'Trust calibration in human-AI teams', 'Oversight fatigue & automation complacency', 'Role complementarity (human + agent skill mapping)', 'Cognitive load management with AI assistants', 'Shared mental models between humans and agents', 'Adaptive autonomy levels', 'Explainability requirements for team trust', 'Handoff protocols (agent-to-human escalation)', 'Anti-patterns: over-reliance, learned helplessness, automation bias', 'Mixed-initiative interaction design', 'Team situational awareness with AI members', 'Workforce redesign for human-agent collaboration'
+        { title: 'Application patterns', topics: [
+          'Coding agents — architecture and orchestration',
+          'DevOps and SRE agents',
+          'Customer support agents',
+          'Research and deep-analysis agents',
+          'Data pipeline agents',
+          'Document processing agents'
         ] }
       ]
     }
