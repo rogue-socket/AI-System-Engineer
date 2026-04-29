@@ -77,7 +77,7 @@
   }
 
   applyPageTheme({ color: '#111111', bg: '#F3F4F6' });
-  renderLayerTree(root, data, { anchorIds: true });
+  renderLayerTree(root, data, { anchorIds: true, openFirstLayer: false });
   updateMeta(getStats(data));
   wireHashFocus();
   refreshStatusLegend();

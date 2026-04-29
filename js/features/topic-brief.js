@@ -131,7 +131,7 @@
       }
     },
     {
-      sectionTitle: 'Reasoning paradigms',
+      sectionTitle: 'Reasoning patterns',
       pattern: /chain-of-thought|least-to-most|skeleton-of-thought/i,
       guide: {
         roleLabel: 'a stepwise reasoning pattern',
@@ -142,7 +142,7 @@
       }
     },
     {
-      sectionTitle: 'Reasoning paradigms',
+      sectionTitle: 'Reasoning patterns',
       pattern: /tree-of-thought|graph-of-thought/i,
       guide: {
         roleLabel: 'a search-based reasoning pattern',
@@ -153,7 +153,7 @@
       }
     },
     {
-      sectionTitle: 'Reasoning paradigms',
+      sectionTitle: 'Reasoning patterns',
       pattern: /react|program-of-thought|tool-assisted reasoning/i,
       guide: {
         roleLabel: 'a tool-grounded reasoning pattern',
@@ -164,7 +164,7 @@
       }
     },
     {
-      sectionTitle: 'Reasoning paradigms',
+      sectionTitle: 'Reasoning patterns',
       pattern: /self-consistency|debate reasoning|verifier-guided reasoning|verification\s*&\s*self-verification/i,
       guide: {
         roleLabel: 'a verification-oriented reasoning pattern',
@@ -175,7 +175,7 @@
       }
     },
     {
-      sectionTitle: 'Reflection, critique & repair',
+      sectionTitle: 'Reflection and self-correction',
       pattern: /reflection loops|self-critique|self-evaluation|iterative refinement|reflexion|critique agents|trajectory critique and repair|plan repair after failure|post-action review loops/i,
       guide: {
         roleLabel: 'a self-review and repair pattern',
@@ -186,7 +186,7 @@
       }
     },
     {
-      sectionTitle: 'Planning & control',
+      sectionTitle: 'Planning and decomposition',
       pattern: /task decomposition|hierarchical planning|planner-executor separation/i,
       guide: {
         roleLabel: 'a planning and decomposition topic',
@@ -197,7 +197,7 @@
       }
     },
     {
-      sectionTitle: 'Planning & control',
+      sectionTitle: 'Planning and decomposition',
       pattern: /finite-state \/ rule-based controllers|llm-based controllers|agent loop design/i,
       guide: {
         roleLabel: 'a controller-design topic',
@@ -208,7 +208,7 @@
       }
     },
     {
-      sectionTitle: 'Planning & control',
+      sectionTitle: 'Planning and decomposition',
       pattern: /replanning \/ plan repair|execution monitoring and watchdogs|goal prioritization|constraint satisfaction|stop conditions and escalation criteria|budget-aware planning/i,
       guide: {
         roleLabel: 'an execution-monitoring or plan-adaptation topic',
@@ -219,7 +219,7 @@
       }
     },
     {
-      sectionTitle: 'Meta-cognition',
+      sectionTitle: 'Metacognition',
       pattern: /confidence monitoring|calibration proxies|epistemic vs aleatoric uncertainty|out-of-distribution|confidence signals/i,
       guide: {
         roleLabel: 'an uncertainty-estimation topic',
@@ -230,7 +230,7 @@
       }
     },
     {
-      sectionTitle: 'Meta-cognition',
+      sectionTitle: 'Metacognition',
       pattern: /knowing-when-to-stop|task completion detection|selective prediction|abstention|self-checking with external verification|confidence-gated action execution|resource-bounded reasoning|planning horizon awareness|metacognitive prompting strategies|introspective tool-use decisions/i,
       guide: {
         roleLabel: 'a stop, abstention, or escalation-control topic',
@@ -538,7 +538,7 @@
       }
     },
     {
-      sectionTitle: 'Evaluation',
+      sectionTitle: 'Evaluation frameworks',
       pattern: /automated benchmarks|swe-bench|webarena|agentbench|bfcl|toolbench|end-to-end agent evals|multi-turn evals/i,
       guide: {
         roleLabel: 'an evaluation-benchmark topic',
@@ -549,7 +549,7 @@
       }
     },
     {
-      sectionTitle: 'Evaluation',
+      sectionTitle: 'Evaluation frameworks',
       pattern: /human evaluation|task success rate|hallucination detection|faithfulness scoring|relevance scoring|adversarial testing|a\/b testing agents/i,
       guide: {
         roleLabel: 'an outcome-metric evaluation topic',
@@ -571,7 +571,7 @@
       }
     },
     {
-      sectionTitle: 'Debugging & testing',
+      sectionTitle: 'Debugging and testing',
       pattern: /prompt debugging|tool call debugging|deterministic replay|failure analysis|unit tests|integration tests|regression testing|chaos engineering|snapshot testing|mock tool servers|agent simulation environments/i,
       guide: {
         roleLabel: 'a testing and debugging topic',
@@ -648,7 +648,7 @@
       }
     },
     {
-      sectionTitle: 'Control & validation',
+      sectionTitle: 'Interaction patterns',
       pattern: /human-in-the-loop|approval workflows|human-on-the-loop|full autonomy|adaptive autonomy levels/i,
       guide: {
         roleLabel: 'an approval and autonomy-control topic',
@@ -659,7 +659,7 @@
       }
     },
     {
-      sectionTitle: 'Control & validation',
+      sectionTitle: 'Interaction patterns',
       pattern: /objective -> execution -> validation loops|validation checkpoint architecture|goal decomposition with validation gates|rollback-on-failure|compensating actions|schema-driven output validation/i,
       guide: {
         roleLabel: 'a workflow-validation topic',
@@ -703,7 +703,7 @@
       }
     },
     {
-      sectionTitle: 'Developer & engineering agents',
+      sectionTitle: 'Application patterns',
       pattern: /coding agents|agentic coding|code review agents|devops \/ sre agents|testing & qa agents|documentation generation agents|database migration agents|security scanning agents/i,
       guide: {
         roleLabel: 'an engineering-workflow application topic',
@@ -813,7 +813,7 @@
       }
     },
     {
-      sectionTitle: 'Agent-specific threats',
+      sectionTitle: 'Threat landscape',
       pattern: /prompt injection|indirect prompt injection|goal hijacking|multi-hop prompt injection/i,
       guide: {
         roleLabel: 'an instruction-integrity threat topic',
@@ -824,7 +824,7 @@
       }
     },
     {
-      sectionTitle: 'Agent-specific threats',
+      sectionTitle: 'Threat landscape',
       pattern: /tool misuse|identity abuse|agent credential theft|excessive agency/i,
       guide: {
         roleLabel: 'an authority-abuse threat topic',
@@ -835,7 +835,7 @@
       }
     },
     {
-      sectionTitle: 'Agent-specific threats',
+      sectionTitle: 'Threat landscape',
       pattern: /memory poisoning|supply chain attacks on tools|rogue agents/i,
       guide: {
         roleLabel: 'a system-compromise threat topic',
@@ -846,7 +846,7 @@
       }
     },
     {
-      sectionTitle: 'Agent-specific threats',
+      sectionTitle: 'Threat landscape',
       pattern: /data exfiltration via agents|cascading hallucinations/i,
       guide: {
         roleLabel: 'a compounding-output threat topic',
@@ -857,7 +857,7 @@
       }
     },
     {
-      sectionTitle: 'Interoperability & standards',
+      sectionTitle: 'Protocols and standards',
       pattern: /mcp|a2a|interoperability standards|agent protocol standardization|legacy fipa concepts/i,
       guide: {
         roleLabel: 'a protocol-standard topic',
@@ -868,7 +868,7 @@
       }
     },
     {
-      sectionTitle: 'Interoperability & standards',
+      sectionTitle: 'Protocols and standards',
       pattern: /capability discovery and agent directories|agent cards \/ manifest formats|openapi|asyncapi/i,
       guide: {
         roleLabel: 'a capability-description topic',
@@ -879,7 +879,7 @@
       }
     },
     {
-      sectionTitle: 'Interoperability & standards',
+      sectionTitle: 'Protocols and standards',
       pattern: /task handoff and status semantics|protocol bridging \/ interop layers|transport & session patterns|cross-vendor agent orchestration standards|emerging formal interoperability standards/i,
       guide: {
         roleLabel: 'a handoff-and-session interoperability topic',
@@ -993,7 +993,7 @@
       }
     },
     {
-      sectionTitle: 'Agent FinOps & cost economics',
+      sectionTitle: 'Cost engineering',
       pattern: /token budgeting per task|multi-step pipeline budget allocation|reasoning-token cost accounting|prompt caching economics/i,
       guide: {
         roleLabel: 'a budget-allocation topic',
@@ -1004,7 +1004,7 @@
       }
     },
     {
-      sectionTitle: 'Agent FinOps & cost economics',
+      sectionTitle: 'Cost engineering',
       pattern: /cost-per-task modeling|token-level cost attribution|chargebacks|agent spend observability dashboards/i,
       guide: {
         roleLabel: 'a cost-measurement and attribution topic',
@@ -1015,7 +1015,7 @@
       }
     },
     {
-      sectionTitle: 'Agent FinOps & cost economics',
+      sectionTitle: 'Cost engineering',
       pattern: /model routing for cost|inference cost vs accuracy trade-off curves|agent roi frameworks|cost-aware tool selection policies|finops governance/i,
       guide: {
         roleLabel: 'an economic policy topic',
@@ -1575,6 +1575,34 @@
           }
         ];
 
+      case 'cost-engineering':
+        return [
+          {
+            label: 'What it is',
+            text: getGeneratedTopicBriefIntro(entry, guide, `${entry.text} is a cost-engineering topic about how token spend, inference budget, and economic policy are allocated, measured, and governed across agent workloads.`)
+          },
+          {
+            label: 'Where it is used',
+            text: `You run into it in ${guide.used}, especially once a system runs multi-step pipelines, reasoning-heavy calls, or shared platforms where spend must be attributed. It usually interacts with ${partnerText}.${relatedLayerText}`
+          },
+          {
+            label: 'What it unlocks',
+            text: `It unlocks ${guide.unlock} by turning vague cost concerns into explicit budgets, attribution, and policy levers.`
+          },
+          {
+            label: 'Human analogy',
+            text: `A useful human parallel is ${guide.analogy}. The point is that unmetered spending always grows until someone builds the accounting layer.`
+          },
+          {
+            label: 'Without it',
+            text: `Without a clear handle on ${entry.text}, ${guide.withoutCase}. In ${guide.exampleScenario}, teams discover the bill after the damage instead of governing spend as it happens.`
+          },
+          {
+            label: 'With it',
+            text: `With ${entry.text} in place, ${guide.withCase}. In ${guide.exampleScenario}, the team can set budgets, attribute cost, and justify ROI before scaling further.`
+          }
+        ];
+
       default:
         return [
           {
@@ -1636,4 +1664,13 @@
     runtimeDurabilityTopicBriefGuide,
     detectionMeasurementTopicBriefGuide
   };
+
+  var refs = window.__SyllabusReferencedTitles = window.__SyllabusReferencedTitles || [];
+  var seenSections = {};
+  topicBriefSpecificGuideRules.forEach(function (rule) {
+    if (rule.sectionTitle && !seenSections[rule.sectionTitle]) {
+      seenSections[rule.sectionTitle] = true;
+      refs.push({ source: 'topic-brief', kind: 'section', title: rule.sectionTitle });
+    }
+  });
 }());

@@ -98,9 +98,52 @@
 
   const report = Object.freeze(getValidationReport());
 
+  function validateReferencedTitles() {
+    var refs = window.__SyllabusReferencedTitles;
+    if (!refs || !refs.length) {
+      return [];
+    }
+
+    var layerTitleSet = {};
+    var sectionTitleSet = {};
+    var sectionLayerCombos = [];
+
+    data.forEach(function (layer) {
+      layerTitleSet[layer.title] = true;
+      layer.sections.forEach(function (section) {
+        sectionTitleSet[section.title] = true;
+        sectionLayerCombos.push(section.title + ' ' + layer.title);
+      });
+    });
+
+    var staleRefs = [];
+
+    refs.forEach(function (ref) {
+      if (ref.kind === 'layer' && !layerTitleSet[ref.title]) {
+        staleRefs.push(ref.source + ': layer "' + ref.title + '" does not match any current layer title.');
+      } else if (ref.kind === 'section' && !sectionTitleSet[ref.title]) {
+        staleRefs.push(ref.source + ': section "' + ref.title + '" does not match any current section title.');
+      } else if (ref.kind === 'section-pattern') {
+        var matched = sectionLayerCombos.some(function (combo) {
+          return ref.pattern.test(combo);
+        });
+        if (!matched) {
+          staleRefs.push(ref.source + ': pattern ' + ref.pattern + ' does not match any current section/layer combination.');
+        }
+      }
+    });
+
+    if (staleRefs.length && window.console && typeof window.console.warn === 'function') {
+      window.console.warn('Syllabus referenced-title validation warnings:\n- ' + staleRefs.join('\n- '));
+    }
+
+    return staleRefs;
+  }
+
   window.__SyllabusValidation = {
     report: report,
-    getValidationReport: getValidationReport
+    getValidationReport: getValidationReport,
+    validateReferencedTitles: validateReferencedTitles
   };
 
   if (warnings.length && window.console && typeof window.console.warn === 'function') {

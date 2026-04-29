@@ -35,22 +35,22 @@
     const savedResources = getTopicResources(entry.id);
 
     const practiceLinks = uniqueEntries([
-      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Evaluation & Observability'] }),
-      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Infrastructure & Runtime', 'Agency & Tool Use'] }),
+      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Evaluation, Observability & Applications'] }),
+      ...getRelatedEntries(entry, { limit: 5, minScore: 2, layerTitles: ['Infrastructure & Deployment', 'Agency & Tool Use'] }),
       ...getRelatedEntries(entry, { limit: 4, minScore: 2, layerTitles: ['Safety, Security & Governance'] }),
       ...pickEntriesByRefs([
-        { layerTitle: 'Evaluation & Observability', sectionTitles: ['Evaluation', 'Performance engineering'] },
-        { layerTitle: 'Infrastructure & Runtime', sectionTitles: ['Model infrastructure', 'System infrastructure'] },
-        { layerTitle: 'Safety, Security & Governance', sectionTitles: ['Safety mechanisms'] }
+        { layerTitle: 'Evaluation, Observability & Applications', sectionTitles: ['Evaluation frameworks', 'Performance engineering'] },
+        { layerTitle: 'Infrastructure & Deployment', sectionTitles: ['Model serving', 'Data infrastructure'] },
+        { layerTitle: 'Safety, Security & Governance', sectionTitles: ['Defense mechanisms'] }
       ], 10, 2)
     ]).filter(item => item.id !== entry.id).slice(0, 10);
 
     const operationalLinks = uniqueEntries([
-      ...getRelatedEntries(entry, { limit: 8, minScore: 2, layerTitles: ['Agency & Tool Use', 'Infrastructure & Runtime', 'Applications & Domains'] }),
+      ...getRelatedEntries(entry, { limit: 8, minScore: 2, layerTitles: ['Agency & Tool Use', 'Infrastructure & Deployment', 'Evaluation, Observability & Applications'] }),
       ...pickEntriesByRefs([
-        { layerTitle: 'Agency & Tool Use', sectionTitles: ['Tool interfaces', 'Information tools', 'Action tools'] },
-        { layerTitle: 'Infrastructure & Runtime', sectionTitles: ['Model infrastructure', 'System infrastructure'] },
-        { layerTitle: 'Applications & Domains', sectionTitles: ['Developer & engineering agents', 'Enterprise & business agents'] }
+        { layerTitle: 'Agency & Tool Use', sectionTitles: ['Tool design discipline', 'Information tools', 'Action tools'] },
+        { layerTitle: 'Infrastructure & Deployment', sectionTitles: ['Model serving', 'Data infrastructure'] },
+        { layerTitle: 'Evaluation, Observability & Applications', sectionTitles: ['Application patterns'] }
       ], 10, 2)
     ]).filter(item => item.id !== entry.id).slice(0, 10);
 
@@ -255,4 +255,21 @@
   window.__SyllabusTopicDetail = {
     buildTopicDetailData
   };
+
+  var refs = window.__SyllabusReferencedTitles = window.__SyllabusReferencedTitles || [];
+  refs.push(
+    { source: 'topic-detail', kind: 'layer', title: 'Evaluation, Observability & Applications' },
+    { source: 'topic-detail', kind: 'layer', title: 'Infrastructure & Deployment' },
+    { source: 'topic-detail', kind: 'layer', title: 'Agency & Tool Use' },
+    { source: 'topic-detail', kind: 'layer', title: 'Safety, Security & Governance' },
+    { source: 'topic-detail', kind: 'section', title: 'Evaluation frameworks' },
+    { source: 'topic-detail', kind: 'section', title: 'Performance engineering' },
+    { source: 'topic-detail', kind: 'section', title: 'Model serving' },
+    { source: 'topic-detail', kind: 'section', title: 'Data infrastructure' },
+    { source: 'topic-detail', kind: 'section', title: 'Defense mechanisms' },
+    { source: 'topic-detail', kind: 'section', title: 'Tool design discipline' },
+    { source: 'topic-detail', kind: 'section', title: 'Information tools' },
+    { source: 'topic-detail', kind: 'section', title: 'Action tools' },
+    { source: 'topic-detail', kind: 'section', title: 'Application patterns' }
+  );
 }());

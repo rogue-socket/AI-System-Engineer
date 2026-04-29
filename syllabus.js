@@ -52,4 +52,8 @@
   }
 
   window.Syllabus = syllabusApi;
+
+  if (typeof validationApi.validateReferencedTitles === 'function') {
+    validationApi.validateReferencedTitles();
+  }
 }());

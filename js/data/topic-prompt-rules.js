@@ -25,11 +25,11 @@
       instruction: 'Cover the end-to-end retrieval path from ingestion and indexing through query rewriting, ranking, context assembly, grounding, and evaluation.'
     },
     {
-      pattern: /agent architectures|reasoning paradigms|reflection, critique & repair|planning & control|meta-cognition/i,
+      pattern: /agent architectures|reasoning patterns|reflection and self-correction|planning and decomposition|metacognition/i,
       instruction: 'Cover the control loop, intermediate state, stop criteria, verification steps, and the tasks where this pattern improves reliability versus just adding latency.'
     },
     {
-      pattern: /tool interfaces|information tools|action tools|meta tooling|interaction patterns|agentic browsers/i,
+      pattern: /tool design discipline|information tools|action tools|meta tooling|interaction patterns|agentic browsers/i,
       instruction: 'Cover the call contract, execution path, side-effect boundary, permission model, retries, and how the agent verifies tool results before trusting or executing them.'
     },
     {
@@ -37,23 +37,23 @@
       instruction: 'Cover the programming model, orchestration primitive, state management, observability story, deployment fit, and when a team should adopt or avoid this framework or workflow substrate.'
     },
     {
-      pattern: /protocol convergence & standards|interoperability & standards/i,
+      pattern: /protocol convergence & standards|protocols and standards/i,
       instruction: 'Cover capability discovery, message semantics, session model, transport choices, interoperability boundaries, and how real handoffs work across systems.'
     },
     {
-      pattern: /model infrastructure|system infrastructure|deployment patterns|scaling & operations|mlops & llmops|api design for ai services|agent finops & cost economics/i,
+      pattern: /model serving|data infrastructure|deployment patterns|scaling & operations|mlops & llmops|api design for ai services|cost engineering/i,
       instruction: 'Cover the production architecture, latency and cost trade-offs, rollout and rollback model, multi-tenant concerns, and what the operating team has to own.'
     },
     {
-      pattern: /agent-specific threats|safety mechanisms|governance & compliance|alignment|privacy & data protection|identity, trust & authorization/i,
+      pattern: /threat landscape|defense mechanisms|governance and compliance|alignment|privacy and data protection|identity, trust & authorization/i,
       instruction: 'Cover the concrete failure or abuse path, the boundary being protected, the controls that matter, and how engineers review, test, and monitor the defense.'
     },
     {
-      pattern: /evaluation|observability|debugging & testing|performance engineering|ci\/cd for ai systems|specification vs emergence gap/i,
+      pattern: /evaluation|observability|debugging and testing|performance engineering|ci\/cd for ai systems|specification vs emergence gap/i,
       instruction: 'Cover metrics, instrumentation, representative test cases, failure analysis, and how this topic changes release or rollout decisions.'
     },
     {
-      pattern: /developer & engineering agents|enterprise & business agents|research & domain agents|consumer & personal agents|human-agent teaming|physical ai/i,
+      pattern: /application patterns|enterprise & business agents|research & domain agents|consumer & personal agents|human-agent teaming|physical ai/i,
       instruction: 'Cover the end-user workflow, success criteria, domain constraints, failure costs, and what changes when the topic is used in production for that audience.'
     }
   ];
@@ -96,5 +96,10 @@
   window.__SyllabusTopicPromptConfig = Object.freeze({
     topicPromptSectionFocusRules,
     topicPromptTitleFocusRules
+  });
+
+  var refs = window.__SyllabusReferencedTitles = window.__SyllabusReferencedTitles || [];
+  topicPromptSectionFocusRules.forEach(function (rule) {
+    refs.push({ source: 'topic-prompt-rules', kind: 'section-pattern', pattern: rule.pattern });
   });
 }());
